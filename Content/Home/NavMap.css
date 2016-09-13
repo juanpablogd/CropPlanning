@@ -1,0 +1,58 @@
+.container-fluid {
+    padding-left: 10px;
+}
+.navbar-inverse {
+    background-image: linear-gradient(to bottom,#2e6da4 0,#428BCA 100%);
+    z-index: 100;
+}
+.LogoMap {
+   max-height: 45px;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #F1F1F1;
+}
+@media (max-width: 767px){ 
+	.LogoMap {
+	   max-height: 38px;
+	}
+	.navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+	    color: #FFFBFB;
+	}
+}
+
+.chat
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chat li
+{
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #B3A9A9;
+}
+.chat li:last-child
+{
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: none;
+}
+
+.chat li.left .chat-body
+{
+    margin-left: 60px;
+}
+
+.chat li.right .chat-body
+{
+    margin-right: 60px;
+}
+
+
+.chat li .chat-body p
+{
+    margin: 0;
+    color: #777777;
+}

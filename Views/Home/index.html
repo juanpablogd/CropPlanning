@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame 
+       Remove this if you use the .htaccess -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>SAGA</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  <!-- CSS Resources -->
+  <link href="../../Resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../Resources/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+  <link href="../../Resources/FontAwesome/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../Resources/BootstrapDialog/css/bootstrap-dialog.min.css" rel="stylesheet">
+  <link href="../../Resources/Animate/animate.css" rel="stylesheet">
+  <link href="../../Resources/leaflet/leaflet.css" rel="stylesheet">
+  <link href="../../Resources/leaflet/sidebar-v2/css/leaflet-sidebar.min.css" rel="stylesheet">
+  
+  <!-- CSS app -->
+  <!--link href="../../Content/Home/NavMap.css" rel="stylesheet"-->
+  <link href="../../Content/Home/ContentMap.css" rel="stylesheet">
+  
+</head>
+<body>
+    <div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-th-list"></i></a></li>
+                <li><a href="#idioma" role="tab"><i class="fa fa-language"></i></a></li>
+                <li ><a href="#messages"><i class="fa fa-file-text"></i></a></li>
+            </ul>
+        </div>
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    Capas Base
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+                <p class="lorem">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+            </div>
+
+            <div class="sidebar-pane" id="idioma">
+                <h1 class="sidebar-header">Idioma<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+            </div>
+
+            <div class="sidebar-pane" id="messages">
+                <h1 class="sidebar-header">Terminos y Condiciones<span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                <p class="lorem" id="terminos_condiciones"></p>
+            </div>
+        </div>
+    </div>
+   <!-- Panel Mapa -->
+   <div id="map" class="map sidebar-map">&nbsp;</div>
+   
+
+</body>
+	<!-- script Resources -->
+	<script src="../../Resources/Numeral/numeral.js"></script>
+	<script src="../../Resources/moment/moment-with-locales.min.js"></script>
+	<script src="../../Resources/socket/socket.io.js"></script>
+	<script src="../../Resources/Jquery/jquery-1.12.3.min.js"></script>
+	<script src="../../Resources/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../../Resources/ie/js/ie-emulation-modes-warning.js"></script>
+	<script src="../../Resources/ie/js/ie10-viewport-bug-workaround.js"></script>	
+	<script src="../../Resources/socket/socket.io.js"></script>				
+	<script src="../../Resources/bootbox/bootbox.min.js"></script>
+	<script src="../../Resources/Crypto/core-min.js"></script>
+	<script src="../../Resources/Crypto/aes.js"></script>
+	<script src="../../Resources/BootstrapDialog/js/bootstrap-dialog.min.js"></script>
+	<script src="../../Resources/growl/bootstrap-growl.min.js"></script>
+	<script src="../../Resources/growl/Notificaciones.js"></script>
+	<script src="../../Resources/fastclick/fastclick.min.js"></script>
+	<script src="../../Resources/topojson/topojson.v1.min.js"></script>
+	<script src="../../Resources/turf/turf.min.js"></script>
+	<script src="../../Resources/leaflet/leaflet.js"></script>
+	<script src="http://maps.google.com/maps/api/js?key=AIzaSyBKJoVRGZqXty7quRMexjOBrcLEO_VNyGI&v=3&amp;"></script>
+	<script src="../../Resources/leaflet/plugins/layer/tile/Google.js"></script>
+	<script src="../../Resources/leaflet/sidebar-v2/js/leaflet-sidebar.min.js"></script>
+	
+	<!-- app Resources -->
+	<script src="../../Scripts/AppConfig.js"></script>
+	<script src="../../Scripts/Map.js"></script>
+	<script src="../../Scripts/Home/Main.js"></script>
+	
+</html>
