@@ -19,8 +19,5 @@ var AppMap = {
 	},
 	AddPunto: function(lat, lon){
 		this.marker = L.marker([lat, lon]).addTo(this.map);
-	},
-	AddMenu: function(){
-		this.sidebar = L.control.sidebar('sidebar').addTo(this.map);
 	}
 };

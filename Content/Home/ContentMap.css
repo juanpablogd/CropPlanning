@@ -8,3 +8,7 @@ html, body, #map {
 
 .modal-backdrop{z-index: 2050 !important;}
 .modal{z-index: 2060 !important;}
+
+.img-responsive{
+	max-width: 160% !important;
+}
