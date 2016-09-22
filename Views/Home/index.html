@@ -22,6 +22,7 @@
   <link href="../../Resources/BootstrapDialog/css/bootstrap-dialog.min.css" rel="stylesheet">
   <link href="../../Resources/Animate/animate.css" rel="stylesheet">
   <link href="../../Resources/leaflet/leaflet.css" rel="stylesheet">
+  <link href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
     
   <!-- CSS app -->
   <!--link href="../../Content/Home/NavMap.css" rel="stylesheet"-->
@@ -29,11 +30,14 @@
   
 </head>
 <body>
+	<div class="ui-widget" style="z-index: 2030;position: absolute;top: 15px;width: 82%;left:10px">
+		<input id="lugares" style="z-index: 2035" class="form-control" placeholder="Buscar lugar...">
+	</div>
 	
 	<div class="row"  style="z-index: 2000;position: absolute;bottom: 30px;width: 100%;">
 		<div class="col-xs-1 col-md-1">&nbsp;</div>
 	    <div class="col-xs-2 col-md-2" id="btn_opciones"><img class="img-responsive" src="../../Images/Home/1.png"/></div>
-	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/2.png"/></div>
+	    <div class="col-xs-2 col-md-2" id="btn_epoca"><img class="img-responsive" src="../../Images/Home/2.png"/></div>
 	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/3.png"/></div>
 	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/4.png"/></div>
 	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/5.png"/></div>
@@ -42,9 +46,9 @@
    	<!-- Panel Mapa -->
    	<div id="map" class="map">&nbsp;</div>
 
-
 </body>
 	<!-- script Resources -->
+	<script src="../../Services/mpio.js"></script>
 	<script src="../../Resources/Numeral/numeral.js"></script>
 	<script src="../../Resources/moment/moment-with-locales.min.js"></script>
 	<script src="../../Resources/socket/socket.io.js"></script>
@@ -65,6 +69,8 @@
 	<script src="../../Resources/leaflet/leaflet.js"></script>
 	<script src="http://maps.google.com/maps/api/js?key=AIzaSyBKJoVRGZqXty7quRMexjOBrcLEO_VNyGI&v=3&amp;"></script>
 	<script src="../../Resources/leaflet/plugins/layer/tile/Google.js"></script>
+	<script src="../../Resources/Highcharts/js/highcharts.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	
 	<!-- app Resources -->
 	<script src="../../Scripts/AppConfig.js"></script>
