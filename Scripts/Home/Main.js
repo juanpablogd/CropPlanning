@@ -11,8 +11,7 @@ $( document ).ready(function() {
 			            q: request.term,
 			            countrycodes: 'CO'
 			          },
-			          success: function(result){
-			          	console.log(result);
+			          success: function(result){	//console.log(result);
 				        response(result);
 				      }
 		        });
@@ -21,8 +20,7 @@ $( document ).ready(function() {
 		        $( "#lugares" ).val( ui.item.display_name );
 		        return false;
 		      },
-		      select: function( event, ui ) {
-		      	console.log(ui.item);
+		      select: function( event, ui ) {	//console.log(ui.item);
 		      	AppMap.SetExtend(ui.item.boundingbox[0],ui.item.boundingbox[1],ui.item.boundingbox[2],ui.item.boundingbox[3]);
 		        return false;
 		      }
@@ -59,19 +57,19 @@ $( document ).ready(function() {
 	
 	AppConfig.MostarTerminos= function(){ 		console.log("Ini");
 		BootstrapDialog.show({
-		            title: 'Términos y Condiciones',
+		            title: txt.tit_terminos,
 		            type: BootstrapDialog.TYPE_SUCCESS,
 		            closable: false,
-		            message: AppConfig.msj_terminos,
+		            message: txt.msj_terminos,
 		            buttons: [{
-		                label: 'Aceptar',
+		                label: txt.btn_aceptaterminos,
 		                cssClass: 'btn-success',
 		                action: function(dialog) {
 		                    console.log('Aceptar');
 		                    dialog.close();
 		                }
 		            }, {
-		                label: 'Cerrar',
+		                label: txt.btn_cancelar,
 		                action: function(dialog) {
 		                    console.log('Cerrar');
 		                    dialog.close();
@@ -85,20 +83,20 @@ $( document ).ready(function() {
 		
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
-					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;MAPA BASE</label>'+
+					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;'+txt.tit_mapabase+'</label>'+
 					   		'<div class="radio">'+
-							  '<label><input type="radio" name="optMapaB" checked="">Calles</label>'+
+							  '<label><input type="radio" name="optMapaB" checked="">'+txt.msj_map_calle+'</label>'+
 							'</div>'+
 							'<div class="radio">'+
-							  '<label><input type="radio" name="optMapaB">Topográfico</label>'+
+							  '<label><input type="radio" name="optMapaB">'+txt.msj_map_topo+'</label>'+
 							'</div>'+
 							'<div class="radio">'+
-							  '<label><input type="radio" name="optMapaB">Satélite</label>'+
+							  '<label><input type="radio" name="optMapaB">'+txt.msj_map_satelite+'</label>'+
 							'</div>'+
 						'</div>'+
 						'<div class="h-divider">'+
 					   	'<div class="form-group">'+
-					   		'<i class="fa fa-language"></i><label for="">&nbsp;IDIOMA</label>'+
+					   		'<i class="fa fa-language"></i><label for="">&nbsp;'+txt.tit_idioma+'</label>'+
 					   		'<div class="radio">'+
 							  '<label><input type="radio" name="optIdioma" checked="">Español</label>'+
 							'</div>'+
@@ -109,7 +107,7 @@ $( document ).ready(function() {
 						);
 		
         BootstrapDialog.show({
-        	title: 'Opciones',
+        	title: txt.tit_opciones,
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text /*,
             buttons: [{
@@ -224,6 +222,7 @@ $( document ).ready(function() {
 		
 	});
 
+	SetIdioma("EN");
     AppMap.map=AppMap.InitMap();
 	AppMap.AddBaseLayer(AppMap.map);
 	AppMap.AddPunto(AppMap.center[0],AppMap.center[1]);
