@@ -4,11 +4,12 @@ var AppMap = {
 	center: [4.8, -74],
 	marker:'',
 	LyrMunicipio: '',
+	LyrBase: '',
 	sidebar:'',
 	gmaps: {
-		hibrido: new L.Google('HYBRID'),
-		calle: new L.Google('ROADMAP'),
-		topo: new L.Google('TERRAIN'),		
+		TERRAIN: new L.Google('TERRAIN'),
+		ROADMAP: new L.Google('ROADMAP'),
+		HYBRID: new L.Google('HYBRID'),		
 	},
 	InitMap: function(){ 		console.log("Ini");
 		map=L.map('map').setView(this.center, this.zoom);
@@ -33,8 +34,17 @@ var AppMap = {
 			layer.bindPopup(popupContent);
 		
 	},
-	AddBaseLayer: function(map){ console.log("Add Base");
-		map.addLayer(this.gmaps.calle);	
+	SetBaseLayer: function(tipo){ //console.log("Add Base");
+		if(tipo == "TERRAIN")
+		{
+			this.LyrBase = this.gmaps.TERRAIN;
+		}else if (tipo == "HYBRID") {
+			this.LyrBase = this.gmaps.HYBRID;
+		}else{
+			this.LyrBase = this.gmaps.ROADMAP;
+		}
+		this.map.removeLayer(this.LyrBase);
+		this.map.addLayer(this.LyrBase);		//console.log(this.LyrBase._type);
 	},
 	AddPunto: function(lat, lon){
 		this.marker = L.marker([lat, lon]).addTo(this.map);
@@ -52,6 +62,5 @@ var AppMap = {
 		northEast = L.latLng(latMax, lonMax),
 		bounds = L.latLngBounds(southWest, northEast);
 		this.map.fitBounds(bounds);
-		//this.marker = L.marker([lat, lon]).addTo(this.map);
 	}
 };

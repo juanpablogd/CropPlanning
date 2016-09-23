@@ -1,4 +1,5 @@
 var txt = {
+	Idioma: "",
 	tit_terminos: "",
 	msj_terminos: "",
 	btn_aceptaterminos: "",
@@ -42,15 +43,14 @@ var idiomas = {
 	}
 };
 
-function SetIdioma(leng){
+function SetIdioma(leng){ console.log("Cambio de idioma:" +leng);
+	txt.Idioma = leng;
 	$.each( idiomas[leng], function( key, value ) {
 		txt[key] = value;		//console.log ( key + ": " + value );
 	});
-	
 	$("#lugares").attr("placeholder", txt.ph_buscasitio);
-	
-	$.each( txt, function( key, value ) {
+/*	$.each( txt, function( key, value ) {
 	  console.log ( key + ": " + value );
-	});	
+	});	*/	
 };
 

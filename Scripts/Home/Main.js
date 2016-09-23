@@ -1,7 +1,6 @@
 $( document ).ready(function() {
 
 	AppConfig.Inicial= function(){
-
     	$( "#lugares" ).autocomplete({
 		      minLength: 0,
 		      source:  function( request, response ) {	//console.log(request.term);
@@ -26,12 +25,10 @@ $( document ).ready(function() {
 		      }
 		    })
 		    .autocomplete( "instance" )._renderItem = function( ul, item ) {	//console.log(item);
-		      return $( "<li>" )
-		        .append( "<div>" + item.display_name + "</div>" )
-		        .appendTo( ul );
+		      	return $( "<li>" )
+					.append( "<div>" + item.display_name + "</div>" )
+		        	.appendTo( ul );
 		    };
-		    
-
 	};
 	
 	AppConfig.CargaDataCultivo= function(){
@@ -51,8 +48,6 @@ $( document ).ready(function() {
 				} else AppConfig['cosechaFin'] = i;	
 		    }
 		}
-/*		console.log(AppConfig['siembraIni'] + " " + AppConfig['siembraFin']);
-		console.log(AppConfig['cosechaIni'] + " " + AppConfig['cosechaFin']);	*/
 	};
 	
 	AppConfig.MostarTerminos= function(){ 		console.log("Ini");
@@ -80,28 +75,27 @@ $( document ).ready(function() {
 	};
 	
 	$("#btn_opciones").click(function(){
-		
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
 					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;'+txt.tit_mapabase+'</label>'+
 					   		'<div class="radio">'+
-							  '<label><input type="radio" name="optMapaB" checked="">'+txt.msj_map_calle+'</label>'+
+							  '<label><input type="radio" name="optMapaB" value="ROADMAP">'+txt.msj_map_calle+'</label>'+
 							'</div>'+
 							'<div class="radio">'+
-							  '<label><input type="radio" name="optMapaB">'+txt.msj_map_topo+'</label>'+
+							  '<label><input type="radio" name="optMapaB" value="TERRAIN">'+txt.msj_map_topo+'</label>'+
 							'</div>'+
 							'<div class="radio">'+
-							  '<label><input type="radio" name="optMapaB">'+txt.msj_map_satelite+'</label>'+
+							  '<label><input type="radio" name="optMapaB" value="HYBRID">'+txt.msj_map_satelite+'</label>'+
 							'</div>'+
 						'</div>'+
 						'<div class="h-divider">'+
 					   	'<div class="form-group">'+
 					   		'<i class="fa fa-language"></i><label for="">&nbsp;'+txt.tit_idioma+'</label>'+
 					   		'<div class="radio">'+
-							  '<label><input type="radio" name="optIdioma" checked="">Español</label>'+
+							  '<label><input type="radio" name="optIdioma" value="ES">Español</label>'+
 							'</div>'+
 							'<div class="radio">'+
-							  '<label><input type="radio" name="optIdioma">English</label>'+
+							  '<label><input type="radio" name="optIdioma" value="EN">English</label>'+
 							'</div>'+
 						'</div>'
 						);
@@ -109,15 +103,30 @@ $( document ).ready(function() {
         BootstrapDialog.show({
         	title: txt.tit_opciones,
         	type: BootstrapDialog.TYPE_SUCCESS,
-            message: $text /*,
-            buttons: [{
-                label: 'Cerrar',
-                action: function(dialogRef){
-                    dialogRef.close();
-                }
-            }] */
+            message: $text,
+            onshown: function(dialogRef){
+				//verifica la capa Base Activada
+				$("input[name=optMapaB][value="+AppMap.LyrBase._type+"]").attr("checked", "checked");
+				
+            	//verifica Idioma activado
+            	$("input[name=optIdioma][value="+txt.Idioma+"]").attr("checked", "checked");
+            	
+            	//Evento Mapa Base
+		        $("input[name=optMapaB]").click(function() {
+		        	var tipom = $("input[name=optMapaB]:checked").val();
+		        	AppMap.SetBaseLayer(tipom);
+		        	dialogRef.close();
+		        });
+            	//Evento Idioma
+		        $("input[name=optIdioma]").click(function() {
+		        	var lenguaje = $("input[name=optIdioma]:checked").val();
+		        	SetIdioma(lenguaje);
+		        	dialogRef.close();
+		        });
+            }
         });
-		
+        
+
 	});
 	
 	$("#btn_epoca").click(function(){
@@ -209,22 +218,12 @@ $( document ).ready(function() {
 							'</div>'
 						);
             }
-             /*,
-            buttons: [{
-                label: 'Cerrar',
-                action: function(dialogRef){
-                    dialogRef.close();
-                }
-            }] */
         });
-        
-        
-		
 	});
 
 	SetIdioma("EN");
     AppMap.map=AppMap.InitMap();
-	AppMap.AddBaseLayer(AppMap.map);
+	AppMap.SetBaseLayer("calle");
 	AppMap.AddPunto(AppMap.center[0],AppMap.center[1]);
 	AppConfig.CargaDataCultivo();
 	AppMap.AddMpio();
