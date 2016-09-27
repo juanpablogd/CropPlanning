@@ -221,7 +221,7 @@ $( document ).ready(function() {
         });
 	});
 
-	SetIdioma("EN");
+	SetIdioma("ES");
     AppMap.map=AppMap.InitMap();
 	AppMap.SetBaseLayer("calle");
 	AppMap.AddPunto(AppMap.center[0],AppMap.center[1]);
