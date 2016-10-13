@@ -85,4 +85,8 @@ color: #0BA800;
     background: white url("../../Images/Home/ui-anim_basic_16x16.gif") right center no-repeat;
   }
   
-.ui-autocomplete { position: absolute; cursor: default;z-index:2031 !important;} 
+.ui-autocomplete { position: absolute; cursor: default;z-index:2031 !important;}
+
+#btn_marker{
+	position: absolute;top: 14px;width: 33px;left:77%;height:35px;z-index: 2036;
+}

@@ -49,6 +49,9 @@ var AppMap = {
 	AddPunto: function(lat, lon){
 		this.marker = L.marker([lat, lon]).addTo(this.map);
 	},
+	ActualizaPunto: function(lat, lon){
+		this.marker.setLatLng([lat, lon]);
+	},
 	AddMpio: function(){ //console.log(geojsonFeature);
 		this.LyrMunicipio = L.geoJson(geojsonFeature,{
 										onEachFeature: this.onEachFeature
@@ -57,7 +60,7 @@ var AppMap = {
 		//console.log(this.LyrMunicipio.getBounds());
 		//console.log("Mpio Ok");
 	},
-	SetExtend: function(latMin, latMax, lonMin, lonMax){
+	SetExtend: function(latMin, latMax, lonMin, lonMax){ 	//console.log(latMin+' '+ latMax+' '+ lonMin+' '+ lonMax);
 		var southWest = L.latLng(latMin, lonMin),
 		northEast = L.latLng(latMax, lonMax),
 		bounds = L.latLngBounds(southWest, northEast);

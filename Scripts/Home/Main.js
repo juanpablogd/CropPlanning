@@ -74,6 +74,63 @@ $( document ).ready(function() {
 		$("#terminos_condiciones").html(AppConfig.msj_terminos);
 	};
 	
+	$("#btn_marker").click(function(){
+		var $text = $('<div></div>');
+			$text.append( '<div class="form-group">'+
+								  '<label>'+txt.msj_latitud+'</label>'+
+								  '<input type="text" id="lat" class="form-control lat" />'+
+								'</div>'+
+							'</div>'+
+							'<div class="form-group">'+
+								  '<label>'+txt.msj_longitud+'</label>'+
+								  '<input type="text" id="lon" class="form-control lon" />'+	//placeholder="-74.083557"	placeholder="4.622196"
+								'</div>'+
+							'</div>'+
+							'<div class="form-group">'+
+								  '<button type="button" class="btn btn-success" id="btn_coordenada">Buscar</button>'+
+								'</div>'+
+							'</div>'
+						);
+		
+        BootstrapDialog.show({
+        	title: txt.tit_buscapunto,
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+            	
+            	var cleaveLat = new Cleave('.lat', {
+				    numericOnly: true,
+				    delimiter: '.',
+				    blocks: [1, 6]
+				});
+            	var cleaveLon = new Cleave('.lon', {
+				    numericOnly: true,
+				    delimiter: '.',
+				    blocks: [3, 6],
+				    prefix: '-'
+				});
+            	
+		        $("#btn_coordenada").click(function() {
+		        	var lat = $("#lat").val().trim(); //console.log(lat);
+		        	var lon = $("#lon").val().trim(); //console.log(lon);
+		        	if(lat=="" || (lat>90 || lat<-90)){
+		        		$("#lat").focus();
+		        		return false;	
+		        	}
+		        	if(lon=="" || lon=="-" || lon<-99){
+		        		$("#lon").focus();
+		        		return false;
+		        	}
+		        	AppMap.ActualizaPunto(lat,lon);
+		        	AppMap.SetExtend((lat-0.1),(numeral(lat)+0.1),(numeral(lon)+0.1),(lon-0.1));
+		        	dialogRef.close();
+		        });
+            }
+        });
+        
+
+	});
+	
 	$("#btn_opciones").click(function(){
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
