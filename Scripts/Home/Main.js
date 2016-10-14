@@ -21,6 +21,7 @@ $( document ).ready(function() {
 		      },
 		      select: function( event, ui ) {	//console.log(ui.item);
 		      	AppMap.SetExtend(ui.item.boundingbox[0],ui.item.boundingbox[1],ui.item.boundingbox[2],ui.item.boundingbox[3]);
+		      	AppMap.ActualizaPunto(ui.item.lat,ui.item.lon);
 		        return false;
 		      }
 		    })
@@ -75,20 +76,24 @@ $( document ).ready(function() {
 	};
 	
 	$("#btn_marker").click(function(){
-		var $text = $('<div></div>');
-			$text.append( '<div class="form-group">'+
+		var $text = $('<div class="container"></div>');
+			$text.append(
+							'<div class="form-group">'+
 								  '<label>'+txt.msj_latitud+'</label>'+
+							'</div>'+
+							'<div class="form-group">'+
+								  	'<label class="radio-inline"><input type="radio" name="optlat" value="+" checked>'+txt.msj_norte+'</label>'+
+									'<label class="radio-inline"><input type="radio" name="optlat" value="-">'+txt.msj_sur+'</label>'+
+							'</div>'+				
+							'<div class="form-group">'+
 								  '<input type="text" id="lat" class="form-control lat" />'+
-								'</div>'+
 							'</div>'+
 							'<div class="form-group">'+
 								  '<label>'+txt.msj_longitud+'</label>'+
 								  '<input type="text" id="lon" class="form-control lon" />'+	//placeholder="-74.083557"	placeholder="4.622196"
-								'</div>'+
 							'</div>'+
 							'<div class="form-group">'+
 								  '<button type="button" class="btn btn-success" id="btn_coordenada">Buscar</button>'+
-								'</div>'+
 							'</div>'
 						);
 		
@@ -101,7 +106,7 @@ $( document ).ready(function() {
             	var cleaveLat = new Cleave('.lat', {
 				    numericOnly: true,
 				    delimiter: '.',
-				    blocks: [1, 6]
+				    blocks: [1, 6],
 				});
             	var cleaveLon = new Cleave('.lon', {
 				    numericOnly: true,
@@ -122,13 +127,36 @@ $( document ).ready(function() {
 		        		return false;
 		        	}
 		        	AppMap.ActualizaPunto(lat,lon);
-		        	AppMap.SetExtend((lat-0.1),(numeral(lat)+0.1),(numeral(lon)+0.1),(lon-0.1));
+		        	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
 		        	dialogRef.close();
 		        });
+	        
+				$('input:radio[name=optlat]').click(function (){
+					var coorN = $('input:radio[name=optlat]:checked').val();	//console.log(coorN);
+					cleaveLat.destroy();
+					if(coorN=="+"){
+		            	cleaveLat = new Cleave('.lat', {
+						    numericOnly: true,
+						    delimiter: '.',
+						    blocks: [1, 6]
+						});
+					}else {
+		            	cleaveLat = new Cleave('.lat', {
+						    numericOnly: true,
+						    delimiter: '.',
+						    blocks: [2, 6],
+						    prefix: '-'
+						});
+					}
+				});
+				
             }
         });
         
 
+	});
+	$("#btn_miubicacion").click(function() {	console.log("Ubicar");
+		navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada);
 	});
 	
 	$("#btn_opciones").click(function(){
@@ -278,12 +306,21 @@ $( document ).ready(function() {
         });
 	});
 
+	$("#btn_mapa").click(function(){
+		AppMap.AddCapa("Depto","desplegar");
+	});
+	$("#btn_mpio").click(function(){
+		AppMap.AddCapa("Mpio","capa");
+	});
+	$("#btn_depto").click(function(){
+		AppMap.AddCapa("Depto","capa");
+	});
+	
 	SetIdioma("ES");
     AppMap.map=AppMap.InitMap();
 	AppMap.SetBaseLayer("calle");
 	AppMap.AddPunto(AppMap.center[0],AppMap.center[1]);
 	AppConfig.CargaDataCultivo();
-	AppMap.AddMpio();
 	AppConfig.MostarTerminos();		
 	AppConfig.Inicial();
 	console.log("CORREGIR!!! - MOSTRAR MAPA");	//$("#map").hide();

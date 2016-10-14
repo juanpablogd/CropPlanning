@@ -33,12 +33,15 @@
 		<input id="lugares" style="z-index: 2035" class="form-control" placeholder="">
 	</div>
 	<img id="btn_marker" class="img-responsive" src="../../Images/Map/Marker.png"/>
+	<img id="btn_miubicacion" class="img-responsive" src="../../Images/Map/MiUbicacion.PNG"/>
+	<button id="btn_depto" type="button" class="btn btn-success btn-xs">Departamento</button>
+	<button id="btn_mpio" type="button" class="btn btn-warning btn-xs">Municipio</button>
 	
-	<div class="row"  style="z-index: 2000;position: absolute;bottom: 30px;width: 100%;">
+	<div class="row" style="z-index: 2000;position: absolute;bottom: 30px;width: 100%;">
 		<div class="col-xs-1 col-md-1">&nbsp;</div>
 	    <div class="col-xs-2 col-md-2" id="btn_opciones"><img class="img-responsive" src="../../Images/Home/1.png"/></div>
 	    <div class="col-xs-2 col-md-2" id="btn_epoca"><img class="img-responsive" src="../../Images/Home/2.png"/></div>
-	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/3.png"/></div>
+	    <div class="col-xs-2 col-md-2" id="btn_mapa"><img class="img-responsive" src="../../Images/Home/3.png"/></div>
 	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/4.png"/></div>
 	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/5.png"/></div>
 	    <div class="col-xs-1 col-md-1">&nbsp;</div>
@@ -49,6 +52,7 @@
 </body>
 	<!-- script Resources -->
 	<script src="../../Services/mpio.js"></script>
+	<script src="../../Services/depto.js"></script>
 	<script src="../../Resources/Numeral/numeral.js"></script>
 	<script src="../../Resources/moment/moment-with-locales.min.js"></script>
 	<script src="../../Resources/socket/socket.io.js"></script>

@@ -14,6 +14,8 @@ var txt = {
 	msj_map_satelite: "",
 	msj_latitud: "",
 	msj_longitud: "",
+	msj_norte: "",
+	msj_sur: "",
 };
 
 var idiomas = {
@@ -30,8 +32,10 @@ var idiomas = {
 		"msj_map_calle":"Calles",
 		"msj_map_topo":"Topográfico",
 		"msj_map_satelite":"Satélite",
-		"msj_latitud":"Latitud",
-		"msj_longitud":"Longitud",
+		"msj_latitud":"Latitud      p.e. 4.123456",
+		"msj_longitud":"Longitud   p.e. -74.123456",
+		"msj_norte":"Norte",
+		"msj_sur":"Sur",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -46,8 +50,10 @@ var idiomas = {
 		"msj_map_calle":"Streets",
 		"msj_map_topo":"Topographic",
 		"msj_map_satelite":"Satellite",
-		"msj_latitud":"Longitude",
-		"msj_longitud":"Longitude",
+		"msj_latitud":"Latitude   e.g.  4.123456",
+		"msj_longitud":"Longitude   e.g. -74.123456",
+		"msj_norte":"North",
+		"msj_sur":"South",
 	}
 };
 

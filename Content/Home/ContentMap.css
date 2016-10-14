@@ -90,3 +90,21 @@ color: #0BA800;
 #btn_marker{
 	position: absolute;top: 14px;width: 33px;left:77%;height:35px;z-index: 2036;
 }
+
+#btn_miubicacion{
+	position: absolute;top: 80px;width: 30px;right:10px;height:30px;z-index: 2037;
+}
+#btn_depto{
+    position: absolute;
+    top: 60px;
+    left: 10px;
+    z-index: 2037;
+    display:none;
+}
+#btn_mpio{
+	position: absolute;
+    top: 60px;
+    left: 110px;
+    z-index: 2037;
+    display:none;
+}

@@ -63,11 +63,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(1);
 
 	var NumeralFormatter = __webpack_require__(2);
-	var DateFormatter = __webpack_require__(4);
-	var PhoneFormatter = __webpack_require__(5);
-	var CreditCardDetector = __webpack_require__(6);
-	var Util = __webpack_require__(7);
-	var DefaultProperties = __webpack_require__(8);
+	var DateFormatter = __webpack_require__(3);
+	var PhoneFormatter = __webpack_require__(4);
+	var CreditCardDetector = __webpack_require__(5);
+	var Util = __webpack_require__(6);
+	var DefaultProperties = __webpack_require__(7);
 
 	var Cleave = React.createClass({
 	    displayName: 'Cleave',
@@ -107,7 +107,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var onChange = _owner$props.onChange;
 	        var onInit = _owner$props.onInit;
 
-	        var other = _objectWithoutProperties(_owner$props, ['value', 'options', 'onKeyDown', 'onChange', 'onInit']);
 
 	        owner.registeredEvents = {
 	            onInit: onInit || Util.noop,
@@ -120,7 +119,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        owner.properties = DefaultProperties.assign({}, options);
 
 	        return {
-	            other: other,
 	            value: owner.properties.result
 	        };
 	    },
@@ -191,7 +189,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var owner = this,
 	            pps = owner.properties;
 
-	        value = value.toString();
+	        value = value !== undefined ? value.toString() : '';
 
 	        if (pps.numeral) {
 	            value = value.replace('.', pps.numeralDecimalMark);
@@ -355,11 +353,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    render: function render() {
 	        var owner = this;
+	        var _owner$props2 = owner.props;
+	        var value = _owner$props2.value;
+	        var options = _owner$props2.options;
+	        var onKeyDown = _owner$props2.onKeyDown;
+	        var onChange = _owner$props2.onChange;
+	        var onInit = _owner$props2.onInit;
+	        var htmlRef = _owner$props2.htmlRef;
 
-	        return React.createElement('input', _extends({ type: 'text' }, owner.state.other, {
+	        var propsToTransfer = _objectWithoutProperties(_owner$props2, ['value', 'options', 'onKeyDown', 'onChange', 'onInit', 'htmlRef']);
+
+	        return React.createElement('input', _extends({
+	            type: 'text',
+	            ref: htmlRef,
 	            value: owner.state.value,
 	            onKeyDown: owner.onKeyDown,
-	            onChange: owner.onChange }));
+	            onChange: owner.onChange
+	        }, propsToTransfer, {
+	            'data-cleave-ignore': [value, options, onKeyDown, onChange, onInit, htmlRef]
+	        }));
 	    }
 	});
 
@@ -373,11 +385,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	'use strict';
 
 	var NumeralFormatter = function NumeralFormatter(numeralDecimalMark, numeralDecimalScale, numeralThousandsGroupStyle, delimiter) {
 	    var owner = this;
@@ -411,11 +421,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // replace the first decimal mark with reserved placeholder
 	        .replace(owner.numeralDecimalMark, 'M')
 
-	        // replace the first minus sign reserved placeholder
+	        // strip non numeric letters except minus and "M"
+	        // this is to ensure prefix has been stripped
+	        .replace(/[^\dM-]/g, '')
+
+	        // replace the leading minus with reserved placeholder
 	        .replace(/^\-/, 'N')
 
-	        // strip the non numeric letters except the minus sign and decimal placeholder
-	        .replace(/[^\dMN]/g, '')
+	        // strip the other minus sign (if present)
+	        .replace(/\-/g, '')
 
 	        // replace the minus sign (if present)
 	        .replace('N', '-')
@@ -453,34 +467,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	if (( false ? 'undefined' : _typeof(module)) === 'object' && _typeof(module.exports) === 'object') {
-	    module.exports = exports = NumeralFormatter;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+	module.exports = NumeralFormatter;
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	'use strict';
 
 	var DateFormatter = function DateFormatter(datePattern) {
 	    var owner = this;
@@ -553,18 +546,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	if (( false ? 'undefined' : _typeof(module)) === 'object' && _typeof(module.exports) === 'object') {
-	    module.exports = exports = DateFormatter;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+	module.exports = DateFormatter;
 
 /***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/* 4 */
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	'use strict';
 
 	var PhoneFormatter = function PhoneFormatter(formatter, delimiter) {
 	    var owner = this;
@@ -622,18 +610,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	if (( false ? 'undefined' : _typeof(module)) === 'object' && _typeof(module.exports) === 'object') {
-	    module.exports = exports = PhoneFormatter;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+	module.exports = PhoneFormatter;
 
 /***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/* 5 */
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	'use strict';
 
 	var CreditCardDetector = {
 	    blocks: {
@@ -647,7 +630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        jcb: [4, 4, 4, 4],
 	        maestro: [4, 4, 4, 4],
 	        visa: [4, 4, 4, 4],
-	        generalLoose: [4, 4, 4, 4],
+	        general: [4, 4, 4, 4],
 	        generalStrict: [4, 4, 4, 7]
 	    },
 
@@ -741,34 +724,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (re.visa.test(value)) {
 	            return {
 	                type: 'visa',
-	                blocks: blocks.visa
-	            };
-	        } else if (strictMode) {
-	            return {
-	                type: 'unknown',
-	                blocks: blocks.generalStrict
+	                blocks: strictMode ? blocks.generalStrict : blocks.visa
 	            };
 	        } else {
 	            return {
 	                type: 'unknown',
-	                blocks: blocks.generalLoose
+	                blocks: blocks.general
 	            };
 	        }
 	    }
 	};
 
-	if (( false ? 'undefined' : _typeof(module)) === 'object' && _typeof(module.exports) === 'object') {
-	    module.exports = exports = CreditCardDetector;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+	module.exports = CreditCardDetector;
 
 /***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/* 6 */
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	'use strict';
 
 	var Util = {
 	    noop: function noop() {},
@@ -866,16 +839,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	if (( false ? 'undefined' : _typeof(module)) === 'object' && _typeof(module.exports) === 'object') {
-	    module.exports = exports = Util;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)(module)))
+	module.exports = Util;
 
 /***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/* 7 */
+/***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global, module) {'use strict';
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
 
 	/**
 	 * Props Assignment
@@ -944,10 +914,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	};
 
-	if (( false ? 'undefined' : _typeof(module)) === 'object' && _typeof(module.exports) === 'object') {
-	    module.exports = exports = DefaultProperties;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(3)(module)))
+	module.exports = DefaultProperties;
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 /******/ ])
