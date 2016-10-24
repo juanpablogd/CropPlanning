@@ -79,16 +79,18 @@ var AppMap = {
 				$("#img3").css({"border":"solid green 4px", "border-radius": "22px", "margin":"-4px"});
 			}
 		} else if(accion=="capa"){
-				if(tipo=="Mpio" && AppMap.tipoCapa != tipo){
-					this.map.removeLayer(this.LyrMpioDepto);
-					this.LyrMpioDepto = L.geoJson(geojsonFeatureMpio,{
-													onEachFeature: this.onEachFeature
-				          				}).addTo(this.map);
-				    AppMap.tipoCapa='Mpio';
+				if(tipo=="Mpio" && AppMap.tipoCapa != tipo){	//console.log("comienza carga");
+				    waitingDialog.show("Cargando Municipios...", {progressType: 'success'});
 				    $("#btn_mpio").removeClass('btn-warning');
 				    $("#btn_mpio").addClass('btn-success');
 					$("#btn_depto").removeClass('btn-success');
 				    $("#btn_depto").addClass('btn-warning');
+					this.map.removeLayer(this.LyrMpioDepto);
+					this.LyrMpioDepto = L.geoJson(geojsonFeatureMpio,{
+													onEachFeature: this.onEachFeature
+				          				}).addTo(this.map);
+				    AppMap.tipoCapa='Mpio';		//console.log("Finaliza carga");
+				    waitingDialog.hide();
 				}else if(tipo=="Depto" && AppMap.tipoCapa != tipo){
 					this.map.removeLayer(this.LyrMpioDepto);
 					this.LyrMpioDepto = L.geoJson(geojsonFeatureDepto,{
