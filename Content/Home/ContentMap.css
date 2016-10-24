@@ -98,13 +98,13 @@ color: #0BA800;
     position: absolute;
     top: 60px;
     left: 10px;
-    z-index: 2037;
+    z-index: 1037;
     display:none;
 }
 #btn_mpio{
-	position: absolute;
+    position: absolute;
     top: 60px;
     left: 110px;
-    z-index: 2037;
+    z-index: 1037;
     display:none;
 }

@@ -60,6 +60,7 @@ var AppMap = {
 				this.map.removeLayer(this.LyrMpioDepto);
 				$("#btn_mpio").hide();
 				$("#btn_depto").hide();
+				$("#img3").css({'border':'', "border-radius": "0px", "margin":"0px"});
 			}else{
 				if(tipo=="Mpio"){
 					this.LyrMpioDepto = L.geoJson(geojsonFeatureMpio,{
@@ -75,6 +76,7 @@ var AppMap = {
 			    this.LyrMpioDepto.setZIndex(2);
 			    $("#btn_mpio").show();
 				$("#btn_depto").show();
+				$("#img3").css({"border":"solid green 4px", "border-radius": "22px", "margin":"-4px"});
 			}
 		} else if(accion=="capa"){
 				if(tipo=="Mpio" && AppMap.tipoCapa != tipo){
