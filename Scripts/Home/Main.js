@@ -31,7 +31,23 @@ $( document ).ready(function() {
 		        	.appendTo( ul );
 		    };
 	};
-	
+	AppConfig.ActivarBtn=function(tipo){
+		if(tipo=="Mpio"){
+			$("#btn_mpio").removeClass('btn-warning');
+			$("#btn_mpio").addClass('btn-success');
+			$("#btn_depto").removeClass('btn-success');
+			$("#btn_depto").addClass('btn-warning');
+			$("#btn_mpio").css({"font-size":"14px"});
+			$("#btn_depto").css({"font-size":"12px"});
+		}else if(tipo=="Depto"){
+			$("#btn_depto").removeClass('btn-warning');
+			$("#btn_depto").addClass('btn-success');
+			$("#btn_mpio").removeClass('btn-success');
+			$("#btn_mpio").addClass('btn-warning');
+			$("#btn_depto").css({"font-size":"14px"});
+			$("#btn_mpio").css({"font-size":"12px"});
+		}
+	}
 	AppConfig.CargaDataCultivo= function(){
 		AppConfig['siembra'] = [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
 		AppConfig['cultivo'] = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0];

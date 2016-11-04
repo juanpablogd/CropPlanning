@@ -104,7 +104,7 @@ color: #0BA800;
 #btn_mpio{
     position: absolute;
     top: 60px;
-    left: 110px;
+    left: 120px;
     z-index: 1037;
     display:none;
 }
