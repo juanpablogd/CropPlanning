@@ -24,8 +24,8 @@ var AppMap = {
 	                        	"Producción Arroz"+
 	                        '</div>' +
 	                            '<div class="popupstyle">' +
-	                            	'<b>' + feature.properties.id +'</b><br/>'+
-									'<small>Mpio:</small> <b> ' +feature.properties.ton + '<br></b>' +
+//	                            	'<b>' + feature.properties.id +'</b><br/>'+
+									'<small>Toneladas:</small> <b> ' +feature.properties.ton + '<br></b>' +
 	                            '</div>' +
 	                        '</div>' +
 	                    '</div>';

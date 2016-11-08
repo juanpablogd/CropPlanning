@@ -47,7 +47,7 @@ $( document ).ready(function() {
 			$("#btn_depto").css({"font-size":"14px"});
 			$("#btn_mpio").css({"font-size":"12px"});
 		}
-	}
+	};
 	AppConfig.CargaDataCultivo= function(){
 		AppConfig['siembra'] = [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
 		AppConfig['cultivo'] = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0];
@@ -321,9 +321,97 @@ $( document ).ready(function() {
             }
         });
 	});
+	
+	$("#btn_pronostico").click(function(){
+		var chart1;
+		var $text = $('<div id="container_pronostico" style="max-height: 510px;"></div>');
+		
+        BootstrapDialog.show({
+        	title: 'Pronóstico',
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+					chart1 = new Highcharts.Chart({
+								chart: {
+						            renderTo: 'container_pronostico',
+						            zoomType: 'xy',
+						            height: 300
+					         	},
+					         	title: {
+							   		text: ''
+							 	},
+					        	credits: {
+					            	enabled: false
+					        	},
+					        	yAxis: [{ // Primary yAxis
+							            labels: {
+							                format: '{value}°C',
+							                style: {
+							                    color: Highcharts.getOptions().colors[1]
+							                }
+							            },
+							            title: {
+							                text: 'Temperatura',
+							                style: {
+							                    color: Highcharts.getOptions().colors[1]
+							                }
+							            }
+							        }, { // Secondary yAxis
+							            title: {
+							                text: 'Precipitación',
+							                style: {
+							                    color: Highcharts.getOptions().colors[0]
+							                }
+							            },
+							            labels: {
+							                format: '{value} l/m2',
+							                style: {
+							                    color: Highcharts.getOptions().colors[0]
+							                }
+							            },
+							            opposite: true
+							        }],
+								xAxis: {
+							    	categories: ['Oct', 'Nov', 'Dic'],
+            						crosshair: true
+								},
+						        tooltip: {
+						            shared: true
+						        },
+						        legend: {
+						            layout: 'vertical',
+						            align: 'left',
+						            x: 120,
+						            verticalAlign: 'top',
+						            y: 100,
+						            floating: true,
+						            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+						        },
+							 	series: [{
+						            name: 'Precipitación',
+						            type: 'column',
+						            yAxis: 1,
+						            data: [ 194.1, 95.6, 54.4],
+						            tooltip: {
+						                valueSuffix: ' l/m2'
+						            }
+						
+						        }, {
+						            name: 'Temperatura',
+						            type: 'spline',
+						            data: [18.3, 13.9, 19.6],
+						            tooltip: {
+						                valueSuffix: '°C'
+						            }
+						        }]
+					      });
+            }
+        });
+	});
 
 	$("#btn_mapa").click(function(){
 		AppMap.AddCapa("Depto","desplegar");
+		$("#btn_mpio").hide();
 	});
 	$("#btn_mpio").click(function(){
 		AppMap.AddCapa("Mpio","capa");
