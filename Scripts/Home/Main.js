@@ -235,7 +235,7 @@ $( document ).ready(function() {
 		var $text = $('<div id="container" style="max-height: 510px;"></div>');
 		
         BootstrapDialog.show({
-        	title: 'Época de Cultivo',
+        	title: txt.tit_epoca_cultivo,
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
@@ -297,12 +297,12 @@ $( document ).ready(function() {
         									shared: true
 								},
 							 	series: [{
-						            name: 'Siembra',
+						            name: txt.msjSiembra,
 						            color: '#8A4B08',
 						            data: AppConfig['siembra']
 						
 						        }, {
-						            name: 'Cosecha',
+						            name: txt.msjCosecha,
 						            color: '#088A08',
 						            data: AppConfig['cultivo']
 						        }]
@@ -327,7 +327,7 @@ $( document ).ready(function() {
 		var $text = $('<div id="container_pronostico" style="max-height: 510px;"></div>');
 		
         BootstrapDialog.show({
-        	title: 'Pronóstico',
+        	title: txt.tit_pronostico,
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
@@ -351,14 +351,14 @@ $( document ).ready(function() {
 							                }
 							            },
 							            title: {
-							                text: 'Temperatura',
+							                text: txt.msjTemperatura,
 							                style: {
 							                    color: Highcharts.getOptions().colors[1]
 							                }
 							            }
 							        }, { // Secondary yAxis
 							            title: {
-							                text: 'Precipitación',
+							                text: txt.msjPrecipitacion,
 							                style: {
 							                    color: Highcharts.getOptions().colors[0]
 							                }
@@ -388,7 +388,7 @@ $( document ).ready(function() {
 						            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 						        },
 							 	series: [{
-						            name: 'Precipitación',
+						            name: txt.msjPrecipitacion,
 						            type: 'column',
 						            yAxis: 1,
 						            data: [ 194.1, 95.6, 54.4],
@@ -397,7 +397,7 @@ $( document ).ready(function() {
 						            }
 						
 						        }, {
-						            name: 'Temperatura',
+						            name: txt.msjTemperatura,
 						            type: 'spline',
 						            data: [18.3, 13.9, 19.6],
 						            tooltip: {

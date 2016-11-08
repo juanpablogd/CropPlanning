@@ -9,6 +9,8 @@ var txt = {
 	tit_opciones: "",
 	tit_mapabase: "",
 	tit_idioma: "",
+	tit_epoca_cultivo:"",
+	tit_pronostico:"",
 	msj_map_calle: "",
 	msj_map_topo: "",
 	msj_map_satelite: "",
@@ -16,6 +18,10 @@ var txt = {
 	msj_longitud: "",
 	msj_norte: "",
 	msj_sur: "",
+	msjSiembra: "",
+	msjCosecha: "",
+	msjPrecipitacion: "",
+	msjTemperatura: "",
 };
 
 var idiomas = {
@@ -29,6 +35,8 @@ var idiomas = {
 		"tit_opciones":"Opciones",
 		"tit_mapabase":"MAPA BASE",
 		"tit_idioma":"IDIOMA",
+		"tit_epoca_cultivo":"Época de cultivo",
+		"tit_pronostico":"Pronóstico",
 		"msj_map_calle":"Calles",
 		"msj_map_topo":"Topográfico",
 		"msj_map_satelite":"Satélite",
@@ -36,6 +44,10 @@ var idiomas = {
 		"msj_longitud":"Longitud   p.e. -74.123456",
 		"msj_norte":"Norte",
 		"msj_sur":"Sur",
+		"msjSiembra": "Siembra",
+		"msjCosecha": "Cosecha",
+		"msjPrecipitacion": "Precipitación",
+		"msjTemperatura": "Temperatura",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -47,6 +59,8 @@ var idiomas = {
 		"tit_opciones":"Options",
 		"tit_mapabase":"BASE MAPS",
 		"tit_idioma":"LANGUAGE",
+		"tit_epoca_cultivo":"Growing season",
+		"tit_pronostico":"Forecast",
 		"msj_map_calle":"Streets",
 		"msj_map_topo":"Topographic",
 		"msj_map_satelite":"Satellite",
@@ -54,6 +68,10 @@ var idiomas = {
 		"msj_longitud":"Longitude   e.g. -74.123456",
 		"msj_norte":"North",
 		"msj_sur":"South",
+		"msjSiembra": "Sowing",
+		"msjCosecha": "Harvest",
+		"msjPrecipitacion": "Precipitation",
+		"msjTemperatura": "Temperature",
 	}
 };
 
