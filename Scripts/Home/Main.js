@@ -136,27 +136,7 @@ $( document ).ready(function() {
 	        BootstrapDialog.show({
 	        	title: txt.tit_clima,
 	        	type: BootstrapDialog.TYPE_SUCCESS,
-	            message: $text,
-	            onshown: function(dialogRef){
-					//verifica la capa Base Activada
-					$("input[name=optMapaB][value="+AppMap.LyrBase._type+"]").attr("checked", "checked");
-					
-	            	//verifica Idioma activado
-	            	$("input[name=optIdioma][value="+txt.Idioma+"]").attr("checked", "checked");
-	            	
-	            	//Evento Mapa Base
-			        $("input[name=optMapaB]").click(function() {
-			        	var tipom = $("input[name=optMapaB]:checked").val();
-			        	AppMap.SetBaseLayer(tipom);
-			        	dialogRef.close();
-			        });
-	            	//Evento Idioma
-			        $("input[name=optIdioma]").click(function() {
-			        	var lenguaje = $("input[name=optIdioma]:checked").val();
-			        	SetIdioma(lenguaje);
-			        	dialogRef.close();
-			        });
-	            }
+	            message: $text
 	        });
 	  			
 	  			
@@ -393,6 +373,108 @@ $( document ).ready(function() {
 					   		'<label for="" class="label-texto cosecha">&nbsp;Finaliza: 04 de Mayo</label>'+
 							'</div>'
 						);
+            }
+        });
+	});
+	
+	AppConfig.Temperatura=function(pos){
+		var lat = pos.coords.latitude;
+		var lon = pos.coords.longitude;
+	    AppMap.ActualizaPunto(lat,lon);
+    	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
+    	AppConfig.sk_sofy.emit('temperatura',{lat:lat, lon:lon}, function (msj){	console.log(msj);
+			var ranges = [
+				            ["Ene", msj.datos[0].min1, msj.datos[0].max1],
+				            ["Feb", msj.datos[0].min2, msj.datos[0].max2],
+				            ["Mar", msj.datos[0].min3, msj.datos[0].max3],
+				            ["Abr", msj.datos[0].min4, msj.datos[0].max4],
+				            ["May", msj.datos[0].min5, msj.datos[0].max5],
+				            ["Jun", msj.datos[0].min6, msj.datos[0].max6],
+				            ["Jul", msj.datos[0].min7, msj.datos[0].max7],
+				            ["Ago", msj.datos[0].min8, msj.datos[0].max8],
+				            ["Sep", msj.datos[0].min9, msj.datos[0].max9],
+				            ["Oct", msj.datos[0].min10, msj.datos[0].max10],
+				            ["Nov", msj.datos[0].min11, msj.datos[0].max11],
+				            ["Dic", msj.datos[0].min12, msj.datos[0].max12]
+				        ],
+				        averages = [
+				            ["Ene", msj.datos[0].med1],
+				            ["Feb", msj.datos[0].med1],
+				            ["Mar", msj.datos[0].med1],
+				            ["Abr", msj.datos[0].med1],
+				            ["May", msj.datos[0].med1],
+				            ["Jun", msj.datos[0].med1],
+				            ["Jul", msj.datos[0].med1],
+				            ["Ago", msj.datos[0].med1],
+				            ["Sep", msj.datos[0].med1],
+				            ["Oct", msj.datos[0].med1],
+				            ["Nov", msj.datos[0].med1],
+				            ["Dic", msj.datos[0].med1]
+				        ];
+            	
+					chart1 = new Highcharts.Chart({
+								chart: {
+						            renderTo: 'container_temperatura',
+						            zoomType: 'xy',
+						            height: 300
+					         	},
+					         	title: {
+							   		text: ''
+							 	},
+					        	credits: {
+					            	enabled: false
+					        	},
+					        	yAxis: {
+						            title: {
+						                text: null
+						            }
+						        },
+								xAxis: {
+						            tickInterval: 1,
+						            labels: {
+						                enabled: true,
+						                formatter: function() { return averages[this.value][0];},
+						            }
+						        },
+						        tooltip: {
+						            crosshairs: true,
+						            shared: true,
+						            valueSuffix: '°C'
+						        },
+						        legend: {},
+							 	series: [{
+						            name: 'Temperatura',
+						            data: averages,
+						            zIndex: 1,
+						            marker: {
+						                fillColor: 'white',
+						                lineWidth: 2,
+						                lineColor: Highcharts.getOptions().colors[0]
+						            }
+						        }, {
+						            name: 'Rango',
+						            data: ranges,
+						            type: 'arearange',
+						            lineWidth: 0,
+						            linkedTo: ':previous',
+						            color: Highcharts.getOptions().colors[0],
+						            fillOpacity: 0.3,
+						            zIndex: 0
+						        }]
+					      });
+    		
+    	});
+	};
+	
+	$("#btn_temperatura").click(function(){
+		var chart1;
+		var $text = $('<div id="container_temperatura" style="max-height: 510px;"></div>');
+        BootstrapDialog.show({
+        	title: txt.tit_pronostico + " Temperatura",
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+            	navigator.geolocation.getCurrentPosition(AppConfig.Temperatura,AppConfig.sinUbicacion);
             }
         });
 	});
