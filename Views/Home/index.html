@@ -37,15 +37,24 @@
 	<button id="btn_depto" type="button" class="btn btn-success btn-xs">Departamento</button>
 	<button id="btn_mpio" type="button" class="btn btn-warning btn-xs">Municipio</button>
 	
-	<div class="row" style="z-index: 2000;position: absolute;bottom: 30px;width: 100%;">
-		<div class="col-xs-1 col-md-1">&nbsp;</div>
+	<div class="row" style="z-index: 2000;position: absolute;bottom: 1px;width: 100%;">
+		<!-- div class="col-xs-1 col-md-1">&nbsp;</div>
 	    <div class="col-xs-2 col-md-2" id="btn_opciones"><img class="img-responsive" src="../../Images/Home/1.png"/></div>
 	    <div class="col-xs-2 col-md-2" id="btn_epoca"><img class="img-responsive" src="../../Images/Home/2.png"/></div>
 	    <div class="col-xs-2 col-md-2" id="btn_mapa"><img id="img3" class="img-responsive" src="../../Images/Home/3.png"/></div>
 	    <div class="col-xs-2 col-md-2" id="btn_pronostico"><img class="img-responsive" src="../../Images/Home/4.png"/></div>
 	    <div class="col-xs-2 col-md-2"><img class="img-responsive" src="../../Images/Home/5.png"/></div>
-	    <div class="col-xs-1 col-md-1">&nbsp;</div>
+	    <div class="col-xs-1 col-md-1">&nbsp;</div -->
+	    <div class="col-xs-4 col-md-4" id="btn_pronostico"><button type="button" class="btn btn-success btn_custom">Prónostico</button></div>
+	    <div class="col-xs-4 col-md-4" id="btn_clima"><button type="button" class="btn btn-success btn_custom">Clima</button></div>
+	    <div class="col-xs-4 col-md-4"><button type="button" class="btn btn-success btn_custom">Temperatura</button></div>
 	</div>
+	<div class="row" style="z-index: 2000;position: absolute;bottom: 36px;width: 100%;">
+	    <div class="col-xs-4 col-md-4" id="btn_opciones"><button type="button" class="btn btn-success btn_custom">Opciones</button></div>
+	    <div class="col-xs-4 col-md-4" id="btn_epoca"><button type="button" class="btn btn-success btn_custom">Cultivo</button></div>
+	    <div class="col-xs-4 col-md-4" id="btn_mapa"><button type="button" class="btn btn-success btn_custom">Mapa</button></div>
+	</div>
+	
    	<!-- Panel Mapa -->
    	<div id="map" class="map">&nbsp;</div>
 
@@ -71,17 +80,18 @@
 	<script src="../../Resources/topojson/topojson.v1.min.js"></script>
 	<script src="../../Resources/turf/turf.min.js"></script>
 	<script src="../../Resources/leaflet/leaflet.js"></script>
-	<!--script src="http://maps.google.com/maps/api/js?key=AIzaSyBKJoVRGZqXty7quRMexjOBrcLEO_VNyGI&v=3&amp;"></script -->
-	<script src="http://maps.google.com/maps/api/js?v=3&amp;"></script >
+	<script src="http://maps.google.com/maps/api/js?key=AIzaSyBKJoVRGZqXty7quRMexjOBrcLEO_VNyGI&v=3&amp;"></script>
+	<!-- script src="http://maps.google.com/maps/api/js?v=3&amp;"></script -->
 	<script src="../../Resources/leaflet/plugins/layer/tile/Google.js"></script>
 	<script src="../../Resources/cleave-js/cleave.min.js"></script>
 	<script src="../../Resources/Highcharts/js/highcharts.js"></script>
 	<script src="../../Resources/waitingDialog/waitingDialog.js"></script>
 	<script src="../../Resources/jquery-ui/jquery-ui.min.js"></script>
+	<script src="../../Resources/socket/socket.io.js"></script>
 	
-	<!-- script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script -->
+
 	<!-- CORDOVA Resources -->
-	<script type="text/javascript" src="../../cordova.js"></script>
+	<!--script type="text/javascript" src="../../cordova.js"></script -->
 	<script type="text/javascript" src="../../Scripts/index.js"></script>
 	<!-- app Resources -->
 	<script src="../../Scripts/Idioma.js"></script>

@@ -9,7 +9,7 @@
             type: "danger", 
             timer : 100,
             delay: 3000,
-            z_index: 1051,
+            z_index: 2051,
             animate: {
                 enter: 'animated bounceIn',
                 exit: 'animated bounceOut'
@@ -26,6 +26,7 @@
             type: "success", 
             timer : 100,
             delay: 3000,
+            z_index: 2051,
             animate: {
                 enter: 'animated bounceIn',
                 exit: 'animated bounceOut'
@@ -41,6 +42,7 @@
             type: "info", 
             timer : 100,
             delay: 3000,
+            z_index: 2051,
             animate: {
                 enter: 'animated bounceIn',
                 exit: 'animated bounceOut'

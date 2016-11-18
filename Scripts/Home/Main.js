@@ -31,6 +31,12 @@ $( document ).ready(function() {
 		        	.appendTo( ul );
 		    };
 	};
+	AppConfig.ConectarSocket=function(){
+	  AppConfig.sk_sofy = io.connect(AppConfig.UrlSocket);
+	  AppConfig.sk_sofy.on('connect', function () {
+	  	console.log("se conecta");
+	  });
+	};
 	AppConfig.ActivarBtn=function(tipo){
 		if(tipo=="Mpio"){
 			$("#btn_mpio").removeClass('btn-warning');
@@ -90,7 +96,80 @@ $( document ).ready(function() {
 		        });
 		$("#terminos_condiciones").html(AppConfig.msj_terminos);
 	};
-	
+	AppConfig.Clima=function(pos){
+		var lat = pos.coords.latitude;
+		var lon = pos.coords.longitude;
+	    AppMap.ActualizaPunto(lat,lon);
+    	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
+		AppConfig.sk_sofy.emit('clima',{lat:lat, lon:lon}, function (msj) {
+	  		console.log(msj);
+	  		if(msj=="0"){
+	  			msj_peligro("Estación NO encontrada!");
+	  		}else{
+	  			
+			var $text = $('<div></div>');
+				$text.append( '<div class="form-group">'+
+								'<div class="row">'+
+									'<div class="col-xs-12" style="font-size: 60px;text-align: center;">'+
+										msj.temp_c+
+									' °C </div>'+
+								'</div>'+
+								'<div class="row" style="font-size: 22px;">'+
+									'<div class="col-xs-4">'+
+										"Máxima: "+
+									'</div>'+
+									'<div class="col-xs-8">'+
+										msj.temp_max + " °C " + msj.temp_max_hora+
+									'</div>'+
+								'</div>'+
+								'<div class="row"  style="font-size: 22px;">'+
+									'<div class="col-xs-4">'+
+										"Mínima: "+
+									'</div>'+
+									'<div class="col-xs-8">'+
+										msj.temp_min + " °C " + msj.temp_min_hora+
+									'</div>'+
+								'</div>'+
+							'</div>'
+							);
+			
+	        BootstrapDialog.show({
+	        	title: txt.tit_clima,
+	        	type: BootstrapDialog.TYPE_SUCCESS,
+	            message: $text,
+	            onshown: function(dialogRef){
+					//verifica la capa Base Activada
+					$("input[name=optMapaB][value="+AppMap.LyrBase._type+"]").attr("checked", "checked");
+					
+	            	//verifica Idioma activado
+	            	$("input[name=optIdioma][value="+txt.Idioma+"]").attr("checked", "checked");
+	            	
+	            	//Evento Mapa Base
+			        $("input[name=optMapaB]").click(function() {
+			        	var tipom = $("input[name=optMapaB]:checked").val();
+			        	AppMap.SetBaseLayer(tipom);
+			        	dialogRef.close();
+			        });
+	            	//Evento Idioma
+			        $("input[name=optIdioma]").click(function() {
+			        	var lenguaje = $("input[name=optIdioma]:checked").val();
+			        	SetIdioma(lenguaje);
+			        	dialogRef.close();
+			        });
+	            }
+	        });
+	  			
+	  			
+	  		};
+	  	});
+	};
+	AppConfig.sinUbicacion=function(){
+		msj_peligro("Ubicación NO encontrada!");
+	};
+	$("#btn_clima").click(function(){
+		navigator.geolocation.getCurrentPosition(AppConfig.Clima,AppConfig.sinUbicacion);
+	});	
+
 	$("#btn_marker").click(function(){
 		var $text = $('<div class="container"></div>');
 			$text.append(
@@ -168,11 +247,9 @@ $( document ).ready(function() {
 				
             }
         });
-        
-
 	});
 	$("#btn_miubicacion").click(function() {	console.log("Ubicar");
-		navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada);
+		navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada,AppConfig.sinUbicacion);
 	});
 	
 	$("#btn_opciones").click(function(){
@@ -226,8 +303,6 @@ $( document ).ready(function() {
 		        });
             }
         });
-        
-
 	});
 	
 	$("#btn_epoca").click(function(){
@@ -427,6 +502,7 @@ $( document ).ready(function() {
 	AppConfig.CargaDataCultivo();
 	AppConfig.MostarTerminos();		
 	AppConfig.Inicial();
+	AppConfig.ConectarSocket();
 	console.log("CORREGIR!!! - MOSTRAR MAPA");	//$("#map").hide();
 	
 });

@@ -108,3 +108,7 @@ color: #0BA800;
     z-index: 1037;
     display:none;
 }
+
+.btn_custom {
+    width: 125% !important;
+}
