@@ -23,6 +23,22 @@ var txt = {
 	msjCosecha: "",
 	msjPrecipitacion: "",
 	msjTemperatura: "",
+	msjEpoca: "",
+	msjMapa: "",
+	msjProduccion: "",
+	msjMax: "",
+	msjMin: "",
+	msjRiegoSuper: "",
+	msjRiegoProd: "",
+	msjRiegoRend: "",
+	msjRiegoMin: "",
+	msjRiegoMax: "",
+	msjSecanoSuper: "",
+	msjSecanoProd: "",
+	msjSecanoRend: "",
+	msjSecanoMin: "",
+	msjSecanoMax: "",
+	msjSinInfo: "",
 };
 
 var idiomas = {
@@ -38,7 +54,7 @@ var idiomas = {
 		"tit_idioma":"IDIOMA",
 		"tit_epoca_cultivo":"Época de cultivo",
 		"tit_pronostico":"Pronóstico",
-		"tit_clima":"CLIMA",
+		"tit_clima":"Clima",
 		"msj_map_calle":"Calles",
 		"msj_map_topo":"Topográfico",
 		"msj_map_satelite":"Satélite",
@@ -50,6 +66,22 @@ var idiomas = {
 		"msjCosecha": "Cosecha",
 		"msjPrecipitacion": "Precipitación",
 		"msjTemperatura": "Temperatura",
+		"msjEpoca": "Cultivo",
+		"msjMapa": "Mapa",
+		"msjProduccion": "Producción",
+		"msjMax": "Máximo",
+		"msjMin": "Mínimo",
+		"msjRiegoSuper": "Riego Superficie",
+		"msjRiegoProd": "Riego Producción",
+		"msjRiegoRend": "Riego Rendimiento",
+		"msjRiegoMin": "Riego Mínimo",
+		"msjRiegoMax": "Riego Máximo",
+		"msjSecanoSuper": "Secano Superficie",
+		"msjSecanoProd": "Secano Producción",
+		"msjSecanoRend": "Secano Rendimiento",
+		"msjSecanoMin": "Secano Mínimo",
+		"msjSecanoMax": "Secano Máximo",
+		"msjSinInfo": "SIN INFORMACIÓN",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -75,6 +107,22 @@ var idiomas = {
 		"msjCosecha": "Harvest",
 		"msjPrecipitacion": "Precipitation",
 		"msjTemperatura": "Temperature",
+		"msjEpoca": "Season",
+		"msjMapa": "Map",
+		"msjProduccion": "Production",
+		"msjMax": "Maximum",
+		"msjMin": "Minimum",
+		"msjRiegoSuper": "Irrigation Surface",
+		"msjRiegoProd": "Irrigation Production",
+		"msjRiegoRend": "Irrigation Performance",
+		"msjRiegoMin": "Irrigation Minimum ",
+		"msjRiegoMax": "Irrigation Maximum",
+		"msjSecanoSuper": "Dry farming Surface",
+		"msjSecanoProd": "Dry farming Production",
+		"msjSecanoRend": "Dry farming Performance",
+		"msjSecanoMin": "Dry farming Minimum",
+		"msjSecanoMax": "Dry farming Maximum",
+		"msjSinInfo": "NO DATA",
 	}
 };
 
@@ -84,8 +132,25 @@ function SetIdioma(leng){ console.log("Cambio de idioma:" +leng);
 		txt[key] = value;		//console.log ( key + ": " + value );
 	});
 	$("#lugares").attr("placeholder", txt.ph_buscasitio);
-/*	$.each( txt, function( key, value ) {
-	  console.log ( key + ": " + value );
-	});	*/	
+	$("#btn_opciones").find('button').html(txt.tit_opciones);
+	$("#btn_epoca").find('button').html(txt.msjEpoca);
+	$("#btn_mapa").find('button').html(txt.msjMapa);
+	$("#btn_pronostico").find('button').html(txt.tit_pronostico);
+	$("#btn_clima").find('button').html(txt.tit_clima);
+	$("#btn_temperatura").find('button').html(txt.msjTemperatura);
+	$(".tit_popup").html(txt.msjProduccion);
+	$(".msjRiegoSuper").html(txt.msjRiegoSuper);
+	$(".msjRiegoProd").html(txt.msjRiegoProd);
+	$(".msjRiegoRend").html(txt.msjRiegoRend);
+	$(".msjRiegoMin").html(txt.msjRiegoMin);
+	$(".msjRiegoMax").html(txt.msjRiegoMax);
+	$(".msjSecanoSuper").html(txt.msjSecanoSuper);
+	$(".msjSecanoProd").html(txt.msjSecanoProd);
+	$(".msjSecanoRend").html(txt.msjSecanoRend);
+	$(".msjSecanoMin").html(txt.msjSecanoMin);
+	$(".msjSecanoMax").html(txt.msjSecanoMax);
+	$(".msjSinInfo").html(txt.msjSinInfo);
+/*	$.each( txt, function( key, value ) {console.log ( key + ": " + value );});	*/	
 };
+
 

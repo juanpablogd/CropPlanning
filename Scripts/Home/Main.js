@@ -116,7 +116,7 @@ $( document ).ready(function() {
 								'</div>'+
 								'<div class="row" style="font-size: 22px;">'+
 									'<div class="col-xs-4">'+
-										"Máxima: "+
+										txt.msjMax+": "+
 									'</div>'+
 									'<div class="col-xs-8">'+
 										msj.temp_max + " °C " + msj.temp_max_hora+
@@ -124,7 +124,7 @@ $( document ).ready(function() {
 								'</div>'+
 								'<div class="row"  style="font-size: 22px;">'+
 									'<div class="col-xs-4">'+
-										"Mínima: "+
+										txt.msjMin+": "+
 									'</div>'+
 									'<div class="col-xs-8">'+
 										msj.temp_min + " °C " + msj.temp_min_hora+
@@ -443,7 +443,7 @@ $( document ).ready(function() {
 						        },
 						        legend: {},
 							 	series: [{
-						            name: 'Temperatura',
+						            name: txt.msjTemperatura,
 						            data: averages,
 						            zIndex: 1,
 						            marker: {
@@ -470,7 +470,7 @@ $( document ).ready(function() {
 		var chart1;
 		var $text = $('<div id="container_temperatura" style="max-height: 510px;"></div>');
         BootstrapDialog.show({
-        	title: txt.tit_pronostico + " Temperatura",
+        	title: txt.msjTemperatura,
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
@@ -569,6 +569,7 @@ $( document ).ready(function() {
 	$("#btn_mapa").click(function(){
 		AppMap.AddCapa("Depto","desplegar");
 		$("#btn_mpio").hide();
+		$("#btn_depto").hide();
 	});
 	$("#btn_mpio").click(function(){
 		AppMap.AddCapa("Mpio","capa");

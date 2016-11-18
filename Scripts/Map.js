@@ -30,26 +30,27 @@ var AppMap = {
 		var texto;
 		if(AppMap.dataProdDepto[feature.properties.id]===undefined){
 			texto = '<div class="popupstyle">' +
-							'<b> SIN INFORMACIÓN<br></b>' +
+							'<b class="msjSinInfo">'+txt.msjSinInfo+'<br></b>' +
 					'</div>';
 		}else{
 			texto = '<div class="popupstyle">' +
-							'<small>Riego Superficie:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_h+ ' Ha.<br></b>' +
-							'<small>Riego Producción:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t+ ' Ton.<br></b>' +
-							'<small>Riego Rendimiento:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t_h+ ' Ton/Ha.<br></b>' +
-							'<small>Riego Mímino:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_min_t+ ' Ton.<br></b>' +
-							'<small>Riego Máximo:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_max_t+ ' Ton.<br></b>' +
-							'<small>Secano Superficie:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_h+ ' Ha.<br></b>' +
-							'<small>Secano Producción:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_t+ ' Ton.<br></b>' +
-							'<small>Secano Rendimiento:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_t_h+ ' Ton/Ha.<br></b>' +
-							'<small>Secano Mímino:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_min_t+ ' Ton.<br></b>' +
-							'<small>Secano Máximo:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_max_t+ ' Ton.<br></b>' +
+							'<b> ' +AppMap.dataProdDepto[feature.properties.id][0].depto+ ' <br></b>' +
+							'<small class="msjRiegoSuper">'+txt.msjRiegoSuper+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_h+ ' Ha.<br></b>' +
+							'<small class="msjRiegoProd">'+txt.msjRiegoProd+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t+ ' Ton.<br></b>' +
+							'<small class="msjRiegoRend">'+txt.msjRiegoRend+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t_h+ ' Ton/Ha.<br></b>' +
+							'<small class="msjRiegoMin">'+txt.msjRiegoMin+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_min_t+ ' Ton.<br></b>' +
+							'<small class="msjRiegoMax">'+txt.msjRiegoMax+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_max_t+ ' Ton.<br></b>' +
+							'<small class="msjSecanoSuper">'+txt.msjSecanoSuper+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_h+ ' Ha.<br></b>' +
+							'<small class="msjSecanoProd">'+txt.msjSecanoProd+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_t+ ' Ton.<br></b>' +
+							'<small class="msjSecanoRend">'+txt.msjSecanoRend+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_t_h+ ' Ton/Ha.<br></b>' +
+							'<small class="msjSecanoMin">'+txt.msjSecanoMin+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_min_t+ ' Ton.<br></b>' +
+							'<small class="msjSecanoMax">'+txt.msjSecanoMax+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_max_t+ ' Ton.<br></b>' +
 					'</div>';
 		}
-		
+
 		var popupContent = '<div class="panel panel-primary">' +
-							'<div class="panel-heading">'+
-	                        	"Producción Arroz"+
+							'<div class="panel-heading tit_popup">'+
+	                        	txt.msjProduccion+
 	                        '</div>' +
 	                            texto +
 	                        '</div>' +
@@ -80,14 +81,14 @@ var AppMap = {
 		this.marker.setLatLng([lat, lon]);
 	},
 	AddCapa: function(tipo,accion){ //console.log(geojsonFeature);
-		if(accion=="desplegar"){
+		if(accion=="desplegar"){	//Apagar Capa
 			if(this.map.hasLayer(this.LyrMpioDepto)){
 				this.map.removeLayer(this.LyrMpioDepto);
 				$("#btn_mpio").hide();
 				$("#btn_depto").hide();
-				$("#img3").css({'border':'', "border-radius": "0px", "margin":"0px"});
+				$("#btn_mapa").find('button').removeClass("btn-warning").addClass("btn-success");
 			}else{
-				if(tipo=="Mpio"){
+				if(tipo=="Mpio"){	//Encender Capa
 					this.LyrMpioDepto = L.geoJson(geojsonFeatureMpio,{
 													onEachFeature: this.onEachFeature
 				          				}).addTo(this.map);
@@ -102,7 +103,8 @@ var AppMap = {
 			    this.LyrMpioDepto.setZIndex(2);
 			    $("#btn_mpio").show();
 				$("#btn_depto").show();
-				$("#img3").css({"border":"solid green 4px", "border-radius": "22px", "margin":"-4px"});
+				$("#btn_mapa").find('button').removeClass("btn-success").addClass("btn-warning");
+				this.map.setZoom(6);
 			}
 		} else if(accion=="capa"){
 				if(tipo=="Mpio" && AppMap.tipoCapa != tipo){	console.log("comienza carga");
