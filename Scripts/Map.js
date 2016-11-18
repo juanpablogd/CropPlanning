@@ -8,25 +8,50 @@ var AppMap = {
 	sidebar:'',
 	escalaExtend:0.05,
 	tipoCapa: '',
+	dataProdDepto:'',
 	gmaps: {
 		TERRAIN: new L.Google('TERRAIN'),
 		ROADMAP: new L.Google('ROADMAP'),
 		HYBRID: new L.Google('HYBRID'),		
 	},
+	loadDataDepto:function(){
+		AppConfig.sk_sofy.emit('proDepto', null, function (msj){	//console.log(msj);
+			AppMap.dataProdDepto = msj; 
+		});
+	},
 	InitMap: function(){ 		console.log("Ini");
+		AppMap.loadDataDepto();
 		map=L.map('map').setView(this.center, this.zoom);
 		map.zoomControl.setPosition('topright');
 		return map;
 	},
 	onEachFeature:function(feature, layer){
+		//console.log(feature.properties.id);//console.log(AppMap.dataProdDepto[feature.properties.id]);
+		var texto;
+		if(AppMap.dataProdDepto[feature.properties.id]===undefined){
+			texto = '<div class="popupstyle">' +
+							'<b> SIN INFORMACIÓN<br></b>' +
+					'</div>';
+		}else{
+			texto = '<div class="popupstyle">' +
+							'<small>Riego Superficie:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_h+ ' Ha.<br></b>' +
+							'<small>Riego Producción:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t+ ' Ton.<br></b>' +
+							'<small>Riego Rendimiento:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t_h+ ' Ton/Ha.<br></b>' +
+							'<small>Riego Mímino:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_min_t+ ' Ton.<br></b>' +
+							'<small>Riego Máximo:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_max_t+ ' Ton.<br></b>' +
+							'<small>Secano Superficie:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_h+ ' Ha.<br></b>' +
+							'<small>Secano Producción:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_t+ ' Ton.<br></b>' +
+							'<small>Secano Rendimiento:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_t_h+ ' Ton/Ha.<br></b>' +
+							'<small>Secano Mímino:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_min_t+ ' Ton.<br></b>' +
+							'<small>Secano Máximo:</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].sec_max_t+ ' Ton.<br></b>' +
+					'</div>';
+		}
+		
 		var popupContent = '<div class="panel panel-primary">' +
 							'<div class="panel-heading">'+
 	                        	"Producción Arroz"+
 	                        '</div>' +
-	                            '<div class="popupstyle">' +
-//	                            	'<b>' + feature.properties.id +'</b><br/>'+
-									'<small>Toneladas:</small> <b> ' +feature.properties.ton + '<br></b>' +
-	                            '</div>' +
+	                            texto +
 	                        '</div>' +
 	                    '</div>';
 	

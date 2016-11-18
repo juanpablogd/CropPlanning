@@ -577,6 +577,7 @@ $( document ).ready(function() {
 		AppMap.AddCapa("Depto","capa");
 	});
 	
+	AppConfig.ConectarSocket();	
 	SetIdioma("ES");
     AppMap.map=AppMap.InitMap();
 	AppMap.SetBaseLayer("calle");
@@ -584,7 +585,6 @@ $( document ).ready(function() {
 	AppConfig.CargaDataCultivo();
 	AppConfig.MostarTerminos();		
 	AppConfig.Inicial();
-	AppConfig.ConectarSocket();
 	console.log("CORREGIR!!! - MOSTRAR MAPA");	//$("#map").hide();
 	
 });
