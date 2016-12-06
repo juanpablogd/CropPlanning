@@ -90,7 +90,7 @@ $( document ).ready(function() {
 		                label: txt.btn_cancelar,
 		                action: function(dialog) {
 		                    console.log('Cerrar');
-		                    dialog.close();
+		                    navigator.app.exitApp();
 		                }
 		            }]
 		        });
@@ -141,14 +141,21 @@ $( document ).ready(function() {
 	  			
 	  			
 	  		};
-	  	});
+	  }); 
 	};
 	AppConfig.sinUbicacion=function(){
 		msj_peligro("Ubicación NO encontrada!");
+		cordova.dialogGPS("Su GPS está apagado, Esta aplicación requiere que este activo para todas sus funciones.",//message
+                    "Use GPS, con wifi o Red celular.",//description
+                    function(buttonIndex){//callback
+                      switch(buttonIndex) {
+                        case 0: break;//cancel
+                        case 1: break;//neutro option
+                        case 2: break;//user go to configuration
+                      }},
+                      "Por favor encienda su GPS",//title
+                      ["Cancelar","Luego","Ir"]);//buttons
 	};
-	$("#btn_clima").click(function(){
-		navigator.geolocation.getCurrentPosition(AppConfig.Clima,AppConfig.sinUbicacion);
-	});	
 
 	$("#btn_marker").click(function(){
 		var $text = $('<div class="container"></div>');
@@ -229,7 +236,7 @@ $( document ).ready(function() {
         });
 	});
 	$("#btn_miubicacion").click(function() {	console.log("Ubicar");
-		navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada,AppConfig.sinUbicacion);
+		navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada,AppConfig.sinUbicacion,AppConfig.gpsOptions);
 	});
 	
 	$("#btn_opciones").click(function(){
@@ -285,7 +292,83 @@ $( document ).ready(function() {
         });
 	});
 	
-	$("#btn_epoca").click(function(){
+	$("#btn_opcProduccion").click(function(){
+		var $text = $('<div></div>');
+			$text.append( '<div class="form-group">'+
+					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;'+txt.msjProduccion+'</label>'+
+					   		'<div class="radio">'+
+							  '<label><input type="radio" name="optProd" value="cultivo">'+txt.tit_epoca_cultivo+'</label>'+
+							'</div>'+
+							  '<label><input type="checkbox" id="opMapa" value="opMapa">&nbsp;'+txt.msjMapa+'</label>'+
+
+						'</div>'
+						);
+		
+        BootstrapDialog.show({
+        	title: txt.msjProduccion,
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+            	//Activa Check si el mapa esta activo
+            	if(AppMap.map.hasLayer(AppMap.LyrMpioDepto) || AppMap.map.hasLayer(AppMap.LyrMpioDepto)){
+            		$('#opMapa').prop('checked', true);
+            	}
+            	//Click Opcion Producción
+		        $("input[name=optProd]").click(function() {
+		        	var optProd = $("input[name=optProd]:checked").val();
+		        	if(optProd == "cultivo") AppConfig.opcEpocaCultivo(); 
+		        	dialogRef.close();
+		        });
+		        //Click opción Mapa
+		        $('#opMapa').click(function(){
+	        		AppMap.AddCapa("Depto","desplegar");
+					$("#btn_mpio").hide();
+					$("#btn_depto").hide();
+					dialogRef.close();
+		        });
+            }
+        });
+	});
+	
+	$("#btn_opcClima").click(function(){
+		var $text = $('<div></div>');
+			$text.append( '<div class="form-group">'+
+					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;'+txt.tit_clima+'</label>'+
+					   		'<div class="radio">'+
+							  '<label><input type="radio" name="optClima" value="optTiempo">'+txt.tit_clima+'</label>'+
+							'</div>'+
+							'<div class="radio">'+
+							  '<label><input type="radio" name="optClima" value="optPronostico">'+txt.tit_pronostico+'</label>'+
+							'</div>'+
+							'<div class="radio">'+
+							  '<label><input type="radio" name="optClima" value="optClimograma">'+txt.msjclimograma+'</label>'+
+							'</div>'+
+						'</div>'
+						);
+		
+        BootstrapDialog.show({
+        	title: txt.tit_clima,
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+            	//Evento Mapa Base
+		        $("input[name=optClima]").click(function() {
+		        	var optClima = $("input[name=optClima]:checked").val();
+		        	if(optClima=="optTiempo"){
+		        		navigator.geolocation.getCurrentPosition(AppConfig.Clima,AppConfig.sinUbicacion,AppConfig.gpsOptions);
+		        	}else if(optClima=="optPronostico"){
+		        		AppConfig.opcPronostico();
+		        	}else if(optClima=="optClimograma"){
+						AppConfig.opcTemperatura();		        		
+		        	}
+		        	dialogRef.close();
+		        });
+
+            }
+        });
+	});
+	
+	AppConfig.opcEpocaCultivo=function(){
 		var chart1;
 		var $text = $('<div id="container" style="max-height: 510px;"></div>');
 		
@@ -375,7 +458,7 @@ $( document ).ready(function() {
 						);
             }
         });
-	});
+	};
 	
 	AppConfig.Temperatura=function(pos){
 		var lat = pos.coords.latitude;
@@ -399,17 +482,17 @@ $( document ).ready(function() {
 				        ],
 				        averages = [
 				            ["Ene", msj.datos[0].med1],
-				            ["Feb", msj.datos[0].med1],
-				            ["Mar", msj.datos[0].med1],
-				            ["Abr", msj.datos[0].med1],
-				            ["May", msj.datos[0].med1],
-				            ["Jun", msj.datos[0].med1],
-				            ["Jul", msj.datos[0].med1],
-				            ["Ago", msj.datos[0].med1],
-				            ["Sep", msj.datos[0].med1],
-				            ["Oct", msj.datos[0].med1],
-				            ["Nov", msj.datos[0].med1],
-				            ["Dic", msj.datos[0].med1]
+				            ["Feb", msj.datos[0].med2],
+				            ["Mar", msj.datos[0].med3],
+				            ["Abr", msj.datos[0].med4],
+				            ["May", msj.datos[0].med5],
+				            ["Jun", msj.datos[0].med6],
+				            ["Jul", msj.datos[0].med7],
+				            ["Ago", msj.datos[0].med8],
+				            ["Sep", msj.datos[0].med9],
+				            ["Oct", msj.datos[0].med10],
+				            ["Nov", msj.datos[0].med11],
+				            ["Dic", msj.datos[0].med12]
 				        ];
             	
 					chart1 = new Highcharts.Chart({
@@ -466,7 +549,7 @@ $( document ).ready(function() {
     	});
 	};
 	
-	$("#btn_temperatura").click(function(){
+	AppConfig.opcTemperatura=function(){
 		var chart1;
 		var $text = $('<div id="container_temperatura" style="max-height: 510px;"></div>');
         BootstrapDialog.show({
@@ -474,12 +557,12 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
-            	navigator.geolocation.getCurrentPosition(AppConfig.Temperatura,AppConfig.sinUbicacion);
+            	navigator.geolocation.getCurrentPosition(AppConfig.Temperatura,AppConfig.sinUbicacion,AppConfig.gpsOptions);
             }
-        });
-	});
-	
-	$("#btn_pronostico").click(function(){
+        });		
+	};
+	AppConfig.opcPronostico=function(){
+
 		var chart1;
 		var $text = $('<div id="container_pronostico" style="max-height: 510px;"></div>');
 		
@@ -563,14 +646,9 @@ $( document ).ready(function() {
 						        }]
 					      });
             }
-        });
-	});
-
-	$("#btn_mapa").click(function(){
-		AppMap.AddCapa("Depto","desplegar");
-		$("#btn_mpio").hide();
-		$("#btn_depto").hide();
-	});
+        });	
+	};
+	
 	$("#btn_mpio").click(function(){
 		AppMap.AddCapa("Mpio","capa");
 	});

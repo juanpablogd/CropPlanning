@@ -39,6 +39,7 @@ var txt = {
 	msjSecanoMin: "",
 	msjSecanoMax: "",
 	msjSinInfo: "",
+	msjclimograma: "",
 };
 
 var idiomas = {
@@ -82,6 +83,7 @@ var idiomas = {
 		"msjSecanoMin": "Secano Mínimo",
 		"msjSecanoMax": "Secano Máximo",
 		"msjSinInfo": "SIN INFORMACIÓN",
+		"msjclimograma": "Climograma",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -123,6 +125,7 @@ var idiomas = {
 		"msjSecanoMin": "Dry farming Minimum",
 		"msjSecanoMax": "Dry farming Maximum",
 		"msjSinInfo": "NO DATA",
+		"msjclimograma": "Weather graphic",
 	}
 };
 
