@@ -8,8 +8,10 @@ var AppMap = {
 	sidebar:'',
 	escalaExtend:0.05,
 	tipoCapa: '',
+	tipoMapa: 'riego_h',
 	dataProdDepto:'',
-	tituloLeyenda: '',
+	actualizaTitulo: '',
+	tituloLeyenda: 'Producción ',
 	legend:L.control({ position: 'bottomright' }),
 	limitesLeyenda:[0,2000,10000,20000],
 	gmaps: {
@@ -39,20 +41,21 @@ var AppMap = {
 	    return breaks;
 	},
 	getColor:function(d){
-	    return  d >= this.limitesLeyenda[4] ? '#FD8D3C' :
-	            d >= this.limitesLeyenda[3] ? '#FEB24C' :
-	            d >= this.limitesLeyenda[2] ? '#FED976' :
-	            d >= this.limitesLeyenda[1] ? '#FFEDA0' :
-	              'rgba(255,255,255,0.8)';
+	    return  d >= this.limitesLeyenda[4] ? '#332100' :
+	            d >= this.limitesLeyenda[3] ? '#996300' :
+	            d >= this.limitesLeyenda[2] ? '#cc8500' :
+	            d >= this.limitesLeyenda[1] ? '#ffc966' :
+	              'rgba(255,255,255,0.9)';
 	},
 	loadDataDepto:function(){
-		AppConfig.sk_sofy.emit('proDepto', null, function (msj){	//console.log(msj);
+		AppConfig.sk_sofy.emit('proDepto', null, function (msj){	console.log(msj);
 			AppMap.dataProdDepto = msj;
-			//Actualiza GeoJson 	var j=0;
+			//Actualiza GeoJson
 			$.each(geojsonFeatureDepto.features, function (index, value) {//console.log(value);
 				if(AppMap.dataProdDepto[value.properties.id] != undefined){
 					value.properties.riego_h = AppMap.dataProdDepto[value.properties.id][0].riego_h;
-				}	//j++;
+					value.properties.sec_h = AppMap.dataProdDepto[value.properties.id][0].sec_h;
+				}
 			});		//console.log(j);
 		});
 	},
@@ -70,8 +73,13 @@ var AppMap = {
 							'<b class="msjSinInfo">'+txt.msjSinInfo+'<br></b>' +
 					'</div>';
 		}else{
+			if(AppMap.actualizaTitulo==false){	console.log("Actualiza Título");
+				var nomTipo = "Riego"; if(AppMap.tipoMapa=="sec_h") nomTipo = "Secano";
+				$("#tituloMapa").show().html('Producción '+nomTipo+' año '+AppMap.dataProdDepto[feature.properties.id][0].agno);
+				AppMap.actualizaTitulo = true;
+			}
 			texto = '<div class="popupstyle">' +
-							'<b> ' +AppMap.dataProdDepto[feature.properties.id][0].depto+ ' <br></b>' +
+							'<b> ' +AppMap.dataProdDepto[feature.properties.id][0].depto+ ' - Semestre: '+AppMap.dataProdDepto[feature.properties.id][0].sem+' <br></b>' +
 							'<small class="msjRiegoSuper">'+txt.msjRiegoSuper+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_h+ ' Ha.<br></b>' +
 							'<small class="msjRiegoProd">'+txt.msjRiegoProd+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t+ ' Ton.<br></b>' +
 							'<small class="msjRiegoRend">'+txt.msjRiegoRend+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t_h+ ' Ton/Ha.<br></b>' +
@@ -104,7 +112,7 @@ var AppMap = {
 				color: 'white',
 				dashArray: '3',
 				fillOpacity: 0.7,
-				fillColor: AppMap.getColor(feature.properties['riego_h'])
+				fillColor: AppMap.getColor(feature.properties[AppMap.tipoMapa])
 			};
 	},
 	SetBaseLayer: function(tipo){ //console.log("Add Base");
@@ -127,10 +135,12 @@ var AppMap = {
 	},
 	AddCapa: function(tipo,accion){ //console.log(geojsonFeature);
 		if(accion=="desplegar"){	//Apagar Capa
-			if(this.map.hasLayer(this.LyrMpioDepto)){
-				this.map.removeLayer(this.LyrMpioDepto);
+			if(this.map.hasLayer(this.LyrMpioDepto)) this.map.removeLayer(this.LyrMpioDepto);
+			if($("#opMapa").is(":checked")==false){
 				$("#btn_mpio").hide();
 				$("#btn_depto").hide();
+				$("#tituloMapa").hide();
+				$(".legend").hide();
 				$("#btn_mapa").find('button').removeClass("btn-warning").addClass("btn-success");
 			}else{
 				if(tipo=="Mpio"){	//Encender Capa
@@ -139,11 +149,13 @@ var AppMap = {
 				          				}).addTo(this.map);
 				    AppMap.tipoCapa='Mpio';			
 				}else{
-					this.limitesLeyenda = this.getBreaks(geojsonFeatureDepto,'riego_h',4);	console.log(this.limitesLeyenda);
+					this.limitesLeyenda = this.getBreaks(geojsonFeatureDepto,AppMap.tipoMapa,4);	console.log(this.limitesLeyenda);
+					AppMap.actualizaTitulo = false;		//Set False para que actualice el tituloMapa
 					this.LyrMpioDepto = L.geoJson(geojsonFeatureDepto,{ style: this.setStyle,
 													onEachFeature: this.onEachFeature
 				          				}).addTo(this.map);
 				   	AppMap.tipoCapa='Depto';
+				   	this.AddLeyenda(this.map);
 				   	
 				}
 				AppConfig.ActivarBtn(AppMap.tipoCapa);
@@ -175,33 +187,31 @@ var AppMap = {
 	},
 	AddLeyenda: function(map){
 		 this.legend.onAdd = function (map) {
-			  
+			console.log("Entra a Leyenda");	  
 			    var div = L.DomUtil.create('div', 'info legend'),
 			       
 			       labels = [];
 			
 			    // loop through our density intervals and generate a label with a colored square for each interval
-			    div.innerHTML += '<b>Valor ' + this.tituloLeyenda + '</b> <br>En Pesos por Millon($M) <hr>';
+			    div.innerHTML += '<b> ' + AppMap.tituloLeyenda + '</b> <br>En Hectáreas(Has) <br>';
 			
-			    for (var i = 0; i < limitesLeyenda.length; i++) {
+			    for (var i = 0; i < AppMap.limitesLeyenda.length; i++) { 	 	//console.log(i);
 			        if (i == 0) {
+			            div.innerHTML += '<i style="background:rgba(255,255,255,0.8)"></i> ' +
+			            numeral(AppMap.limitesLeyenda[i]).format('0,0')  + '&ndash;' + '<br>';
+			        } else if ((i+1) == AppMap.limitesLeyenda.length) {
 			            div.innerHTML +=
-			            '<i style="background:rgba(255,255,255,0.8)"></i> ' +
-			            numeral(limitesLeyenda[i] / 1000000).format('$0,0') + config.mill + '&ndash;' + '<br>';
-			        } else if ((i+1) == limitesLeyenda.length) {
-			            div.innerHTML +=
-			            '<i style="background:' + getColor(limitesLeyenda[i] + 1) + '"></i> ' +  numeral(limitesLeyenda[i]/1000000).format('$0,0')+config.mill +  ' +  <br>';
+			            '<i style="background:' + AppMap.getColor(AppMap.limitesLeyenda[i] + 1) + '"></i> ' +  numeral(AppMap.limitesLeyenda[i]).format('0,0') +  ' +  <br>';
 			        } else {
 			            div.innerHTML +=
-			            '<i style="background:' + getColor(limitesLeyenda[i] + 1) + '"></i> ' +
-			            numeral(limitesLeyenda[i]/1000000).format('$0,0') + config.mill + (numeral(limitesLeyenda[i + 1]).format('$0,0') ? '&ndash;' + numeral(limitesLeyenda[i + 1] / 1000000).format('$0,0') + config.mill + '<br>' : '+');
+			            '<i style="background:' + AppMap.getColor(AppMap.limitesLeyenda[i] + 1) + '"></i> ' +
+			            numeral(AppMap.limitesLeyenda[i]).format('0,0') + (numeral(AppMap.limitesLeyenda[i + 1]).format('0,0') ? '&ndash;' + numeral(AppMap.limitesLeyenda[i + 1]).format('0,0') + '<br>' : '+');
 			        }
 			    }
-			    div.innerHTML += '<b>Convenciones </b><br>';
-			
-			    div.innerHTML += '<i ><img src="' + prefijo + 'images/leyend/municipioSelecionado.png"  height="17px"></i>Municipio Seleccionado<br>';
+			    div.innerHTML += '<h4>&ndash;</h4>'; 
 			    return div;
 			};
+			this.legend.addTo(map);
 	},
 	SetExtend: function(latMin, latMax, lonMin, lonMax){ 	//console.log(latMin+' '+ latMax+' '+ lonMin+' '+ lonMax);
 		var southWest = L.latLng(latMin, lonMin),

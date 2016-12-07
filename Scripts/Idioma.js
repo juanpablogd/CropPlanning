@@ -12,6 +12,8 @@ var txt = {
 	tit_epoca_cultivo:"",
 	tit_pronostico:"",
 	tit_clima:"",
+	tit_tiempo:"",
+	tit_tiempoAtmosferico:"",
 	msj_map_calle: "",
 	msj_map_topo: "",
 	msj_map_satelite: "",
@@ -40,6 +42,8 @@ var txt = {
 	msjSecanoMax: "",
 	msjSinInfo: "",
 	msjclimograma: "",
+	msjMicultivo: "",
+	msjAddcultivo: "",
 };
 
 var idiomas = {
@@ -56,6 +60,8 @@ var idiomas = {
 		"tit_epoca_cultivo":"Época de cultivo",
 		"tit_pronostico":"Pronóstico",
 		"tit_clima":"Clima",
+		"tit_tiempo":"Tiempo",
+		"tit_tiempoAtmosferico":"Tiempo Atmosférico",
 		"msj_map_calle":"Calles",
 		"msj_map_topo":"Topográfico",
 		"msj_map_satelite":"Satélite",
@@ -84,6 +90,8 @@ var idiomas = {
 		"msjSecanoMax": "Secano Máximo",
 		"msjSinInfo": "SIN INFORMACIÓN",
 		"msjclimograma": "Climograma",
+		"msjMicultivo": "Mi Cultivo",
+		"msjAddcultivo": "Adicionar Cultivo",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -98,6 +106,8 @@ var idiomas = {
 		"tit_epoca_cultivo":"Growing season",
 		"tit_pronostico":"Forecast",
 		"tit_clima":"Weather",
+		"tit_tiempo":"Weather",
+		"tit_tiempoAtmosferico":"Weather",
 		"msj_map_calle":"Streets",
 		"msj_map_topo":"Topographic",
 		"msj_map_satelite":"Satellite",
@@ -126,6 +136,8 @@ var idiomas = {
 		"msjSecanoMax": "Dry farming Maximum",
 		"msjSinInfo": "NO DATA",
 		"msjclimograma": "Weather graphic",
+		"msjMicultivo": "My Crop",
+		"msjAddcultivo": "Add Crop",
 	}
 };
 

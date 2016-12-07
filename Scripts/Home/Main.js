@@ -106,35 +106,60 @@ $( document ).ready(function() {
 	  		if(msj=="0"){
 	  			msj_peligro("Estación NO encontrada!");
 	  		}else{
-	  			
-			var $text = $('<div></div>');
-				$text.append( '<div class="form-group">'+
+				var $text = $('<div></div>');
+				$text.append('<div class="form-group">'+
 								'<div class="row">'+
-									'<div class="col-xs-12" style="font-size: 60px;text-align: center;">'+
-										msj.temp_c+
-									' °C </div>'+
-								'</div>'+
-								'<div class="row" style="font-size: 22px;">'+
-									'<div class="col-xs-4">'+
-										txt.msjMax+": "+
+									'<div class="col-xs-4" >'+
+										'<img src="../../Images/Home/wind.png" height="80%" width="80%"><br>'+
 									'</div>'+
-									'<div class="col-xs-8">'+
-										msj.temp_max + " °C " + msj.temp_max_hora+
+									'<div class="col-xs-8" style="font-size: 12px;text-align: center;">'+
+										msj.depto+'-'+msj.mpio+'<br>'+
+										'Estación '+msj.estacion+'<br>'+
+										'Distancia '+msj.distancia+' Kms<br>'+
+										msj.fechaHora+'<br>'+
 									'</div>'+
 								'</div>'+
-								'<div class="row"  style="font-size: 22px;">'+
-									'<div class="col-xs-4">'+
-										txt.msjMin+": "+
+								'<div class="row" style="margin-top: 0px;">'+
+									'<br><button type="button" class="btn btn-success btn-block">Temperatura</button><br>'+
+								'</div>'+
+								'<div class="row">'+
+									'<div class="col-xs-4" style="font-size: 20px;font-weight: 600;text-align: center;">'+
+										msj.temp_c+' °C'+
 									'</div>'+
-									'<div class="col-xs-8">'+
-										msj.temp_min + " °C " + msj.temp_min_hora+
+									'<div class="col-xs-8" style="font-size: 9px;text-align: center;">'+
+										txt.msjMax+": "+msj.temp_max + " °C " + msj.temp_max_hora+ '<br>'+
+										txt.msjMin+": "+msj.temp_min + " °C " + msj.temp_min_hora+
+									'</div>'+
+								'</div>'+
+								'<div class="row" style="margin-top: -15px;">'+
+									'<br><button type="button" class="btn btn-success btn-block">Humedad Relativa</button><br>'+
+								'</div>'+
+								'<div class="row">'+
+									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
+										msj.humedad_rel+' %'+
+									'</div>'+
+								'</div>'+
+								'<div class="row" style="margin-top: -15px;">'+
+									'<br><button type="button" class="btn btn-success btn-block">Precipitación Acumulada Diaria</button><br>'+
+								'</div>'+
+								'<div class="row">'+
+									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
+										msj.precip_dia+' mm'+
+									'</div>'+
+								'</div>'+
+								'<div class="row" style="margin-top: -15px;">'+
+									'<br><button type="button" class="btn btn-success btn-block">Radiación Acumulada Diaria</button><br>'+
+								'</div>'+
+								'<div class="row">'+
+									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
+										msj.rad_solar+' Cal/cm²'+
 									'</div>'+
 								'</div>'+
 							'</div>'
 							);
 			
 	        BootstrapDialog.show({
-	        	title: txt.tit_clima,
+	        	title: txt.tit_tiempoAtmosferico,
 	        	type: BootstrapDialog.TYPE_SUCCESS,
 	            message: $text
 	        });
@@ -299,8 +324,15 @@ $( document ).ready(function() {
 					   		'<div class="radio">'+
 							  '<label><input type="radio" name="optProd" value="cultivo">'+txt.tit_epoca_cultivo+'</label>'+
 							'</div>'+
-							  '<label><input type="checkbox" id="opMapa" value="opMapa">&nbsp;'+txt.msjMapa+'</label>'+
-
+						'</div>'+
+						'<div class="form-group">'+
+							'<label><input type="checkbox" id="opMapa" value="opMapa">&nbsp;'+txt.msjMapa+'</label>'+
+					   		'<div class="radio">'+
+							  '<label><input type="radio" name="optTipomapa" value="riego_h">'+txt.msjRiegoSuper+'</label>'+
+							'</div>'+
+					   		'<div class="radio">'+
+							  '<label><input type="radio" name="optTipomapa" value="sec_h">'+txt.msjSecanoSuper+'</label>'+
+							'</div>'+
 						'</div>'
 						);
 		
@@ -313,6 +345,9 @@ $( document ).ready(function() {
             	if(AppMap.map.hasLayer(AppMap.LyrMpioDepto) || AppMap.map.hasLayer(AppMap.LyrMpioDepto)){
             		$('#opMapa').prop('checked', true);
             	}
+				//Activa opcion segun tipo de mapa
+				$('input[name=optTipomapa][value='+AppMap.tipoMapa+']').attr("checked", "checked");
+				
             	//Click Opcion Producción
 		        $("input[name=optProd]").click(function() {
 		        	var optProd = $("input[name=optProd]:checked").val();
@@ -326,6 +361,14 @@ $( document ).ready(function() {
 					$("#btn_depto").hide();
 					dialogRef.close();
 		        });
+            	//Click Opcion Producción Riego o Secanto
+		        $("input[name=optTipomapa]").click(function() {
+		        	AppMap.tipoMapa = $("input[name=optTipomapa]:checked").val();
+	        		AppMap.AddCapa("Depto","desplegar");
+					$("#btn_mpio").hide();
+					$("#btn_depto").hide();
+					if($("#opMapa").is(":checked"))	dialogRef.close();
+		        });
             }
         });
 	});
@@ -333,9 +376,9 @@ $( document ).ready(function() {
 	$("#btn_opcClima").click(function(){
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
-					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;'+txt.tit_clima+'</label>'+
+					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;'+txt.tit_tiempo+'</label>'+
 					   		'<div class="radio">'+
-							  '<label><input type="radio" name="optClima" value="optTiempo">'+txt.tit_clima+'</label>'+
+							  '<label><input type="radio" name="optClima" value="optTiempo">'+txt.tit_tiempo+'</label>'+
 							'</div>'+
 							'<div class="radio">'+
 							  '<label><input type="radio" name="optClima" value="optPronostico">'+txt.tit_pronostico+'</label>'+
@@ -368,6 +411,66 @@ $( document ).ready(function() {
         });
 	});
 	
+	$("#btn_opcMicultivo").click(function(){
+		AppConfig.listaMiCultivo();
+	});
+	AppConfig.listaMiCultivo=function(){
+		var $text = $('<div></div>');
+			$text.append( '<div class="form-group">'+
+							  '<button type="button" class="btn btn-success" id="btnAddcultivo"><spam class="glyphicon glyphicon-plus"></spam>&nbsp;'+txt.msjAddcultivo+'</button>'+
+                          '</div>'
+						);
+		
+        BootstrapDialog.show({
+        	title: txt.msjMicultivo,
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+		        $("#btnAddcultivo").click(function() {
+		        	dialogRef.close();
+		        	AppConfig.addMiCultivo();
+		        });
+
+            }
+        });
+	};
+	AppConfig.addMiCultivo=function(){
+		var $text = $('<div></div>');
+			$text.append( '<div class="form-group">'+
+							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
+							'</div>'+
+							'<div class="form-group">'+
+							  '<label for="fnombre">Nombre</label><input type="text" class="form-control" id="fnombre">'+
+							'</div>'+
+							'<div class="form-group">'+
+							  '<label for="ffecha">Nombre</label><input type="text" class="form-control" id="fecha">'+
+							'</div>'+
+							'<div class="form-group">'+
+							  '<label for="fvariedad">Variedad</label><select class="form-control" id="fvariedad">'+
+							  '<option value="">--Seleccione--</option>'+
+							'</div>'+
+							'<div class="form-group">'+
+							  '<label for="fsistema">Sistema</label><select class="form-control" id="fsistema">'+
+							  '<option value="">--Seleccione--</option>'+
+							'</div>'+
+							'<div class="form-group">'+
+							  '<label for="fhas">Has Cultivadas</label><input type="text" class="form-control" id="fhas">'+
+							'</div>'
+						);
+		
+        BootstrapDialog.show({
+        	title: txt.msjAddcultivo,
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+		        $("#btnListacultivo").click(function() {
+		        	dialogRef.close();
+					AppConfig.listaMiCultivo();
+		        });
+
+            }
+        });
+	};
 	AppConfig.opcEpocaCultivo=function(){
 		var chart1;
 		var $text = $('<div id="container" style="max-height: 510px;"></div>');

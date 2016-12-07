@@ -26,7 +26,33 @@ html, body, #map {
 	color: #088A08;
 }
 
+.legend {
+    line-height: 18px;
+    color: #555;
+    background: rgba(255,255,255,0.6);
+}
+.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
 
+#tituloMapa{
+    position: absolute;
+    z-index: 2014;
+    top: 50px;
+    background: rgba(255,255,255,0.8);
+    border-color: green;
+    border-style: double;
+    margin: 5px;
+    padding: 3px;
+    font-size: 13px;
+    color: green;
+    font-weight: 700;
+
+}
 
 .leaflet-container a.leaflet-popup-close-button {
     right: -12px;
