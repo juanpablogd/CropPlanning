@@ -124,7 +124,7 @@ $( document ).ready(function() {
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-4" style="font-size: 20px;font-weight: 600;text-align: center;">'+
-										msj.temp_c+' °C'+
+										msj.temp_c+' '+
 									'</div>'+
 									'<div class="col-xs-8" style="font-size: 9px;text-align: center;">'+
 										txt.msjMax+": "+msj.temp_max + " °C " + msj.temp_max_hora+ '<br>'+
@@ -136,7 +136,7 @@ $( document ).ready(function() {
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
-										msj.humedad_rel+' %'+
+										msj.humedad_rel+' '+
 									'</div>'+
 								'</div>'+
 								'<div class="row" style="margin-top: -15px;">'+
@@ -144,7 +144,7 @@ $( document ).ready(function() {
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
-										msj.precip_dia+' mm'+
+										msj.precip_dia+' '+
 									'</div>'+
 								'</div>'+
 								'<div class="row" style="margin-top: -15px;">'+
@@ -152,7 +152,7 @@ $( document ).ready(function() {
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
-										msj.rad_solar+' Cal/cm²'+
+										msj.rad_solar+' '+
 									'</div>'+
 								'</div>'+
 							'</div>'
@@ -384,7 +384,10 @@ $( document ).ready(function() {
 							  '<label><input type="radio" name="optClima" value="optPronostico">'+txt.tit_pronostico+'</label>'+
 							'</div>'+
 							'<div class="radio">'+
-							  '<label><input type="radio" name="optClima" value="optClimograma">'+txt.msjclimograma+'</label>'+
+							  '<label><input type="radio" name="optClima" value="optClimogramaTemPre">'+txt.msjclimogramaTemPre+'</label>'+
+							'</div>'+
+							'<div class="radio">'+
+							  '<label><input type="radio" name="optClima" value="optClimogramaHumSol">'+txt.msjclimogramaHumSol+'</label>'+
 							'</div>'+
 						'</div>'
 						);
@@ -401,7 +404,7 @@ $( document ).ready(function() {
 		        		navigator.geolocation.getCurrentPosition(AppConfig.Clima,AppConfig.sinUbicacion,AppConfig.gpsOptions);
 		        	}else if(optClima=="optPronostico"){
 		        		AppConfig.opcPronostico();
-		        	}else if(optClima=="optClimograma"){
+		        	}else if(optClima=="optClimogramaTemPre"){
 						AppConfig.opcTemperatura();		        		
 		        	}
 		        	dialogRef.close();
@@ -569,57 +572,109 @@ $( document ).ready(function() {
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
     	AppConfig.sk_sofy.emit('temperatura',{lat:lat, lon:lon}, function (msj){	console.log(msj);
-			var ranges = [
-				            ["Ene", msj.datos[0].min1, msj.datos[0].max1],
-				            ["Feb", msj.datos[0].min2, msj.datos[0].max2],
-				            ["Mar", msj.datos[0].min3, msj.datos[0].max3],
-				            ["Abr", msj.datos[0].min4, msj.datos[0].max4],
-				            ["May", msj.datos[0].min5, msj.datos[0].max5],
-				            ["Jun", msj.datos[0].min6, msj.datos[0].max6],
-				            ["Jul", msj.datos[0].min7, msj.datos[0].max7],
-				            ["Ago", msj.datos[0].min8, msj.datos[0].max8],
-				            ["Sep", msj.datos[0].min9, msj.datos[0].max9],
-				            ["Oct", msj.datos[0].min10, msj.datos[0].max10],
-				            ["Nov", msj.datos[0].min11, msj.datos[0].max11],
-				            ["Dic", msj.datos[0].min12, msj.datos[0].max12]
+			var rangesTem = [
+				            ["Ene", msj.tepe[0].datos.min1, msj.tepe[0].datos.max1],
+				            ["Feb", msj.tepe[0].datos.min2, msj.tepe[0].datos.max2],
+				            ["Mar", msj.tepe[0].datos.min3, msj.tepe[0].datos.max3],
+				            ["Abr", msj.tepe[0].datos.min4, msj.tepe[0].datos.max4],
+				            ["May", msj.tepe[0].datos.min5, msj.tepe[0].datos.max5],
+				            ["Jun", msj.tepe[0].datos.min6, msj.tepe[0].datos.max6],
+				            ["Jul", msj.tepe[0].datos.min7, msj.tepe[0].datos.max7],
+				            ["Ago", msj.tepe[0].datos.min8, msj.tepe[0].datos.max8],
+				            ["Sep", msj.tepe[0].datos.min9, msj.tepe[0].datos.max9],
+				            ["Oct", msj.tepe[0].datos.min10, msj.tepe[0].datos.max10],
+				            ["Nov", msj.tepe[0].datos.min11, msj.tepe[0].datos.max11],
+				            ["Dic", msj.tepe[0].datos.min12, msj.tepe[0].datos.max12]
 				        ],
-				        averages = [
-				            ["Ene", msj.datos[0].med1],
-				            ["Feb", msj.datos[0].med2],
-				            ["Mar", msj.datos[0].med3],
-				            ["Abr", msj.datos[0].med4],
-				            ["May", msj.datos[0].med5],
-				            ["Jun", msj.datos[0].med6],
-				            ["Jul", msj.datos[0].med7],
-				            ["Ago", msj.datos[0].med8],
-				            ["Sep", msj.datos[0].med9],
-				            ["Oct", msj.datos[0].med10],
-				            ["Nov", msj.datos[0].med11],
-				            ["Dic", msj.datos[0].med12]
-				        ];
+				        averagesTem = [
+				            ["Ene", msj.tepe[0].datos.med1],
+				            ["Feb", msj.tepe[0].datos.med2],
+				            ["Mar", msj.tepe[0].datos.med3],
+				            ["Abr", msj.tepe[0].datos.med4],
+				            ["May", msj.tepe[0].datos.med5],
+				            ["Jun", msj.tepe[0].datos.med6],
+				            ["Jul", msj.tepe[0].datos.med7],
+				            ["Ago", msj.tepe[0].datos.med8],
+				            ["Sep", msj.tepe[0].datos.med9],
+				            ["Oct", msj.tepe[0].datos.med10],
+				            ["Nov", msj.tepe[0].datos.med11],
+				            ["Dic", msj.tepe[0].datos.med12]
+				        ],
+				        averagesPre = [
+				            ["Ene", msj.tepe[1].datos.med1],
+				            ["Feb", msj.tepe[1].datos.med2],
+				            ["Mar", msj.tepe[1].datos.med3],
+				            ["Abr", msj.tepe[1].datos.med4],
+				            ["May", msj.tepe[1].datos.med5],
+				            ["Jun", msj.tepe[1].datos.med6],
+				            ["Jul", msj.tepe[1].datos.med7],
+				            ["Ago", msj.tepe[1].datos.med8],
+				            ["Sep", msj.tepe[1].datos.med9],
+				            ["Oct", msj.tepe[1].datos.med10],
+				            ["Nov", msj.tepe[1].datos.med11],
+				            ["Dic", msj.tepe[1].datos.med12]
+				        ];   
             	
-					chart1 = new Highcharts.Chart({
+						chart1 = new Highcharts.Chart({
 								chart: {
 						            renderTo: 'container_temperatura',
 						            zoomType: 'xy',
-						            height: 300
+						            animation: true,
 					         	},
 					         	title: {
-							   		text: ''
+							   		text: 'Información mensual periodo (1980-2010) IDEAM',
+							   		style: { "fontSize": "17px" },
+							   		align: "center"
 							 	},
+					         	subtitle: {
+							   		text: 'Estación '+msj.tepe[1].datos.municipio+' '+msj.tepe[1].datos.departamento +' a '+msj.tepe[1].datos.d+' Kms'
+							 	}, 
 					        	credits: {
 					            	enabled: false
 					        	},
-					        	yAxis: {
-						            title: {
-						                text: null
-						            }
-						        },
+					        	yAxis: [{ // Primary yAxis
+										labels: {
+											format: '{value}°C',
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "9px"
+											},
+											padding:0
+										},
+										title: {
+											text: 'Temperatura',
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "11px" 
+											},
+											padding:0
+										},
+										opposite: true
+									},{ // Secondary yAxis
+										gridLineWidth: 0,
+										title: {
+											text: 'Precipitación',
+											style: {
+												color: Highcharts.getOptions().colors[1],
+												fontSize : "11px"
+											},
+											padding:0
+										},
+										labels: {
+											format: '{value} mm',
+											style: {
+												color: Highcharts.getOptions().colors[1],
+												fontSize : "9px"
+											},
+											padding:0
+										}
+									}
+								],
 								xAxis: {
 						            tickInterval: 1,
 						            labels: {
 						                enabled: true,
-						                formatter: function() { return averages[this.value][0];},
+						                formatter: function() { return averagesTem[this.value][0];},
 						            }
 						        },
 						        tooltip: {
@@ -627,11 +682,44 @@ $( document ).ready(function() {
 						            shared: true,
 						            valueSuffix: '°C'
 						        },
-						        legend: {},
+						        legend: {
+									layout: 'vertical',
+									align: 'left',
+									x: 80,
+									verticalAlign: 'top',
+									y: 60,
+									floating: true,
+									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+								},
+					            plotOptions: {
+					                arearange: {
+					                    fillColor: {
+					                        linearGradient: {
+					                            x1: 0,
+					                            y1: 0,
+					                            x2: 0,
+					                            y2: 0.3
+					                        },
+					                        stops: [
+					                            [0, '#FF0000'],
+					                            [1, Highcharts.getOptions().colors[0]]
+					                        ]
+					                    },
+
+					                    lineWidth: 1,
+					                    states: {
+					                        hover: {
+					                            lineWidth: 1
+					                        }
+					                    },
+					                    threshold: null
+					                }
+					            },
 							 	series: [{
 						            name: txt.msjTemperatura,
-						            data: averages,
+						            data: averagesTem,
 						            zIndex: 1,
+									yAxis: 0,
 						            marker: {
 						                fillColor: 'white',
 						                lineWidth: 2,
@@ -639,16 +727,30 @@ $( document ).ready(function() {
 						            }
 						        }, {
 						            name: 'Rango',
-						            data: ranges,
+						            data: rangesTem,
 						            type: 'arearange',
 						            lineWidth: 0,
 						            linkedTo: ':previous',
 						            color: Highcharts.getOptions().colors[0],
 						            fillOpacity: 0.3,
 						            zIndex: 0
-						        }]
+						        },{
+						            name: txt.msjPrecipitacion,
+						            data: averagesPre,
+						            tooltip: {
+						                valueSuffix: ' mm'
+						            },
+						            zIndex: 1,
+									yAxis: 1,
+									type: 'spline',
+						            marker: {
+						                fillColor: 'white',
+						                lineWidth: 2,
+						                lineColor: Highcharts.getOptions().colors[0]
+						            }
+						        }
+								]
 					      });
-    		
     	});
 	};
 	
@@ -767,7 +869,7 @@ $( document ).ready(function() {
 	AppConfig.CargaDataCultivo();
 	AppConfig.MostarTerminos();		
 	AppConfig.Inicial();
-	console.log("CORREGIR!!! - MOSTRAR MAPA");	//$("#map").hide();
+	console.log("CORREGIR!!! - MOSTRAR MAPA");		//$("#map").hide();
 	
 });
 
