@@ -43,6 +43,8 @@ var txt = {
 	msjSinInfo: "",
 	msjclimogramaTemPre: "",
 	msjclimogramaHumSol: "",
+	msjclimogramaHumedadrelativa: "",
+	msjclimogramaBrillosolar: "",
 	msjMicultivo: "",
 	msjAddcultivo: "",
 };
@@ -92,6 +94,8 @@ var idiomas = {
 		"msjSinInfo": "SIN INFORMACIÓN",
 		"msjclimogramaTemPre": "Climograma (Temperatura / Precipitación)",
 		"msjclimogramaHumSol": "Climograma (Humedad Relativa / Brillo Solar)",
+		"msjclimogramaHumedadrelativa": "Humedad Relativa",
+		"msjclimogramaBrillosolar": "Brillo Solar",
 		"msjMicultivo": "Mi Cultivo",
 		"msjAddcultivo": "Adicionar Cultivo",
 	},
@@ -139,6 +143,8 @@ var idiomas = {
 		"msjSinInfo": "NO DATA",
 		"msjclimogramaTemPre": "Weather graphic / Precipitation",
 		"msjclimogramaHumSol": "Relative humidity / solar brightness",
+		"msjclimogramaHumedadrelativa": "Relative Humidity",
+		"msjclimogramaBrillosolar": "Solar Brightness",
 		"msjMicultivo": "My Crop",
 		"msjAddcultivo": "Add Crop",
 	}
@@ -151,11 +157,9 @@ function SetIdioma(leng){ console.log("Cambio de idioma:" +leng);
 	});
 	$("#lugares").attr("placeholder", txt.ph_buscasitio);
 	$("#btn_opciones").find('button').html(txt.tit_opciones);
-	$("#btn_epoca").find('button').html(txt.msjEpoca);
-	$("#btn_mapa").find('button').html(txt.msjMapa);
-	$("#btn_pronostico").find('button').html(txt.tit_pronostico);
-	$("#btn_clima").find('button').html(txt.tit_clima);
-	$("#btn_temperatura").find('button').html(txt.msjTemperatura);
+	$("#btn_opcProduccion").find('button').html(txt.msjProduccion);
+	$("#btn_opcClima").find('button').html(txt.tit_clima);
+	$("#btn_opcMicultivo").find('button').html(txt.msjMicultivo);
 	$(".tit_popup").html(txt.msjProduccion);
 	$(".msjRiegoSuper").html(txt.msjRiegoSuper);
 	$(".msjRiegoProd").html(txt.msjRiegoProd);

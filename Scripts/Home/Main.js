@@ -387,7 +387,7 @@ $( document ).ready(function() {
 							  '<label><input type="radio" name="optClima" value="optClimogramaTemPre">'+txt.msjclimogramaTemPre+'</label>'+
 							'</div>'+
 							'<div class="radio">'+
-							  '<label><input type="radio" name="optClima" value="optClimogramaHumSol">'+txt.msjclimogramaHumSol+'</label>'+
+							  '<label><input type="radio" name="optClima" value="optClimogramaHumeSola">'+txt.msjclimogramaHumSol+'</label>'+
 							'</div>'+
 						'</div>'
 						);
@@ -406,6 +406,8 @@ $( document ).ready(function() {
 		        		AppConfig.opcPronostico();
 		        	}else if(optClima=="optClimogramaTemPre"){
 						AppConfig.opcTemperatura();		        		
+		        	}else if(optClima=="optClimogramaHumeSola"){
+						AppConfig.opcHumeSola();		        		
 		        	}
 		        	dialogRef.close();
 		        });
@@ -451,10 +453,12 @@ $( document ).ready(function() {
 							'<div class="form-group">'+
 							  '<label for="fvariedad">Variedad</label><select class="form-control" id="fvariedad">'+
 							  '<option value="">--Seleccione--</option>'+
+							  '</select>'+
 							'</div>'+
 							'<div class="form-group">'+
 							  '<label for="fsistema">Sistema</label><select class="form-control" id="fsistema">'+
 							  '<option value="">--Seleccione--</option>'+
+							  '</select>'+
 							'</div>'+
 							'<div class="form-group">'+
 							  '<label for="fhas">Has Cultivadas</label><input type="text" class="form-control" id="fhas">'+
@@ -642,7 +646,7 @@ $( document ).ready(function() {
 											padding:0
 										},
 										title: {
-											text: 'Temperatura',
+											text: txt.msjTemperatura,
 											style: {
 												color: Highcharts.getOptions().colors[0],
 												fontSize : "11px" 
@@ -653,7 +657,7 @@ $( document ).ready(function() {
 									},{ // Secondary yAxis
 										gridLineWidth: 0,
 										title: {
-											text: 'Precipitación',
+											text: txt.msjPrecipitacion,
 											style: {
 												color: Highcharts.getOptions().colors[1],
 												fontSize : "11px"
@@ -754,15 +758,168 @@ $( document ).ready(function() {
     	});
 	};
 	
+	AppConfig.HumedadSolar=function(pos){
+		var lat = pos.coords.latitude;
+		var lon = pos.coords.longitude;
+	    AppMap.ActualizaPunto(lat,lon);
+    	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
+    	AppConfig.sk_sofy.emit('HumedadSolar',{lat:lat, lon:lon}, function (msj){	console.log(msj);
+			var averagesHum = [
+				            ["Ene", msj.huso[0].datos.med1],
+				            ["Feb", msj.huso[0].datos.med2],
+				            ["Mar", msj.huso[0].datos.med3],
+				            ["Abr", msj.huso[0].datos.med4],
+				            ["May", msj.huso[0].datos.med5],
+				            ["Jun", msj.huso[0].datos.med6],
+				            ["Jul", msj.huso[0].datos.med7],
+				            ["Ago", msj.huso[0].datos.med8],
+				            ["Sep", msj.huso[0].datos.med9],
+				            ["Oct", msj.huso[0].datos.med10],
+				            ["Nov", msj.huso[0].datos.med11],
+				            ["Dic", msj.huso[0].datos.med12]
+				        ],
+				        averagesPre = [
+				            ["Ene", msj.huso[1].datos.med1],
+				            ["Feb", msj.huso[1].datos.med2],
+				            ["Mar", msj.huso[1].datos.med3],
+				            ["Abr", msj.huso[1].datos.med4],
+				            ["May", msj.huso[1].datos.med5],
+				            ["Jun", msj.huso[1].datos.med6],
+				            ["Jul", msj.huso[1].datos.med7],
+				            ["Ago", msj.huso[1].datos.med8],
+				            ["Sep", msj.huso[1].datos.med9],
+				            ["Oct", msj.huso[1].datos.med10],
+				            ["Nov", msj.huso[1].datos.med11],
+				            ["Dic", msj.huso[1].datos.med12]
+				        ];   
+            	
+						chart1 = new Highcharts.Chart({
+								chart: {
+						            renderTo: 'container_HumeSola',
+						            zoomType: 'xy',
+						            animation: true,
+					         	},
+					         	title: {
+							   		text: txt.msjclimogramaHumSol,
+							   		style: { "fontSize": "17px" },
+							   		align: "center"
+							 	},
+					         	subtitle: {
+							   		text: 'Estación '+msj.huso[1].datos.municipio+' '+msj.huso[1].datos.departamento +' a '+msj.huso[1].datos.d+' Kms'
+							 	}, 
+					        	credits: {
+					            	enabled: false
+					        	},
+					        	yAxis: [{ // Primary yAxis
+										labels: {
+											format: '{value}%',
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "9px"
+											},
+											padding:0
+										},
+										title: {
+											text: txt.msjclimogramaHumedadrelativa,
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "11px" 
+											},
+											padding:0
+										},
+										opposite: true
+									},{ // Secondary yAxis
+										gridLineWidth: 0,
+										title: {
+											text: txt.msjclimogramaBrillosolar,
+											style: {
+												color: Highcharts.getOptions().colors[1],
+												fontSize : "11px"
+											},
+											padding:0
+										},
+										labels: {
+											format: '{value} Cal/cm²',
+											style: {
+												color: Highcharts.getOptions().colors[1],
+												fontSize : "9px"
+											},
+											padding:0
+										}
+									}
+								],
+								xAxis: {
+						            tickInterval: 1,
+						            labels: {
+						                enabled: true,
+						                formatter: function() { return averagesHum[this.value][0];},
+						            }
+						        },
+						        tooltip: {
+						            crosshairs: true,
+						            shared: true,
+						            valueSuffix: '%'
+						        },
+						        legend: {
+									layout: 'vertical',
+									align: 'left',
+									x: 80,
+									verticalAlign: 'top',
+									y: 60,
+									floating: true,
+									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+								},
+							 	series: [{
+						            name: txt.msjclimogramaHumedadrelativa,
+						            data: averagesHum,
+						            zIndex: 1,
+									yAxis: 0,
+						            marker: {
+						                fillColor: 'white',
+						                lineWidth: 2,
+						                lineColor: Highcharts.getOptions().colors[0]
+						            }
+						        },{
+						            name: txt.msjclimogramaBrillosolar,
+						            data: averagesPre,
+						            tooltip: {
+						                valueSuffix: ' Cal/cm²'
+						            },
+						            zIndex: 1,
+									yAxis: 1,
+									type: 'spline',
+						            marker: {
+						                fillColor: 'white',
+						                lineWidth: 2,
+						                lineColor: Highcharts.getOptions().colors[0]
+						            }
+						        }
+								]
+					      });
+    	});
+	};
+	
 	AppConfig.opcTemperatura=function(){
 		var chart1;
 		var $text = $('<div id="container_temperatura" style="max-height: 510px;"></div>');
         BootstrapDialog.show({
-        	title: txt.msjTemperatura,
+        	title: txt.msjclimogramaTemPre,
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
             	navigator.geolocation.getCurrentPosition(AppConfig.Temperatura,AppConfig.sinUbicacion,AppConfig.gpsOptions);
+            }
+        });		
+	};
+	AppConfig.opcHumeSola=function(){
+		var chart1;
+		var $text = $('<div id="container_HumeSola" style="max-height: 510px;"></div>');
+        BootstrapDialog.show({
+        	title: txt.msjclimogramaHumSol,
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+            	navigator.geolocation.getCurrentPosition(AppConfig.HumedadSolar,AppConfig.sinUbicacion,AppConfig.gpsOptions);
             }
         });		
 	};
