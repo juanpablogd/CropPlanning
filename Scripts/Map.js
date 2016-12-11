@@ -2,6 +2,8 @@ var AppMap = {
 	map: '',
 	zoom:9,
 	center: [4.8, -74],
+ 	lat:null,
+ 	lon:null,
 	marker:'',
 	LyrMpioDepto: '',
 	LyrBase: '',
@@ -48,7 +50,7 @@ var AppMap = {
 	              'rgba(255,255,255,0.9)';
 	},
 	loadDataDepto:function(){
-		AppConfig.sk_sofy.emit('proDepto', null, function (msj){	console.log(msj);
+		AppConfig.sk_sofy.emit('proDepto', null, function (msj){	// console.log(msj);
 			AppMap.dataProdDepto = msj;
 			//Actualiza GeoJson
 			$.each(geojsonFeatureDepto.features, function (index, value) {//console.log(value);
@@ -129,9 +131,15 @@ var AppMap = {
 	},
 	AddPunto: function(lat, lon){
 		this.marker = L.marker([lat, lon]).addTo(this.map);
+		AppMap.lat = lat;
+		AppMap.lon = lon;
+		console.log("Punto Inicializado");
 	},
 	ActualizaPunto: function(lat, lon){
 		this.marker.setLatLng([lat, lon]);
+		AppMap.lat = lat;
+		AppMap.lon = lon;
+		console.log("Punto Actualizado");
 	},
 	AddCapa: function(tipo,accion){ //console.log(geojsonFeature);
 		if(accion=="desplegar"){	//Apagar Capa

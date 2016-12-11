@@ -30,6 +30,17 @@ $( document ).ready(function() {
 					.append( "<div>" + item.display_name + "</div>" )
 		        	.appendTo( ul );
 		    };
+
+			AppConfig.sk_sofy.emit('variedad',null, function (msj) {
+		  		AppConfig['variedad']=msj.datos;
+		  		console.log(AppConfig['variedad']);
+		  	});
+			AppConfig.sk_sofy.emit('sistema',null, function (msj) {
+				AppConfig['sistema']=msj.datos;
+		  		console.log(AppConfig['sistema']);
+		  	});
+			//Buscar posición geográfica
+			navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada,AppConfig.sinUbicacion,AppConfig.gpsOptions);
 	};
 	AppConfig.ConectarSocket=function(){
 	  AppConfig.sk_sofy = io.connect(AppConfig.UrlSocket);
@@ -96,9 +107,8 @@ $( document ).ready(function() {
 		        });
 		$("#terminos_condiciones").html(AppConfig.msj_terminos);
 	};
-	AppConfig.Clima=function(pos){
-		var lat = pos.coords.latitude;
-		var lon = pos.coords.longitude;
+	AppConfig.Clima=function(lat,lon){
+		//var lat = pos.coords.latitude;var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
 		AppConfig.sk_sofy.emit('clima',{lat:lat, lon:lon}, function (msj) {
@@ -401,7 +411,7 @@ $( document ).ready(function() {
 		        $("input[name=optClima]").click(function() {
 		        	var optClima = $("input[name=optClima]:checked").val();
 		        	if(optClima=="optTiempo"){
-		        		navigator.geolocation.getCurrentPosition(AppConfig.Clima,AppConfig.sinUbicacion,AppConfig.gpsOptions);
+		        		AppConfig.Clima(AppMap.lat,AppMap.lon);
 		        	}else if(optClima=="optPronostico"){
 		        		AppConfig.opcPronostico();
 		        	}else if(optClima=="optClimogramaTemPre"){
@@ -423,7 +433,15 @@ $( document ).ready(function() {
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
 							  '<button type="button" class="btn btn-success" id="btnAddcultivo"><spam class="glyphicon glyphicon-plus"></spam>&nbsp;'+txt.msjAddcultivo+'</button>'+
-                          '</div>'
+                          '</div>'+
+                          '<table class="table"><thead>'+
+						      '<tr>'+
+						        '<th>Nombre</th>'+
+						        '<th>ir</th>'+
+						        '<th>Eliminar</th>'+
+						      '</tr>'+
+						    '</thead>'+
+						    '<tbody id="listaCultivos"></tbody>'
 						);
 		
         BootstrapDialog.show({
@@ -435,7 +453,34 @@ $( document ).ready(function() {
 		        	dialogRef.close();
 		        	AppConfig.addMiCultivo();
 		        });
+		        var imei = AppConfig.getImei();
+				AppConfig.sk_sofy.emit('getMiscultivos',{imei:imei}, function (msj) {
+					console.log(msj.datos);
+					$.each( msj.datos, function( key, value ) {	//console.log( key + ": " + value.id );
+						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
+        						'<td>'+value.nombre+'</td>'+
+        						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
+                				'<td class="btn_eliminar" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
+							'</tr>');
+					});
 
+					$(".btn_ir").click(function(){	console.log("Click btn_ir");
+						var lat = $(this).attr('lat');
+						var lon = $(this).attr('lon');	
+						AppMap.ActualizaPunto(lat,lon);
+    					AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
+    	
+					});
+					
+					$(".btn_eliminar").click(function(){	console.log("Click btn_eliminar");
+						var id = $(this).attr('d');
+						$('#f'+id).remove();
+						AppConfig.sk_sofy.emit('deleteMicultivo',{id:id}, function (msj) {
+							console.log(msj);
+						});
+					});
+
+			  	});
             }
         });
 	};
@@ -447,9 +492,8 @@ $( document ).ready(function() {
 							'<div class="form-group">'+
 							  '<label for="fnombre">Nombre</label><input type="text" class="form-control" id="fnombre">'+
 							'</div>'+
-							'<div class="form-group">'+
-							  '<label for="ffecha">Nombre</label><input type="text" class="form-control" id="fecha">'+
-							'</div>'+
+							'<label for="ffecha">Fecha Siembra</label>'+
+							'<input data-provide="datepicker" id="ffecha" class="form-control" >'+
 							'<div class="form-group">'+
 							  '<label for="fvariedad">Variedad</label><select class="form-control" id="fvariedad">'+
 							  '<option value="">--Seleccione--</option>'+
@@ -461,7 +505,11 @@ $( document ).ready(function() {
 							  '</select>'+
 							'</div>'+
 							'<div class="form-group">'+
-							  '<label for="fhas">Has Cultivadas</label><input type="text" class="form-control" id="fhas">'+
+							  '<label for="fhas">Has Cultivadas</label><input type="text" class="form-control decimal" id="fhas">'+
+							'</div>'+
+							'<h6><span id="txtLon" class="label label-info"></span>  <span id="txtLat" class="label label-info"></span></h6>'+
+							'<div class="form-group">'+
+							  '<button type="button" class="btn btn-success btn-block"  id="btnGuardarCultivo">Guardar</button>'+
 							'</div>'
 						);
 		
@@ -470,13 +518,112 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
+            	$("#btnGuardarCultivo").hide();
+            	var ubicaOk = function (Latitude,Longitude){	//var Latitude = position.coords.latitude;var Longitude = position.coords.longitude;
+					$('#txtLat').html(Latitude);
+					$('#txtLon').html(Longitude);
+					$("#btnGuardarCultivo").show();
+            	};
+
+            	ubicaOk(AppMap.lat,AppMap.lon);
+            	
 		        $("#btnListacultivo").click(function() {
 		        	dialogRef.close();
 					AppConfig.listaMiCultivo();
 		        });
-
+		        console.log("Poner Fecha");
+		        $('#ffecha').datepicker({
+				    clearBtn: true,
+				    language: "es",
+				    calendarWeeks: true,
+				    autoclose: true
+				});
+				$.each( AppConfig['variedad'], function( key, value ) {	//console.log( key + ": " + value.id );
+					$("#fvariedad").append("<option value='"+value.id+"'>"+value.nombre+"</option>");
+				});
+				$.each( AppConfig['sistema'], function( key, value ) {	//console.log( key + ": " + value );
+					$("#fsistema").append("<option value='"+value.id+"'>"+value.nombre+"</option>");
+				});
+			    $(".decimal").keydown(function (e) {
+			        // Allow: backspace, delete, tab, escape, enter and .
+			        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+			             // Allow: Ctrl+A, Command+A
+			            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+			             // Allow: home, end, left, right, down, up
+			            (e.keyCode >= 35 && e.keyCode <= 40)) {
+			                 // let it happen, don't do anything
+			                 return;
+			        }
+			        // Ensure that it is a number and stop the keypress
+			        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+			            e.preventDefault();
+			        }
+			    });
+		        $("#btnGuardarCultivo").click(function() {
+		        	var nombre = $('#fnombre').val();
+		        	var fecha_siembra= $('#ffecha').val();	var pattern =/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
+		        	var id_variedad= $('#fvariedad').val();
+		        	var id_sistema= $('#fsistema').val();
+		        	var ha_cultivadas= $('#fhas').val();
+			  		if(nombre == ""){
+			  			msj_peligro("Debe ingresar un Nombre");
+			  			setTimeout(function() { $('#fnombre').focus();}, 500);
+			  			return;
+			  		}else if(pattern.test(fecha_siembra) == false){
+			  			msj_peligro("Debe ingresar una Fecha valida");
+			  			setTimeout(function() { $('#ffecha').focus();}, 500);
+			  			return;
+			  		}else if(id_variedad==""){
+			  			msj_peligro("Debe seleccionar una variedad");
+			  			setTimeout(function() { $('#fvariedad').focus();}, 500);
+			  			return;
+			  		}else if(id_sistema==""){
+			  			msj_peligro("Debe seleccionar un sistema");
+			  			setTimeout(function() { $('#fsistema').focus();}, 500);
+			  			return;
+			  		}else if(ha_cultivadas==""){
+			  			msj_peligro("Debe ingresar las Hectáreas");
+			  			setTimeout(function() { $('#fhas').focus();}, 500);
+			  			return;
+			  		};
+			  		var imei = AppConfig.getImei();
+					var lat = $('#txtLat').text();	//console.log(lat);
+					var lon = $('#txtLon').text();	//console.log(lon);
+			  		console.log("FORMULARIO OK!!!!!!!!!!!!!");
+			  		AppConfig.sk_sofy.emit('setCultivo',{lon:lon,lat:lat,imei:imei,nombre:nombre,fecha_siembra:fecha_siembra,id_variedad:id_variedad,id_sistema:id_sistema,ha_cultivadas:ha_cultivadas}, function (msj){	console.log(msj);
+					 		if($.isNumeric(msj)){
+				 				dialogRef.close();
+								AppConfig.listaMiCultivo();
+					 		}else{
+					 			msj_peligro("No se pudo Guardar el registro");
+					 		}
+					});
+		        });
             }
         });
+	};
+	AppConfig.getImei=function(){
+	var deviceInfo = cordova.require("cordova/plugin/DeviceInformation");
+	        deviceInfo.get(function(result) { //alert(result);
+	                       //Obtiene el Número de SIM
+	                       var res = result.split("simNo");
+	                       res = res[1].split('"');	//alert (res[2]);
+	                       $("#simno").html("SIM: " + res[2]);
+	                       serial = res[2]; //alert("SIM / Serial: "+serial);
+	                       //Obtiene el IMEI
+	                       res = result.split("deviceID");
+	                       res = res[1].split('"');
+	                       //$("#simno").html("SIM: " + res[1]);
+	                       imei = res[2]; //alert("Imei: "+imei);
+	                       //Obtiene el IMEI
+	                       res = result.split("netName");
+	                       res = res[1].split('"');
+	                       operador = res[2]; //alert("Operador: "+operador);
+	                       
+	                       }, function() {
+	                       		console.log("Error: " + error);
+	                       });
+		return imei;
 	};
 	AppConfig.opcEpocaCultivo=function(){
 		var chart1;
@@ -570,9 +717,8 @@ $( document ).ready(function() {
         });
 	};
 	
-	AppConfig.Temperatura=function(pos){
-		var lat = pos.coords.latitude;
-		var lon = pos.coords.longitude;
+	AppConfig.Temperatura=function(lat,lon){
+		//var lat = pos.coords.latitude;var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
     	AppConfig.sk_sofy.emit('temperatura',{lat:lat, lon:lon}, function (msj){	console.log(msj);
@@ -758,9 +904,8 @@ $( document ).ready(function() {
     	});
 	};
 	
-	AppConfig.HumedadSolar=function(pos){
-		var lat = pos.coords.latitude;
-		var lon = pos.coords.longitude;
+	AppConfig.HumedadSolar=function(lat,lon){
+		//var lat = pos.coords.latitude;var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
     	AppConfig.sk_sofy.emit('HumedadSolar',{lat:lat, lon:lon}, function (msj){	console.log(msj);
@@ -907,7 +1052,7 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
-            	navigator.geolocation.getCurrentPosition(AppConfig.Temperatura,AppConfig.sinUbicacion,AppConfig.gpsOptions);
+            	AppConfig.Temperatura(AppMap.lat,AppMap.lon);
             }
         });		
 	};
@@ -919,7 +1064,7 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
-            	navigator.geolocation.getCurrentPosition(AppConfig.HumedadSolar,AppConfig.sinUbicacion,AppConfig.gpsOptions);
+            	AppConfig.HumedadSolar(AppMap.lat,AppMap.lon);
             }
         });		
 	};
@@ -1029,4 +1174,3 @@ $( document ).ready(function() {
 	console.log("CORREGIR!!! - MOSTRAR MAPA");		//$("#map").hide();
 	
 });
-
