@@ -39,8 +39,6 @@ $( document ).ready(function() {
 				AppConfig['sistema']=msj.datos;
 		  		console.log(AppConfig['sistema']);
 		  	});
-			//Buscar posición geográfica
-			navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada,AppConfig.sinUbicacion,AppConfig.gpsOptions);
 	};
 	AppConfig.ConectarSocket=function(){
 	  AppConfig.sk_sofy = io.connect(AppConfig.UrlSocket);
@@ -96,6 +94,9 @@ $( document ).ready(function() {
 		                action: function(dialog) {
 		                    console.log('Aceptar');
 		                    dialog.close();
+		                    //Buscar posición geográfica
+		                    $("#localizando").show();
+							navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada,AppConfig.sinUbicacion,AppConfig.gpsOptions);
 		                }
 		            }, {
 		                label: txt.btn_cancelar,
@@ -114,7 +115,7 @@ $( document ).ready(function() {
 		AppConfig.sk_sofy.emit('clima',{lat:lat, lon:lon}, function (msj) {
 	  		console.log(msj);
 	  		if(msj=="0"){
-	  			msj_peligro("Estación NO encontrada!");
+	  			msj_peligro(txt.msjSinestacion);
 	  		}else{
 				var $text = $('<div></div>');
 				$text.append('<div class="form-group">'+
@@ -179,17 +180,18 @@ $( document ).ready(function() {
 	  }); 
 	};
 	AppConfig.sinUbicacion=function(){
-		msj_peligro("Ubicación NO encontrada!");
-		cordova.dialogGPS("Su GPS está apagado, Esta aplicación requiere que este activo para todas sus funciones.",//message
-                    "Use GPS, con wifi o Red celular.",//description
+		$("#localizando").hide();
+		msj_peligro(txt.msjNogps);
+		cordova.dialogGPS(txt.dialogGPSMensaje,//message
+                    txt.dialogGPSDescripcion,//description
                     function(buttonIndex){//callback
                       switch(buttonIndex) {
                         case 0: break;//cancel
                         case 1: break;//neutro option
                         case 2: break;//user go to configuration
                       }},
-                      "Por favor encienda su GPS",//title
-                      ["Cancelar","Luego","Ir"]);//buttons
+                      txt.dialogGPSTitulo,//title
+                      [txt.msjSi,"",txt.msjNo]);//buttons
 	};
 
 	$("#btn_marker").click(function(){
@@ -271,6 +273,7 @@ $( document ).ready(function() {
         });
 	});
 	$("#btn_miubicacion").click(function() {	console.log("Ubicar");
+		$("#localizando").show();
 		navigator.geolocation.getCurrentPosition(AppMap.UbicacionEncontrada,AppConfig.sinUbicacion,AppConfig.gpsOptions);
 	});
 	
@@ -338,10 +341,10 @@ $( document ).ready(function() {
 						'<div class="form-group">'+
 							'<label><input type="checkbox" id="opMapa" value="opMapa">&nbsp;'+txt.msjMapa+'</label>'+
 					   		'<div class="radio">'+
-							  '<label><input type="radio" name="optTipomapa" value="riego_h">'+txt.msjRiegoSuper+'</label>'+
+							  '<label><input type="radio" name="optTipomapa" value="riego_t">'+txt.msjRiegoSuper+'</label>'+
 							'</div>'+
 					   		'<div class="radio">'+
-							  '<label><input type="radio" name="optTipomapa" value="sec_h">'+txt.msjSecanoSuper+'</label>'+
+							  '<label><input type="radio" name="optTipomapa" value="sec_t">'+txt.msjSecanoSuper+'</label>'+
 							'</div>'+
 						'</div>'
 						);

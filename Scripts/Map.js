@@ -10,10 +10,9 @@ var AppMap = {
 	sidebar:'',
 	escalaExtend:0.05,
 	tipoCapa: '',
-	tipoMapa: 'riego_h',
+	tipoMapa: 'riego_t',
 	dataProdDepto:'',
 	actualizaTitulo: '',
-	tituloLeyenda: 'Producción ',
 	legend:L.control({ position: 'bottomright' }),
 	limitesLeyenda:[0,2000,10000,20000],
 	gmaps: {
@@ -55,8 +54,8 @@ var AppMap = {
 			//Actualiza GeoJson
 			$.each(geojsonFeatureDepto.features, function (index, value) {//console.log(value);
 				if(AppMap.dataProdDepto[value.properties.id] != undefined){
-					value.properties.riego_h = AppMap.dataProdDepto[value.properties.id][0].riego_h;
-					value.properties.sec_h = AppMap.dataProdDepto[value.properties.id][0].sec_h;
+					value.properties.riego_t = AppMap.dataProdDepto[value.properties.id][0].riego_t;
+					value.properties.sec_t = AppMap.dataProdDepto[value.properties.id][0].sec_t;
 				}
 			});		//console.log(j);
 		});
@@ -76,8 +75,8 @@ var AppMap = {
 					'</div>';
 		}else{
 			if(AppMap.actualizaTitulo==false){	console.log("Actualiza Título");
-				var nomTipo = "Riego"; if(AppMap.tipoMapa=="sec_h") nomTipo = "Secano";
-				$("#tituloMapa").show().html('Producción '+nomTipo+' año '+AppMap.dataProdDepto[feature.properties.id][0].agno);
+				var nomTipo = txt.msjRiegoProd; if(AppMap.tipoMapa=="sec_t") nomTipo = txt.msjSecanoProd;
+				$("#tituloMapa").show().html(nomTipo+' - '+AppMap.dataProdDepto[feature.properties.id][0].agno);
 				AppMap.actualizaTitulo = true;
 			}
 			texto = '<div class="popupstyle">' +
@@ -201,7 +200,7 @@ var AppMap = {
 			       labels = [];
 			
 			    // loop through our density intervals and generate a label with a colored square for each interval
-			    div.innerHTML += '<b> ' + AppMap.tituloLeyenda + '</b> <br>En Hectáreas(Has) <br>';
+			    div.innerHTML += '<b> ' + txt.msjProduccion + '</b> <br>'+txt.msjToneladas+'<br>';
 			
 			    for (var i = 0; i < AppMap.limitesLeyenda.length; i++) { 	 	//console.log(i);
 			        if (i == 0) {
@@ -228,6 +227,7 @@ var AppMap = {
 		this.map.fitBounds(bounds);
 	},
 	UbicacionEncontrada: function(pos){
+		$("#localizando").hide();
 		var lat = pos.coords.latitude;
 		var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);

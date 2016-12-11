@@ -48,6 +48,23 @@ module.exports = [
         ]
     },
     {
+        "id": "cordova-plugin-network-information.network",
+        "file": "plugins/cordova-plugin-network-information/www/network.js",
+        "pluginId": "cordova-plugin-network-information",
+        "clobbers": [
+            "navigator.connection",
+            "navigator.network.connection"
+        ]
+    },
+    {
+        "id": "cordova-plugin-network-information.Connection",
+        "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+        "pluginId": "cordova-plugin-network-information",
+        "clobbers": [
+            "Connection"
+        ]
+    },
+    {
         "id": "cordova-plugin-splashscreen.SplashScreen",
         "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
         "pluginId": "cordova-plugin-splashscreen",
@@ -62,6 +79,14 @@ module.exports = [
         "clobbers": [
             "cordova.plugins.deviceInformation"
         ]
+    },
+    {
+        "id": "cl.rmd.cordova.dialoggps.DialogGPS",
+        "file": "plugins/cl.rmd.cordova.dialoggps/www/DialogGPS.js",
+        "pluginId": "cl.rmd.cordova.dialoggps",
+        "clobbers": [
+            "cordova.dialogGPS"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -74,8 +99,10 @@ module.exports.metadata =
     "cordova-plugin-compat": "1.1.0",
     "cordova-plugin-geolocation": "2.4.0",
     "cordova-plugin-inappbrowser": "1.5.0",
+    "cordova-plugin-network-information": "1.3.0",
     "cordova-plugin-splashscreen": "4.0.0",
-    "com.vliesaputra.deviceinformation": "1.0.1"
+    "com.vliesaputra.deviceinformation": "1.0.1",
+    "cl.rmd.cordova.dialoggps": "0.0.2"
 };
 // BOTTOM OF METADATA
 });

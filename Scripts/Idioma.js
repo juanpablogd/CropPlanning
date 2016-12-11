@@ -47,6 +47,14 @@ var txt = {
 	msjclimogramaBrillosolar: "",
 	msjMicultivo: "",
 	msjAddcultivo: "",
+	msjNogps:"",
+	dialogGPSMensaje:"",
+	dialogGPSDescripcion:"",
+	dialogGPSTitulo:"",
+	msjSi:"",
+	msjNo:"",
+	msjToneladas:"",
+	msjSinestacion:""
 };
 
 var idiomas = {
@@ -98,6 +106,14 @@ var idiomas = {
 		"msjclimogramaBrillosolar": "Brillo Solar",
 		"msjMicultivo": "Mi Cultivo",
 		"msjAddcultivo": "Adicionar Cultivo",
+		"msjNogps":"Ubicación NO encontrada!",
+		"dialogGPSMensaje":"Su GPS está apagado, Esta aplicación requiere que este activo para todas sus funciones.",
+		"dialogGPSDescripcion":"Use GPS, con wifi o Red celular.",
+		"dialogGPSTitulo":"Por favor encienda su GPS",
+		"msjSi":"Si",
+		"msjNo":"No",
+		"msjToneladas":"En Toneladas(Ton) ",
+		"msjSinestacion":"Estación NO encontrada!",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -147,6 +163,14 @@ var idiomas = {
 		"msjclimogramaBrillosolar": "Solar Brightness",
 		"msjMicultivo": "My Crop",
 		"msjAddcultivo": "Add Crop",
+		"msjNogps":"No GPS locations have been found!",
+		"dialogGPSMensaje":"Your GPS is Disabled, this app needs to be enable to works.",
+		"dialogGPSDescripcion":"Use GPS, with wifi or 3G.",
+		"dialogGPSTitulo":"Please Turn on GPS",
+		"msjSi":"Yes",
+		"msjNo":"No",
+		"msjToneladas":"In Tonnes(Ton) ",
+		"msjSinestacion":"Station not found!",
 	}
 };
 
