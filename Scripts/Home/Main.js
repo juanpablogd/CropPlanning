@@ -191,7 +191,7 @@ $( document ).ready(function() {
                         case 2: break;//user go to configuration
                       }},
                       txt.dialogGPSTitulo,//title
-                      [txt.msjSi,"",txt.msjNo]);//buttons
+                      [txt.msjNo,"",txt.msjSi]);//buttons
 	};
 
 	$("#btn_marker").click(function(){
