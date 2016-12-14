@@ -432,6 +432,51 @@ $( document ).ready(function() {
 	$("#btn_opcMicultivo").click(function(){
 		AppConfig.listaMiCultivo();
 	});
+	AppConfig.detalleMiCultivo=function(){
+		var $text = $('<div></div>');
+			$text.append( '<div class="form-group">'+
+							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
+                          '</div>'+
+                          '<table class="table"><thead>'+
+						      '<tr>'+
+						        '<th colspan="2"><img src="../../Images/Home/fases_arroz.jpg" style="width:96%";><br></th>'+
+						      '</tr>'+
+						    '</thead>'+
+						    '<tbody id="detalleCultivo">'+
+						    	'<tr>'+
+						    		'<td>Sistema</td>'+
+						    		'<td>'+AppConfig['tmp_sistema']+'</td>'+
+						    	'</tr>'+
+						    	'<tr>'+
+						    		'<td>Variedad</td>'+
+						    		'<td>'+AppConfig['tmp_variedad']+'</td>'+
+						    	'</tr>'+
+						    	'<tr>'+
+						    		'<td>Hectáreas Cultivadas</td>'+
+						    		'<td>'+AppConfig['tmp_has']+'</td>'+
+						    	'</tr>'+
+						    	'<tr>'+
+						    		'<td>Fecha Siembra</td>'+
+						    		'<td>'+AppConfig['tmp_fecha']+'</td>'+
+						    	'</tr>'+
+						    '</tbody>'
+						);
+		
+        BootstrapDialog.show({
+        	title: AppConfig['tmp_nombre'],
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+		        $("#btnListacultivo").click(function() {
+		        	dialogRef.close();
+					AppConfig.listaMiCultivo();
+		        });
+				AppConfig.sk_sofy.emit('getRecomendaciones',{id:id,lat:lat,lon:lon}, function (msj) {
+					console.log(msj);
+			  	});
+            }
+        });
+	};
 	AppConfig.listaMiCultivo=function(){
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
@@ -440,6 +485,7 @@ $( document ).ready(function() {
                           '<table class="table"><thead>'+
 						      '<tr>'+
 						        '<th>Nombre</th>'+
+						        '<th>Detalle</th>'+
 						        '<th>ir</th>'+
 						        '<th>Eliminar</th>'+
 						      '</tr>'+
@@ -456,15 +502,30 @@ $( document ).ready(function() {
 		        	dialogRef.close();
 		        	AppConfig.addMiCultivo();
 		        });
-		        var imei = AppConfig.getImei();
-				AppConfig.sk_sofy.emit('getMiscultivos',{imei:imei}, function (msj) {
+		        //var imei = AppConfig.getImei();
+				AppConfig.sk_sofy.emit('getMiscultivos',{imei:AppConfig['imei']}, function (msj) {
 					console.log(msj.datos);
 					$.each( msj.datos, function( key, value ) {	//console.log( key + ": " + value.id );
 						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
         						'<td>'+value.nombre+'</td>'+
+        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
                 				'<td class="btn_eliminar" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
+					});
+					
+					$(".btn_detalle").click(function(){	console.log("Click btn_detalle");
+						AppConfig['tmp_nombre'] = $(this).attr('n');
+						AppConfig['tmp_variedad'] = $(this).attr('v');
+						AppConfig['tmp_sistema'] = $(this).attr('s');
+						AppConfig['tmp_has'] = $(this).attr('h');
+						AppConfig['tmp_fecha'] = $(this).attr('f');
+						AppConfig['tmp_lat'] = $(this).attr('lat');
+						AppConfig['tmp_lon'] = $(this).attr('lon');
+						AppConfig['tmp_id_cultivo'] = $(this).attr('id_cultivo');
+						
+			        	dialogRef.close();
+			        	AppConfig.detalleMiCultivo();
 					});
 
 					$(".btn_ir").click(function(){	console.log("Click btn_ir");
@@ -588,12 +649,11 @@ $( document ).ready(function() {
 			  			msj_peligro("Debe ingresar las Hectáreas");
 			  			setTimeout(function() { $('#fhas').focus();}, 500);
 			  			return;
-			  		};
-			  		var imei = AppConfig.getImei();
-					var lat = $('#txtLat').text();	//console.log(lat);
+			  		};	//var imei = AppConfig.getImei();	
+					var lat = $('#txtLat').text();	console.log(AppConfig['imei']);//console.log(lat);
 					var lon = $('#txtLon').text();	//console.log(lon);
 			  		console.log("FORMULARIO OK!!!!!!!!!!!!!");
-			  		AppConfig.sk_sofy.emit('setCultivo',{lon:lon,lat:lat,imei:imei,nombre:nombre,fecha_siembra:fecha_siembra,id_variedad:id_variedad,id_sistema:id_sistema,ha_cultivadas:ha_cultivadas}, function (msj){	console.log(msj);
+			  		AppConfig.sk_sofy.emit('setCultivo',{lon:lon,lat:lat,imei:AppConfig['imei'],nombre:nombre,fecha_siembra:fecha_siembra,id_variedad:id_variedad,id_sistema:id_sistema,ha_cultivadas:ha_cultivadas}, function (msj){	console.log(msj);
 					 		if($.isNumeric(msj)){
 				 				dialogRef.close();
 								AppConfig.listaMiCultivo();
@@ -606,27 +666,23 @@ $( document ).ready(function() {
         });
 	};
 	AppConfig.getImei=function(){
-	var deviceInfo = cordova.require("cordova/plugin/DeviceInformation");
+		var deviceInfo = cordova.require("cordova/plugin/DeviceInformation");
 	        deviceInfo.get(function(result) { //alert(result);
 	                       //Obtiene el Número de SIM
 	                       var res = result.split("simNo");
 	                       res = res[1].split('"');	//alert (res[2]);
-	                       $("#simno").html("SIM: " + res[2]);
 	                       serial = res[2]; //alert("SIM / Serial: "+serial);
 	                       //Obtiene el IMEI
 	                       res = result.split("deviceID");
 	                       res = res[1].split('"');
-	                       //$("#simno").html("SIM: " + res[1]);
-	                       imei = res[2]; //alert("Imei: "+imei);
-	                       //Obtiene el IMEI
-	                       res = result.split("netName");
-	                       res = res[1].split('"');
-	                       operador = res[2]; //alert("Operador: "+operador);
-	                       
-	                       }, function() {
+	                       imei = res[2]; console.log("Imei: "+imei);
+		                   //Obtiene el IMEI
+		                   AppConfig['imei'] = imei;
+		                   ;
+	                       }, function(error) {
 	                       		console.log("Error: " + error);
+	                       		msj_peligro("Habilite los permisos en su aplicación");
 	                       });
-		return imei;
 	};
 	AppConfig.opcEpocaCultivo=function(){
 		var chart1;
