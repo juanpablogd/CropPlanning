@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-
+	//AppConfig['imei']=23423423;
 	AppConfig.Inicial= function(){
     	$( "#lugares" ).autocomplete({
 		      minLength: 0,
@@ -510,7 +510,7 @@ $( document ).ready(function() {
         						'<td>'+value.nombre+'</td>'+
         						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
-                				'<td class="btn_eliminar" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
+                				'<td class="btn_eliminar" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
 					});
 					
@@ -537,11 +537,10 @@ $( document ).ready(function() {
 					});
 					
 					$(".btn_eliminar").click(function(){	console.log("Click btn_eliminar");
-						var id = $(this).attr('d');
-						$('#f'+id).remove();
-						AppConfig.sk_sofy.emit('deleteMicultivo',{id:id}, function (msj) {
-							console.log(msj);
-						});
+						AppConfig['tmp_nombre'] = $(this).attr('n');
+						AppConfig['tmp_id'] = $(this).attr('d');
+						AppConfig.eliminaCultivo();
+						dialogRef.close();
 					});
 
 			  	});
@@ -665,6 +664,47 @@ $( document ).ready(function() {
             }
         });
 	};
+	AppConfig.eliminaCultivo=function(){
+			BootstrapDialog.show({
+				title: 'Eliminar',
+				type: BootstrapDialog.TYPE_SUCCESS,
+	            message: 'Seguro desea eliminar el Cultivo: "'+AppConfig['tmp_nombre'] + '"',
+	            buttons: [{
+	                icon: 'glyphicon glyphicon-erase',
+	                label: 'Eliminar',
+	                title: 'Eliminar',
+	                cssClass: 'btn-danger',
+	                action: function(dialogItself){
+						AppConfig.sk_sofy.emit('deleteMicultivo',{id:AppConfig['tmp_id']}, function (msj) {
+							if(msj=="1"){
+								msj_exito("Cultivo Eliminado correctamente!");
+								dialogItself.close();
+								AppConfig.listaMiCultivo();
+								return true;	
+							}else{
+								msj_peligro("No se puede Elimina el Cultivo");
+							}
+							console.log(msj);
+						});
+	                }
+	            },{
+	                icon: 'glyphicon glyphicon-th-list',
+	                label: 'Listado',
+	                title: 'Listado',
+	                cssClass: 'btn-info',
+	                action: function(dialogItself){
+	                    dialogItself.close();
+						AppConfig.listaMiCultivo();
+	                }
+	            }, {
+	                label: 'Cancelar',
+	                action: function(dialogItself){
+	                    dialogItself.close();
+	                }
+	            }]
+	        });
+		};
+		
 	AppConfig.getImei=function(){
 		var deviceInfo = cordova.require("cordova/plugin/DeviceInformation");
 	        deviceInfo.get(function(result) { //alert(result);
