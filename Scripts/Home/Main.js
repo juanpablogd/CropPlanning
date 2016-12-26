@@ -416,7 +416,7 @@ $( document ).ready(function() {
 		        	if(optClima=="optTiempo"){
 		        		AppConfig.Clima(AppMap.lat,AppMap.lon);
 		        	}else if(optClima=="optPronostico"){
-		        		AppConfig.opcPronostico();
+		        		AppConfig.opcPronostico(AppMap.lat,AppMap.lon);
 		        	}else if(optClima=="optClimogramaTemPre"){
 						AppConfig.opcTemperatura();		        		
 		        	}else if(optClima=="optClimogramaHumeSola"){
@@ -1127,7 +1127,7 @@ $( document ).ready(function() {
             }
         });		
 	};
-	AppConfig.opcPronostico=function(){
+	AppConfig.opcPronostico=function(lat,lon){
 
 		var chart1;
 		var $text = $('<div id="container_pronostico" style="max-height: 510px;"></div>');
@@ -1137,80 +1137,79 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
-					chart1 = new Highcharts.Chart({
-								chart: {
-						            renderTo: 'container_pronostico',
-						            zoomType: 'xy',
-						            height: 300
-					         	},
-					         	title: {
-							   		text: ''
-							 	},
-					        	credits: {
-					            	enabled: false
-					        	},
-					        	yAxis: [{ // Primary yAxis
-							            labels: {
-							                format: '{value}°C',
-							                style: {
-							                    color: Highcharts.getOptions().colors[1]
-							                }
-							            },
+            	AppConfig.sk_sofy.emit('prediccion',{lat:lat, lon:lon}, function (msj){ //console.log(msj);	console.log(msj[0]);
+            		var aniomes = [];
+            		var bajo = [];
+            		var normal = [];
+            		var sobre = [];
+            		var est,kms;
+            		for(j=0;j<msj[0].length; j++){	//console.log(msj[0][j]);
+            			aniomes.push(msj[0][j].anio + '-' + msj[0][j].mes);
+            			bajo.push(msj[0][j].bajo);
+            			normal.push(msj[0][j].normal);
+            			sobre.push(msj[0][j].sobre);
+            			est = msj[0][j].est;
+            			kms = msj[0][j].d;
+            		}	//console.log(msj);
+            		if(msj !="0"){
+						chart1 = new Highcharts.Chart({
+									chart: {
+							            renderTo: 'container_pronostico',
+							            zoomType: 'xy',
+							            height: 300,
+							            type: 'column'
+						         	},
+						         	title: {
+								   		text: 'Estación "' + est + '" a ' + kms + ' Kms'
+								 	},
+						        	credits: {
+						            	enabled: false
+						        	},
+						        	yAxis: {
+							            min: 0,
 							            title: {
-							                text: txt.msjTemperatura,
-							                style: {
-							                    color: Highcharts.getOptions().colors[1]
-							                }
+							                text: txt.msjPrecipitacion + ' (mm)'
 							            }
-							        }, { // Secondary yAxis
-							            title: {
-							                text: txt.msjPrecipitacion,
-							                style: {
-							                    color: Highcharts.getOptions().colors[0]
-							                }
-							            },
-							            labels: {
-							                format: '{value} l/m2',
-							                style: {
-							                    color: Highcharts.getOptions().colors[0]
-							                }
-							            },
-							            opposite: true
-							        }],
-								xAxis: {
-							    	categories: ['Oct', 'Nov', 'Dic'],
-            						crosshair: true
-								},
-						        tooltip: {
-						            shared: true
-						        },
-						        legend: {
-						            layout: 'vertical',
-						            align: 'left',
-						            x: 120,
-						            verticalAlign: 'top',
-						            y: 100,
-						            floating: true,
-						            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-						        },
-							 	series: [{
-						            name: txt.msjPrecipitacion,
-						            type: 'column',
-						            yAxis: 1,
-						            data: [ 194.1, 95.6, 54.4],
-						            tooltip: {
-						                valueSuffix: ' l/m2'
-						            }
-						
-						        }, {
-						            name: txt.msjTemperatura,
-						            type: 'spline',
-						            data: [18.3, 13.9, 19.6],
-						            tooltip: {
-						                valueSuffix: '°C'
-						            }
-						        }]
-					      });
+							        },
+									xAxis: {
+								    	categories: aniomes,
+	            						crosshair: true
+									},
+							        tooltip: {
+							            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+							            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+							                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+							            footerFormat: '</table>',
+							            shared: true,
+							            useHTML: true
+							        },
+							        legend: {
+							            layout: 'vertical',
+							            align: 'left',
+							            x: 120,
+							            verticalAlign: 'top',
+							            y: 100,
+							            floating: true,
+							            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+							        },
+								 	series: [{
+							            name: 'bajo',
+							            data: bajo
+							
+							        }, {
+							            name: 'Normal',
+							            data: normal
+							
+							        }, {
+							            name: 'Sobre',
+							            data: sobre
+							        }]
+						      });
+					      }else{
+					      	msj_peligro(txt.msjSinestacion);
+					      	dialogRef.close();
+					      }
+            	});
             }
         });	
 	};
