@@ -116,7 +116,7 @@ var AppMap = {
 				fillColor: AppMap.getColor(feature.properties[AppMap.tipoMapa])
 			};
 	},
-	SetBaseLayer: function(tipo){ //console.log("Add Base");
+	SetBaseLayer: function(tipo){ console.log("Add Base: " + tipo);
 		if(tipo == "TERRAIN")
 		{
 			this.LyrBase = this.gmaps.TERRAIN;

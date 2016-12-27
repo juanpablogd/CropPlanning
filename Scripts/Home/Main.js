@@ -41,10 +41,33 @@ $( document ).ready(function() {
 		  	});
 	};
 	AppConfig.ConectarSocket=function(){
-	  AppConfig.sk_sofy = io.connect(AppConfig.UrlSocket);
-	  AppConfig.sk_sofy.on('connect', function () {
-	  	console.log("se conecta");
-	  });
+		AppConfig.sk_sofy = io.connect(AppConfig.UrlSocket, { 'connect timeout': 5000 });
+	  //Evento Conexión
+		AppConfig.sk_sofy.on('connect', function () {
+			console.log("se conecta");
+			if(AppConfig.ini == false){
+				AppConfig.sk_sofy.emit('parametros',null, function (msj) {	//console.log(msj);
+					var res = msj.split("|||");
+					txt.msj_terminos = res[1]; 
+					AppMap.SetBaseLayer(res[0]);
+					AppConfig.MostarTerminos();
+				});
+				AppConfig.ini = true;	
+			}
+		});
+	  //Evento Falla Conexión
+		AppConfig.sk_sofy.on('connect_error', function(){
+		    console.log('Falla Conexión');
+		    if(AppConfig.ini == false){
+		    	AppMap.SetBaseLayer("calle");
+			    AppConfig.MostarTerminos();
+			    AppConfig.ini = true;		    	
+		    }
+		});
+	  // Evento Desconectado
+	   AppConfig.sk_sofy.on('disconnect',function() {
+	      console.log('Desconectado!');
+	    });
 	};
 	AppConfig.ActivarBtn=function(tipo){
 		if(tipo=="Mpio"){
@@ -437,7 +460,7 @@ $( document ).ready(function() {
 			$text.append( '<div class="form-group">'+
 							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
                           '</div>'+
-                          '<table class="table"><thead>'+
+                          '<table class="table" style="font-size:12px"><thead>'+
 						      '<tr>'+
 						        '<th colspan="2"><img src="../../Images/Home/fases_arroz.jpg" style="width:96%";><br></th>'+
 						      '</tr>'+
@@ -459,6 +482,10 @@ $( document ).ready(function() {
 						    		'<td>Fecha Siembra</td>'+
 						    		'<td>'+AppConfig['tmp_fecha']+'</td>'+
 						    	'</tr>'+
+						    	'<tr>'+
+						    		'<td>Fase</td>'+
+						    		'<td>'+AppConfig['tmp_fase']+'</td>'+
+						    	'</tr>'+
 						    '</tbody>'
 						);
 		
@@ -471,8 +498,15 @@ $( document ).ready(function() {
 		        	dialogRef.close();
 					AppConfig.listaMiCultivo();
 		        });
-				AppConfig.sk_sofy.emit('getRecomendaciones',{id:id,lat:lat,lon:lon}, function (msj) {
+				AppConfig.sk_sofy.emit('getRecomendaciones',{id:AppConfig['tmp_id_cultivo'],lat:AppConfig['tmp_lat'],lon:AppConfig['tmp_lon']}, function (msj) {
 					console.log(msj);
+					console.log(msj.datos.length);
+					for(r=0;r<msj.datos.length;r++){
+						$("#detalleCultivo").append('<tr>'+
+						    		'<td>Recomendación: </td>'+
+						    		'<td>'+msj.datos[r].recomendacion+'</td>'+
+						    	'</tr>');
+					}
 			  	});
             }
         });
@@ -508,7 +542,7 @@ $( document ).ready(function() {
 					$.each( msj.datos, function( key, value ) {	//console.log( key + ": " + value.id );
 						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
         						'<td>'+value.nombre+'</td>'+
-        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
+        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
                 				'<td class="btn_eliminar" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
@@ -520,9 +554,10 @@ $( document ).ready(function() {
 						AppConfig['tmp_sistema'] = $(this).attr('s');
 						AppConfig['tmp_has'] = $(this).attr('h');
 						AppConfig['tmp_fecha'] = $(this).attr('f');
+						AppConfig['tmp_fase'] = $(this).attr('nf');
 						AppConfig['tmp_lat'] = $(this).attr('lat');
 						AppConfig['tmp_lon'] = $(this).attr('lon');
-						AppConfig['tmp_id_cultivo'] = $(this).attr('id_cultivo');
+						AppConfig['tmp_id_cultivo'] = $(this).attr('d');
 						
 			        	dialogRef.close();
 			        	AppConfig.detalleMiCultivo();
@@ -1264,10 +1299,8 @@ $( document ).ready(function() {
 	AppConfig.ConectarSocket();	
 	SetIdioma("ES");
     AppMap.map=AppMap.InitMap();
-	AppMap.SetBaseLayer("calle");
 	AppMap.AddPunto(AppMap.center[0],AppMap.center[1]);
 	AppConfig.CargaDataCultivo();
-	AppConfig.MostarTerminos();		
 	AppConfig.Inicial();
 	console.log("CORREGIR!!! - MOSTRAR MAPA");		//$("#map").hide();
 	
