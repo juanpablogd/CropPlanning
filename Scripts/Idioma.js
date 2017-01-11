@@ -57,7 +57,20 @@ var txt = {
 	msjSinestacion:"",
 	msjUbicacionmapa:"",
 	msjHectarea:"",
-	msjRecomendacion:""
+	msjRecomendacion:"",
+	msjNombre:"",
+	msjDetalle:"",
+	msjIr:"",
+	msjEliminar:"",
+	msjFechasiembra:"",
+	msjVariedad:"",
+	msjSistema:"",
+	msjHectareacultivadas:"",
+	msjFase:"",
+	msjGuardar:"",
+	msjEliminacultivo:"",
+	msjEliminadocorrectamente:"",
+	msjNoelimina:"",
 };
 
 var idiomas = {
@@ -107,7 +120,7 @@ var idiomas = {
 		"msjclimogramaHumSol": "Climograma (Humedad Relativa / Brillo Solar)",
 		"msjclimogramaHumedadrelativa": "Humedad Relativa",
 		"msjclimogramaBrillosolar": "Brillo Solar",
-		"msjMicultivo": "Mi Cultivo",
+		"msjMicultivo": "Mi Cultivos",
 		"msjAddcultivo": "Adicionar Cultivo",
 		"msjNogps":"Ubicación NO encontrada!",
 		"dialogGPSMensaje":"Su GPS está apagado, Esta aplicación requiere que este activo para todas sus funciones.",
@@ -119,7 +132,20 @@ var idiomas = {
 		"msjSinestacion":"No hay datos disponibles en el momento para esta úbicación!",
 		"msjUbicacionmapa":"Ubicación tomada del punto en el mapa",
 		"msjHectarea":"Hectárea",
-		"msjRecomendacion":"Recomendación"
+		"msjRecomendacion":"Recomendación",
+		"msjNombre":"Nombre",
+		"msjDetalle":"Detalle",
+		"msjIr":"Ir",
+		"msjEliminar":"Eliminar",
+		"msjFechasiembra":"Fecha Siembra",
+		"msjVariedad":"Variedad",
+		"msjSistema":"Sistema",
+		"msjHectareacultivadas":"Hectáreas cultivadas",
+		"msjFase":"Fase",
+		"msjGuardar":"Guardar",
+		"msjEliminacultivo":"Seguro desea eliminar el Cultivo: ",
+		"msjEliminadocorrectamente":"Eliminado Correctamente!",
+		"msjNoelimina":" No se puede eliminar ",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -167,7 +193,7 @@ var idiomas = {
 		"msjclimogramaHumSol": "Relative humidity / solar brightness",
 		"msjclimogramaHumedadrelativa": "Relative Humidity",
 		"msjclimogramaBrillosolar": "Solar Brightness",
-		"msjMicultivo": "My Crop",
+		"msjMicultivo": "My Crops",
 		"msjAddcultivo": "Add Crop",
 		"msjNogps":"No GPS locations have been found!",
 		"dialogGPSMensaje":"Your GPS is Disabled, this app needs to be enable to works.",
@@ -179,7 +205,20 @@ var idiomas = {
 		"msjSinestacion":"Data not found!",
 		"msjUbicacionmapa":"Location taken from point on the map",
 		"msjHectarea":"Hectare",
-		"msjRecomendacion":"Recommendation"
+		"msjRecomendacion":"Recommendation",
+		"msjNombre":"Name",
+		"msjDetalle":"Details",
+		"msjIr":"Go",
+		"msjEliminar":"Delete",
+		"msjFechasiembra":"Sowing date",
+		"msjVariedad":"Variety",
+		"msjSistema":"System",
+		"msjHectareacultivadas":"hectares cultivated",
+		"msjFase":"Phase",
+		"msjGuardar":"Save",
+		"msjEliminacultivo":"Do you really want to remove this Crop: ",
+		"msjEliminadocorrectamente":"successfully deleted!",
+		"msjNoelimina": " Cannot drop "
 	}
 };
 
@@ -189,10 +228,10 @@ function SetIdioma(leng){ console.log("Cambio de idioma:" +leng);
 		txt[key] = value;		//console.log ( key + ": " + value );
 	});
 	$("#lugares").attr("placeholder", txt.ph_buscasitio);
-	$("#btn_opciones").find('button').html(txt.tit_opciones);
-	$("#btn_opcProduccion").find('button').html(txt.msjProduccion);
-	$("#btn_opcClima").find('button').html(txt.tit_clima);
-	$("#btn_opcMicultivo").find('button').html(txt.msjMicultivo);
+	$("#btn_opciones").find('button').html('<i class="fa fa-cog" aria-hidden="true"></i> '+txt.tit_opciones);
+	$("#btn_opcProduccion").find('button').html('<i class="fa fa-stack-overflow" aria-hidden="true"></i> ' + txt.msjProduccion);
+	$("#btn_opcClima").find('button').html('<i class="fa fa-cloud" aria-hidden="true"></i> '+txt.tit_clima);
+	$("#btn_opcMicultivo").find('button').html('<i class="fa fa-th-list" aria-hidden="true"></i> '+txt.msjMicultivo);
 	$(".tit_popup").html(txt.msjProduccion);
 	$(".msjRiegoSuper").html(txt.msjRiegoSuper);
 	$(".msjRiegoProd").html(txt.msjRiegoProd);
@@ -207,5 +246,3 @@ function SetIdioma(leng){ console.log("Cambio de idioma:" +leng);
 	$(".msjSinInfo").html(txt.msjSinInfo);
 /*	$.each( txt, function( key, value ) {console.log ( key + ": " + value );});	*/	
 };
-
-

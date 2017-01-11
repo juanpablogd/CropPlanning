@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-	AppConfig['imei']=23423423;
+	//AppConfig['imei']=23423423;
 	AppConfig.Inicial= function(){
     	$( "#lugares" ).autocomplete({
 		      minLength: 0,
@@ -470,34 +470,43 @@ $( document ).ready(function() {
 	});
 	AppConfig.detalleMiCultivo=function(){
 		var fase = (AppConfig['tmp_fase']=="null") ? txt.msjSinInfo : AppConfig['tmp_fase'];
+		var txtGrafica = "";
+		if (fase.toUpperCase() == "FASE REPRODUCTIVA"){
+			txtGrafica = "texto_reproductiva.png";
+		}else{
+			txtGrafica = "texto_vegetativa.png";
+		}
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
 							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
                           '</div>'+
                           '<table class="table" style="font-size:12px"><thead>'+
 						      '<tr>'+
-						        '<th colspan="2"><img src="../../Images/Home/fases_arroz.jpg" style="width:96%";><br></th>'+
+						        '<th colspan="2"><img src="../../Images/Home/fases_arroz.jpg" style="width:96%";></th>'+
+						      '</tr>'+
+						      '<tr>'+
+						        '<th colspan="2"><img src="../../Images/Home/'+txtGrafica+'" style="width:96%";></th>'+
 						      '</tr>'+
 						    '</thead>'+
 						    '<tbody id="detalleCultivo">'+
 						    	'<tr>'+
-						    		'<td>Sistema</td>'+
+						    		'<td>'+txt.msjSistema+'</td>'+
 						    		'<td>'+AppConfig['tmp_sistema']+'</td>'+
 						    	'</tr>'+
 						    	'<tr>'+
-						    		'<td>Variedad</td>'+
+						    		'<td>'+txt.msjVariedad+'</td>'+
 						    		'<td>'+AppConfig['tmp_variedad']+'</td>'+
 						    	'</tr>'+
 						    	'<tr>'+
-						    		'<td>Hectáreas Cultivadas</td>'+
+						    		'<td>'+txt.msjHectareacultivadas+'</td>'+
 						    		'<td>'+AppConfig['tmp_has']+'</td>'+
 						    	'</tr>'+
 						    	'<tr>'+
-						    		'<td>Fecha Siembra</td>'+
+						    		'<td>'+txt.msjFechasiembra+'</td>'+
 						    		'<td>'+AppConfig['tmp_fecha']+'</td>'+
 						    	'</tr>'+
 						    	'<tr>'+
-						    		'<td>Fase</td>'+
+						    		'<td>'+txt.msjFase+'</td>'+
 						    		'<td>'+fase+'</td>'+
 						    	'</tr>'+
 						    '</tbody>'
@@ -532,10 +541,10 @@ $( document ).ready(function() {
                           '</div>'+
                           '<table class="table"><thead>'+
 						      '<tr>'+
-						        '<th>Nombre</th>'+
-						        '<th>Detalle</th>'+
-						        '<th>ir</th>'+
-						        '<th>Eliminar</th>'+
+						        '<th>'+txt.msjNombre+'</th>'+
+						        '<th>'+txt.msjDetalle+'</th>'+
+						        '<th>'+txt.msjIr+'</th>'+
+						        '<th>'+txt.msjEliminar+'</th>'+
 						      '</tr>'+
 						    '</thead>'+
 						    '<tbody id="listaCultivos"></tbody>'
@@ -558,7 +567,7 @@ $( document ).ready(function() {
         						'<td>'+value.nombre+'</td>'+
         						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
-                				'<td class="btn_eliminar" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
+                				'<td class="btn_eliminar" align="right" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
 					});
 					
@@ -602,26 +611,26 @@ $( document ).ready(function() {
 							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
 							'</div>'+
 							'<div class="form-group">'+
-							  '<label for="fnombre">Nombre</label><input type="text" class="form-control" id="fnombre">'+
+							  '<label for="fnombre">'+txt.msjNombre+'</label><input type="text" class="form-control" id="fnombre">'+
 							'</div>'+
-							'<label for="ffecha">Fecha Siembra</label>'+
+							'<label for="ffecha">'+txt.msjFechasiembra+'</label>'+
 							'<input data-provide="datepicker" id="ffecha" class="form-control" >'+
 							'<div class="form-group">'+
-							  '<label for="fvariedad">Variedad</label><select class="form-control" id="fvariedad">'+
+							  '<label for="fvariedad">'+txt.msjVariedad+'</label><select class="form-control" id="fvariedad">'+
 							  '<option value="">--Seleccione--</option>'+
 							  '</select>'+
 							'</div>'+
 							'<div class="form-group">'+
-							  '<label for="fsistema">Sistema</label><select class="form-control" id="fsistema">'+
+							  '<label for="fsistema">'+txt.msjSistema+'</label><select class="form-control" id="fsistema">'+
 							  '<option value="">--Seleccione--</option>'+
 							  '</select>'+
 							'</div>'+
 							'<div class="form-group">'+
-							  '<label for="fhas">'+txt.msjHectarea+'s Cultivadas</label><input type="text" class="form-control decimal" id="fhas">'+
+							  '<label for="fhas">'+txt.msjHectareacultivadas+'</label><input type="text" class="form-control decimal" id="fhas">'+
 							'</div>'+
 							'<h6>'+txt.msjUbicacionmapa+': <span id="txtLon" class="label label-info"></span>  <span id="txtLat" class="label label-info"></span></h6>'+
 							'<div class="form-group">'+
-							  '<button type="button" class="btn btn-success btn-block"  id="btnGuardarCultivo">Guardar</button>'+
+							  '<button type="button" class="btn btn-success btn-block"  id="btnGuardarCultivo">'+txt.msjGuardar+'</button>'+
 							'</div>'
 						);
 		
@@ -715,38 +724,38 @@ $( document ).ready(function() {
 	};
 	AppConfig.eliminaCultivo=function(){
 			BootstrapDialog.show({
-				title: 'Eliminar',
+				title: txt.msjEliminar,
 				type: BootstrapDialog.TYPE_SUCCESS,
-	            message: 'Seguro desea eliminar el Cultivo: "'+AppConfig['tmp_nombre'] + '"',
+	            message: txt.msjEliminacultivo+' '+AppConfig['tmp_nombre'] + '"',
 	            buttons: [{
 	                icon: 'glyphicon glyphicon-erase',
-	                label: 'Eliminar',
-	                title: 'Eliminar',
+	                label: txt.msjEliminar,
+	                title: txt.msjEliminar,
 	                cssClass: 'btn-danger',
 	                action: function(dialogItself){
 						AppConfig.sk_sofy.emit('deleteMicultivo',{id:AppConfig['tmp_id']}, function (msj) {
 							if(msj=="1"){
-								msj_exito("Cultivo Eliminado correctamente!");
+								msj_exito(txt.msjEliminadocorrectamente);
 								dialogItself.close();
 								AppConfig.listaMiCultivo();
 								return true;	
 							}else{
-								msj_peligro("No se puede Elimina el Cultivo");
+								msj_peligro("No se puede Eliminar el Cultivo");
 							}
 							console.log(msj);
 						});
 	                }
 	            },{
 	                icon: 'glyphicon glyphicon-th-list',
-	                label: 'Listado',
-	                title: 'Listado',
+	                label: txt.msjMicultivo,
+	                title: txt.msjMicultivo,
 	                cssClass: 'btn-info',
 	                action: function(dialogItself){
 	                    dialogItself.close();
 						AppConfig.listaMiCultivo();
 	                }
 	            }, {
-	                label: 'Cancelar',
+	                label: txt.btn_cancelar,
 	                action: function(dialogItself){
 	                    dialogItself.close();
 	                }
