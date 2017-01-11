@@ -64,7 +64,14 @@ var AppMap = {
 		AppMap.loadDataDepto();
 		map=L.map('map').setView(this.center, this.zoom);
 		map.zoomControl.setPosition('topright');
+		map.on('click', this.onMapClick);
 		return map;
+	},
+	onMapClick:function(e){		//console.log(e.latlng);
+		var lat = e.latlng.lat;	//console.log(lat);
+		var lon = e.latlng.lng;	//console.log(lon);
+		AppMap.ActualizaPunto(lat,lon);
+    	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
 	},
 	onEachFeature:function(feature, layer){
 		//console.log(feature.properties.id);//console.log(AppMap.dataProdDepto[feature.properties.id]);
@@ -79,8 +86,10 @@ var AppMap = {
 				$("#tituloMapa").show().html(nomTipo+' - '+AppMap.dataProdDepto[feature.properties.id][0].agno);
 				AppMap.actualizaTitulo = true;
 			}
+			var semestre = "Primer semestre";
+			if(AppMap.dataProdDepto[feature.properties.id][0].sem != "A") semestre = "Segundo semestre";
 			texto = '<div class="popupstyle">' +
-							'<b> ' +AppMap.dataProdDepto[feature.properties.id][0].depto+ ' - Semestre: '+AppMap.dataProdDepto[feature.properties.id][0].sem+' <br></b>' +
+							'<b> ' +AppMap.dataProdDepto[feature.properties.id][0].depto+ ' - '+semestre+' <br></b>' +
 							'<small class="msjRiegoSuper">'+txt.msjRiegoSuper+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_h+ ' Ha.<br></b>' +
 							'<small class="msjRiegoProd">'+txt.msjRiegoProd+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t+ ' Ton.<br></b>' +
 							'<small class="msjRiegoRend">'+txt.msjRiegoRend+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_t_h+ ' Ton/Ha.<br></b>' +
@@ -140,38 +149,38 @@ var AppMap = {
 		AppMap.lon = lon;
 		console.log("Punto Actualizado");
 	},
+	removeCapa: function(){
+		if(this.map.hasLayer(this.LyrMpioDepto)) this.map.removeLayer(this.LyrMpioDepto);
+		$("#btn_mpio").hide();
+		$("#btn_depto").hide();
+		$("#tituloMapa").hide();
+		$(".legend").hide();
+		$("#btn_mapa").find('button').removeClass("btn-warning").addClass("btn-success");
+	},
 	AddCapa: function(tipo,accion){ //console.log(geojsonFeature);
 		if(accion=="desplegar"){	//Apagar Capa
 			if(this.map.hasLayer(this.LyrMpioDepto)) this.map.removeLayer(this.LyrMpioDepto);
-			if($("#opMapa").is(":checked")==false){
-				$("#btn_mpio").hide();
-				$("#btn_depto").hide();
-				$("#tituloMapa").hide();
-				$(".legend").hide();
-				$("#btn_mapa").find('button').removeClass("btn-warning").addClass("btn-success");
+			if(tipo=="Mpio"){	//Encender Capa
+				this.LyrMpioDepto = L.geoJson(geojsonFeatureMpio,{
+												onEachFeature: this.onEachFeature
+			          				}).addTo(this.map);
+			    AppMap.tipoCapa='Mpio';			
 			}else{
-				if(tipo=="Mpio"){	//Encender Capa
-					this.LyrMpioDepto = L.geoJson(geojsonFeatureMpio,{
-													onEachFeature: this.onEachFeature
-				          				}).addTo(this.map);
-				    AppMap.tipoCapa='Mpio';			
-				}else{
-					this.limitesLeyenda = this.getBreaks(geojsonFeatureDepto,AppMap.tipoMapa,4);	console.log(this.limitesLeyenda);
-					AppMap.actualizaTitulo = false;		//Set False para que actualice el tituloMapa
-					this.LyrMpioDepto = L.geoJson(geojsonFeatureDepto,{ style: this.setStyle,
-													onEachFeature: this.onEachFeature
-				          				}).addTo(this.map);
-				   	AppMap.tipoCapa='Depto';
-				   	this.AddLeyenda(this.map);
-				   	
-				}
-				AppConfig.ActivarBtn(AppMap.tipoCapa);
-			    this.LyrMpioDepto.setZIndex(2);
-			    $("#btn_mpio").show();
-				$("#btn_depto").show();
-				$("#btn_mapa").find('button').removeClass("btn-success").addClass("btn-warning");
-				this.map.setZoom(6);
+				this.limitesLeyenda = this.getBreaks(geojsonFeatureDepto,AppMap.tipoMapa,4);	//console.log(this.limitesLeyenda);
+				AppMap.actualizaTitulo = false;		//Set False para que actualice el tituloMapa
+				this.LyrMpioDepto = L.geoJson(geojsonFeatureDepto,{ style: this.setStyle,
+												onEachFeature: this.onEachFeature
+			          				}).addTo(this.map);
+			   	AppMap.tipoCapa='Depto';
+			   	this.AddLeyenda(this.map);
+			   	
 			}
+			AppConfig.ActivarBtn(AppMap.tipoCapa);
+		    this.LyrMpioDepto.setZIndex(2);
+		    $("#btn_mpio").show();
+			$("#btn_depto").show();
+			$("#btn_mapa").find('button').removeClass("btn-success").addClass("btn-warning");
+			this.map.setZoom(6);
 		} else if(accion=="capa"){
 				if(tipo=="Mpio" && AppMap.tipoCapa != tipo){	console.log("comienza carga");
 				    waitingDialog.show("Cargando Municipios...", {progressType: 'success'});

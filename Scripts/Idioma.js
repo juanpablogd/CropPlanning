@@ -54,7 +54,10 @@ var txt = {
 	msjSi:"",
 	msjNo:"",
 	msjToneladas:"",
-	msjSinestacion:""
+	msjSinestacion:"",
+	msjUbicacionmapa:"",
+	msjHectarea:"",
+	msjRecomendacion:""
 };
 
 var idiomas = {
@@ -99,7 +102,7 @@ var idiomas = {
 		"msjSecanoRend": "Secano Rendimiento",
 		"msjSecanoMin": "Secano Mínimo",
 		"msjSecanoMax": "Secano Máximo",
-		"msjSinInfo": "SIN INFORMACIÓN",
+		"msjSinInfo": "No Disponible",
 		"msjclimogramaTemPre": "Climograma (Temperatura / Precipitación)",
 		"msjclimogramaHumSol": "Climograma (Humedad Relativa / Brillo Solar)",
 		"msjclimogramaHumedadrelativa": "Humedad Relativa",
@@ -113,7 +116,10 @@ var idiomas = {
 		"msjSi":"Si",
 		"msjNo":"No",
 		"msjToneladas":"En Toneladas(Ton) ",
-		"msjSinestacion":"Estación NO encontrada!",
+		"msjSinestacion":"No hay datos disponibles en el momento para esta úbicación!",
+		"msjUbicacionmapa":"Ubicación tomada del punto en el mapa",
+		"msjHectarea":"Hectárea",
+		"msjRecomendacion":"Recomendación"
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -156,7 +162,7 @@ var idiomas = {
 		"msjSecanoRend": "Dry farming Performance",
 		"msjSecanoMin": "Dry farming Minimum",
 		"msjSecanoMax": "Dry farming Maximum",
-		"msjSinInfo": "NO DATA",
+		"msjSinInfo": "Unavailable",
 		"msjclimogramaTemPre": "Weather graphic / Precipitation",
 		"msjclimogramaHumSol": "Relative humidity / solar brightness",
 		"msjclimogramaHumedadrelativa": "Relative Humidity",
@@ -170,7 +176,10 @@ var idiomas = {
 		"msjSi":"Yes",
 		"msjNo":"No",
 		"msjToneladas":"In Tonnes(Ton) ",
-		"msjSinestacion":"Station not found!",
+		"msjSinestacion":"Data not found!",
+		"msjUbicacionmapa":"Location taken from point on the map",
+		"msjHectarea":"Hectare",
+		"msjRecomendacion":"Recommendation"
 	}
 };
 

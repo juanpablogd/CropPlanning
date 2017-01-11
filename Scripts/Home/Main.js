@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-	//AppConfig['imei']=23423423;
+	AppConfig['imei']=23423423;
 	AppConfig.Inicial= function(){
     	$( "#lugares" ).autocomplete({
 		      minLength: 0,
@@ -363,10 +363,10 @@ $( document ).ready(function() {
 						'</div>'+
 						'<div class="form-group">'+
 							'<label><input type="checkbox" id="opMapa" value="opMapa">&nbsp;'+txt.msjMapa+'</label>'+
-					   		'<div class="radio">'+
+					   		'<div class="radio" id="radmapRiego">'+
 							  '<label><input type="radio" name="optTipomapa" value="riego_t">'+txt.msjRiegoSuper+'</label>'+
 							'</div>'+
-					   		'<div class="radio">'+
+					   		'<div class="radio" id="radmapSecano">'+
 							  '<label><input type="radio" name="optTipomapa" value="sec_t">'+txt.msjSecanoSuper+'</label>'+
 							'</div>'+
 						'</div>'
@@ -378,11 +378,17 @@ $( document ).ready(function() {
             message: $text,
             onshown: function(dialogRef){
             	//Activa Check si el mapa esta activo
-            	if(AppMap.map.hasLayer(AppMap.LyrMpioDepto) || AppMap.map.hasLayer(AppMap.LyrMpioDepto)){
+            	if(AppMap.map.hasLayer(AppMap.LyrMpioDepto)){
             		$('#opMapa').prop('checked', true);
+					$("#radmapRiego").show();
+					$("#radmapSecano").show();
+					//Activa opcion segun tipo de mapa
+					$('input[name=optTipomapa][value='+AppMap.tipoMapa+']').attr("checked", "checked");
+            	}else{
+            		$('#opMapa').prop('checked', false);
+					$("#radmapRiego").hide();
+					$("#radmapSecano").hide();
             	}
-				//Activa opcion segun tipo de mapa
-				$('input[name=optTipomapa][value='+AppMap.tipoMapa+']').attr("checked", "checked");
 				
             	//Click Opcion Producción
 		        $("input[name=optProd]").click(function() {
@@ -392,10 +398,17 @@ $( document ).ready(function() {
 		        });
 		        //Click opción Mapa
 		        $('#opMapa').click(function(){
-	        		AppMap.AddCapa("Depto","desplegar");
 					$("#btn_mpio").hide();
 					$("#btn_depto").hide();
-					dialogRef.close();
+					if ($('#opMapa').is(':checked')) {
+						$("#radmapRiego").show();
+						$("#radmapSecano").show();
+					}else {
+						$("#radmapRiego").hide();
+						$("#radmapSecano").hide();
+						AppMap.removeCapa();
+						dialogRef.close();
+					}
 		        });
             	//Click Opcion Producción Riego o Secanto
 		        $("input[name=optTipomapa]").click(function() {
@@ -456,6 +469,7 @@ $( document ).ready(function() {
 		AppConfig.listaMiCultivo();
 	});
 	AppConfig.detalleMiCultivo=function(){
+		var fase = (AppConfig['tmp_fase']=="null") ? txt.msjSinInfo : AppConfig['tmp_fase'];
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
 							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
@@ -484,7 +498,7 @@ $( document ).ready(function() {
 						    	'</tr>'+
 						    	'<tr>'+
 						    		'<td>Fase</td>'+
-						    		'<td>'+AppConfig['tmp_fase']+'</td>'+
+						    		'<td>'+fase+'</td>'+
 						    	'</tr>'+
 						    '</tbody>'
 						);
@@ -503,8 +517,8 @@ $( document ).ready(function() {
 					console.log(msj.datos.length);
 					for(r=0;r<msj.datos.length;r++){
 						$("#detalleCultivo").append('<tr>'+
-						    		'<td>Recomendación: </td>'+
-						    		'<td>'+msj.datos[r].recomendacion+'</td>'+
+						    		'<td><b>'+txt.msjRecomendacion+': </b></td>'+
+						    		'<td><b>'+msj.datos[r].recomendacion+'</b></td>'+
 						    	'</tr>');
 					}
 			  	});
@@ -603,9 +617,9 @@ $( document ).ready(function() {
 							  '</select>'+
 							'</div>'+
 							'<div class="form-group">'+
-							  '<label for="fhas">Has Cultivadas</label><input type="text" class="form-control decimal" id="fhas">'+
+							  '<label for="fhas">'+txt.msjHectarea+'s Cultivadas</label><input type="text" class="form-control decimal" id="fhas">'+
 							'</div>'+
-							'<h6><span id="txtLon" class="label label-info"></span>  <span id="txtLat" class="label label-info"></span></h6>'+
+							'<h6>'+txt.msjUbicacionmapa+': <span id="txtLon" class="label label-info"></span>  <span id="txtLat" class="label label-info"></span></h6>'+
 							'<div class="form-group">'+
 							  '<button type="button" class="btn btn-success btn-block"  id="btnGuardarCultivo">Guardar</button>'+
 							'</div>'
@@ -907,7 +921,7 @@ $( document ).ready(function() {
 					         	},
 					         	title: {
 							   		text: 'Información mensual periodo (1980-2010) IDEAM',
-							   		style: { "fontSize": "17px" },
+							   		style: { "fontSize": "15px" },
 							   		align: "center"
 							 	},
 					         	subtitle: {
@@ -971,7 +985,7 @@ $( document ).ready(function() {
 									align: 'left',
 									x: 80,
 									verticalAlign: 'top',
-									y: 60,
+									y: 65,
 									floating: true,
 									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 								},
@@ -1079,8 +1093,8 @@ $( document ).ready(function() {
 						            animation: true,
 					         	},
 					         	title: {
-							   		text: txt.msjclimogramaHumSol,
-							   		style: { "fontSize": "17px" },
+							   		text: 'Información mensual periodo (1980-2010) IDEAM',
+							   		style: { "fontSize": "15px" },
 							   		align: "center"
 							 	},
 					         	subtitle: {
@@ -1144,7 +1158,7 @@ $( document ).ready(function() {
 									align: 'left',
 									x: 80,
 									verticalAlign: 'top',
-									y: 60,
+									y: 110,
 									floating: true,
 									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 								},
@@ -1220,12 +1234,12 @@ $( document ).ready(function() {
             		var est,kms;
             		for(j=0;j<msj[0].length; j++){	//console.log(msj[0][j]);
             			aniomes.push(msj[0][j].anio + '-' + msj[0][j].mes);
-            			bajo.push(msj[0][j].bajo);
-            			normal.push(msj[0][j].normal);
-            			sobre.push(msj[0][j].sobre);
+            			bajo.push(parseFloat(msj[0][j].bajo));
+            			normal.push(parseFloat(msj[0][j].normal));
+            			sobre.push(parseFloat(msj[0][j].sobre));
             			est = msj[0][j].est;
             			kms = msj[0][j].d;
-            		}	//console.log(msj);
+            		}	console.log(msj);	//console.log(bajo);	console.log(normal);	console.log(sobre);
             		if(msj !="0"){
 						chart1 = new Highcharts.Chart({
 									chart: {
@@ -1263,7 +1277,7 @@ $( document ).ready(function() {
 							            align: 'left',
 							            x: 120,
 							            verticalAlign: 'top',
-							            y: 100,
+							            y: 90,
 							            floating: true,
 							            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 							        },
