@@ -49,10 +49,10 @@ var AppMap = {
 	              'rgba(255,255,255,0.9)';
 	},
 	loadDataDepto:function(){
-		AppConfig.sk_sofy.emit('proDepto', null, function (msj){	// console.log(msj);
+		AppConfig.sk_sofy.emit('proDepto', null, function (msj){	 //console.log(msj);
 			AppMap.dataProdDepto = msj;
 			//Actualiza GeoJson
-			$.each(geojsonFeatureDepto.features, function (index, value) {//console.log(value);
+			$.each(geojsonFeatureDepto.features, function (index, value) {	//console.log(value);
 				if(AppMap.dataProdDepto[value.properties.id] != undefined){
 					value.properties.riego_t = AppMap.dataProdDepto[value.properties.id][0].riego_t;
 					value.properties.sec_t = AppMap.dataProdDepto[value.properties.id][0].sec_t;
@@ -81,13 +81,13 @@ var AppMap = {
 							'<b class="msjSinInfo">'+txt.msjSinInfo+'<br></b>' +
 					'</div>';
 		}else{
+			var semestre = txt.msjPrimersemestre;
+			if(AppMap.dataProdDepto[feature.properties.id][0].sem != "A") semestre = txt.msjSegundosemestre;
 			if(AppMap.actualizaTitulo==false){	console.log("Actualiza Título");
 				var nomTipo = txt.msjRiegoProd; if(AppMap.tipoMapa=="sec_t") nomTipo = txt.msjSecanoProd;
-				$("#tituloMapa").show().html(nomTipo+' - '+AppMap.dataProdDepto[feature.properties.id][0].agno);
+				$("#tituloMapa").show().html(nomTipo+' - '+AppMap.dataProdDepto[feature.properties.id][0].agno+ ' - '+semestre);
 				AppMap.actualizaTitulo = true;
 			}
-			var semestre = "Primer semestre";
-			if(AppMap.dataProdDepto[feature.properties.id][0].sem != "A") semestre = "Segundo semestre";
 			texto = '<div class="popupstyle">' +
 							'<b> ' +AppMap.dataProdDepto[feature.properties.id][0].depto+ ' - '+semestre+' <br></b>' +
 							'<small class="msjRiegoSuper">'+txt.msjRiegoSuper+':</small> <b> ' +AppMap.dataProdDepto[feature.properties.id][0].riego_h+ ' Ha.<br></b>' +

@@ -135,8 +135,8 @@ $( document ).ready(function() {
 		//var lat = pos.coords.latitude;var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
-		AppConfig.sk_sofy.emit('clima',{lat:lat, lon:lon}, function (msj) {
-	  		console.log(msj);
+		AppConfig.sk_sofy.emit('clima',{lat:lat, lon:lon, lenguaje: txt.Idioma}, function (msj) {
+	  		//console.log(msj);
 	  		if(msj=="0"){
 	  			msj_peligro(txt.msjSinestacion);
 	  		}else{
@@ -144,17 +144,17 @@ $( document ).ready(function() {
 				$text.append('<div class="form-group">'+
 								'<div class="row">'+
 									'<div class="col-xs-4" >'+
-										'<img src="../../Images/Home/wind.png" height="80%" width="80%"><br>'+
+										'<img src="../../Images/Home/wind.png" height="66px" width="66px"><br>'+
 									'</div>'+
 									'<div class="col-xs-8" style="font-size: 12px;text-align: center;">'+
 										msj.depto+'-'+msj.mpio+'<br>'+
-										'Estación '+msj.estacion+'<br>'+
-										'Distancia '+msj.distancia+' Kms<br>'+
+										txt.msjEstacion+' '+msj.estacion+'<br>'+
+										txt.msjDistancia+' '+msj.distancia+' Kms<br>'+
 										msj.fechaHora+'<br>'+
 									'</div>'+
 								'</div>'+
 								'<div class="row" style="margin-top: 0px;">'+
-									'<br><button type="button" class="btn btn-success btn-block">Temperatura</button><br>'+
+									'<br><button type="button" class="btn btn-success btn-block">'+txt.msjTemperatura+'</button><br>'+
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-4" style="font-size: 20px;font-weight: 600;text-align: center;">'+
@@ -166,7 +166,7 @@ $( document ).ready(function() {
 									'</div>'+
 								'</div>'+
 								'<div class="row" style="margin-top: -15px;">'+
-									'<br><button type="button" class="btn btn-success btn-block">Humedad Relativa</button><br>'+
+									'<br><button type="button" class="btn btn-success btn-block">'+txt.msjclimogramaHumedadrelativa+'</button><br>'+
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
@@ -174,7 +174,7 @@ $( document ).ready(function() {
 									'</div>'+
 								'</div>'+
 								'<div class="row" style="margin-top: -15px;">'+
-									'<br><button type="button" class="btn btn-success btn-block">Precipitación Acumulada Diaria</button><br>'+
+									'<br><button type="button" class="btn btn-success btn-block">'+txt.msjPrecipitacionacumdiaria+'</button><br>'+
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
@@ -182,7 +182,7 @@ $( document ).ready(function() {
 									'</div>'+
 								'</div>'+
 								'<div class="row" style="margin-top: -15px;">'+
-									'<br><button type="button" class="btn btn-success btn-block">Radiación Acumulada Diaria</button><br>'+
+									'<br><button type="button" class="btn btn-success btn-block">'+txt.msjRadiacionacumdiaria+'</button><br>'+
 								'</div>'+
 								'<div class="row">'+
 									'<div class="col-xs-12" style="font-size: 18px;text-align: center;">'+
@@ -880,46 +880,46 @@ $( document ).ready(function() {
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
     	AppConfig.sk_sofy.emit('temperatura',{lat:lat, lon:lon}, function (msj){	console.log(msj);
 			var rangesTem = [
-				            ["Ene", msj.tepe[0].datos.min1, msj.tepe[0].datos.max1],
-				            ["Feb", msj.tepe[0].datos.min2, msj.tepe[0].datos.max2],
-				            ["Mar", msj.tepe[0].datos.min3, msj.tepe[0].datos.max3],
-				            ["Abr", msj.tepe[0].datos.min4, msj.tepe[0].datos.max4],
-				            ["May", msj.tepe[0].datos.min5, msj.tepe[0].datos.max5],
-				            ["Jun", msj.tepe[0].datos.min6, msj.tepe[0].datos.max6],
-				            ["Jul", msj.tepe[0].datos.min7, msj.tepe[0].datos.max7],
-				            ["Ago", msj.tepe[0].datos.min8, msj.tepe[0].datos.max8],
-				            ["Sep", msj.tepe[0].datos.min9, msj.tepe[0].datos.max9],
-				            ["Oct", msj.tepe[0].datos.min10, msj.tepe[0].datos.max10],
-				            ["Nov", msj.tepe[0].datos.min11, msj.tepe[0].datos.max11],
-				            ["Dic", msj.tepe[0].datos.min12, msj.tepe[0].datos.max12]
+				            [txt.msjEne, msj.tepe[0].datos.min1, msj.tepe[0].datos.max1],
+				            [txt.msjFeb, msj.tepe[0].datos.min2, msj.tepe[0].datos.max2],
+				            [txt.msjMar, msj.tepe[0].datos.min3, msj.tepe[0].datos.max3],
+				            [txt.msjAbr, msj.tepe[0].datos.min4, msj.tepe[0].datos.max4],
+				            [txt.msjMay, msj.tepe[0].datos.min5, msj.tepe[0].datos.max5],
+				            [txt.msjJun, msj.tepe[0].datos.min6, msj.tepe[0].datos.max6],
+				            [txt.msjJul, msj.tepe[0].datos.min7, msj.tepe[0].datos.max7],
+				            [txt.msjAgo, msj.tepe[0].datos.min8, msj.tepe[0].datos.max8],
+				            [txt.msjSep, msj.tepe[0].datos.min9, msj.tepe[0].datos.max9],
+				            [txt.msjOct, msj.tepe[0].datos.min10, msj.tepe[0].datos.max10],
+				            [txt.msjNov, msj.tepe[0].datos.min11, msj.tepe[0].datos.max11],
+				            [txt.msjDic, msj.tepe[0].datos.min12, msj.tepe[0].datos.max12]
 				        ],
 				        averagesTem = [
-				            ["Ene", msj.tepe[0].datos.med1],
-				            ["Feb", msj.tepe[0].datos.med2],
-				            ["Mar", msj.tepe[0].datos.med3],
-				            ["Abr", msj.tepe[0].datos.med4],
-				            ["May", msj.tepe[0].datos.med5],
-				            ["Jun", msj.tepe[0].datos.med6],
-				            ["Jul", msj.tepe[0].datos.med7],
-				            ["Ago", msj.tepe[0].datos.med8],
-				            ["Sep", msj.tepe[0].datos.med9],
-				            ["Oct", msj.tepe[0].datos.med10],
-				            ["Nov", msj.tepe[0].datos.med11],
-				            ["Dic", msj.tepe[0].datos.med12]
+				            [txt.msjEne, msj.tepe[0].datos.med1],
+				            [txt.msjFeb, msj.tepe[0].datos.med2],
+				            [txt.msjMar, msj.tepe[0].datos.med3],
+				            [txt.msjAbr, msj.tepe[0].datos.med4],
+				            [txt.msjMay, msj.tepe[0].datos.med5],
+				            [txt.msjJun, msj.tepe[0].datos.med6],
+				            [txt.msjJul, msj.tepe[0].datos.med7],
+				            [txt.msjAgo, msj.tepe[0].datos.med8],
+				            [txt.msjSep, msj.tepe[0].datos.med9],
+				            [txt.msjOct, msj.tepe[0].datos.med10],
+				            [txt.msjNov, msj.tepe[0].datos.med11],
+				            [txt.msjDic, msj.tepe[0].datos.med12]
 				        ],
 				        averagesPre = [
-				            ["Ene", msj.tepe[1].datos.med1],
-				            ["Feb", msj.tepe[1].datos.med2],
-				            ["Mar", msj.tepe[1].datos.med3],
-				            ["Abr", msj.tepe[1].datos.med4],
-				            ["May", msj.tepe[1].datos.med5],
-				            ["Jun", msj.tepe[1].datos.med6],
-				            ["Jul", msj.tepe[1].datos.med7],
-				            ["Ago", msj.tepe[1].datos.med8],
-				            ["Sep", msj.tepe[1].datos.med9],
-				            ["Oct", msj.tepe[1].datos.med10],
-				            ["Nov", msj.tepe[1].datos.med11],
-				            ["Dic", msj.tepe[1].datos.med12]
+				            [txt.msjEne, msj.tepe[1].datos.med1],
+				            [txt.msjFeb, msj.tepe[1].datos.med2],
+				            [txt.msjMar, msj.tepe[1].datos.med3],
+				            [txt.msjAbr, msj.tepe[1].datos.med4],
+				            [txt.msjMay, msj.tepe[1].datos.med5],
+				            [txt.msjJun, msj.tepe[1].datos.med6],
+				            [txt.msjJul, msj.tepe[1].datos.med7],
+				            [txt.msjAgo, msj.tepe[1].datos.med8],
+				            [txt.msjSep, msj.tepe[1].datos.med9],
+				            [txt.msjOct, msj.tepe[1].datos.med10],
+				            [txt.msjNov, msj.tepe[1].datos.med11],
+				            [txt.msjDic, msj.tepe[1].datos.med12]
 				        ];   
             	
 						chart1 = new Highcharts.Chart({
@@ -929,12 +929,12 @@ $( document ).ready(function() {
 						            animation: true,
 					         	},
 					         	title: {
-							   		text: 'Información mensual periodo (1980-2010) IDEAM',
+							   		text: txt.msjInfmensualperiodo + ' (1980-2010) IDEAM',
 							   		style: { "fontSize": "15px" },
 							   		align: "center"
 							 	},
 					         	subtitle: {
-							   		text: 'Estación '+msj.tepe[1].datos.municipio+' '+msj.tepe[1].datos.departamento +' a '+msj.tepe[1].datos.d+' Kms'
+							   		text: txt.msjEstacion + ' '+msj.tepe[1].datos.municipio+' '+msj.tepe[1].datos.departamento +' '+txt.msjA+' '+msj.tepe[1].datos.d+' Kms'
 							 	}, 
 					        	credits: {
 					            	enabled: false
@@ -1067,32 +1067,32 @@ $( document ).ready(function() {
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
     	AppConfig.sk_sofy.emit('HumedadSolar',{lat:lat, lon:lon}, function (msj){	console.log(msj);
 			var averagesHum = [
-				            ["Ene", msj.huso[0].datos.med1],
-				            ["Feb", msj.huso[0].datos.med2],
-				            ["Mar", msj.huso[0].datos.med3],
-				            ["Abr", msj.huso[0].datos.med4],
-				            ["May", msj.huso[0].datos.med5],
-				            ["Jun", msj.huso[0].datos.med6],
-				            ["Jul", msj.huso[0].datos.med7],
-				            ["Ago", msj.huso[0].datos.med8],
-				            ["Sep", msj.huso[0].datos.med9],
-				            ["Oct", msj.huso[0].datos.med10],
-				            ["Nov", msj.huso[0].datos.med11],
-				            ["Dic", msj.huso[0].datos.med12]
+				            [txt.msjEne, msj.huso[0].datos.med1],
+				            [txt.msjFeb, msj.huso[0].datos.med2],
+				            [txt.msjMar, msj.huso[0].datos.med3],
+				            [txt.msjAbr, msj.huso[0].datos.med4],
+				            [txt.msjMay, msj.huso[0].datos.med5],
+				            [txt.msjJun, msj.huso[0].datos.med6],
+				            [txt.msjJul, msj.huso[0].datos.med7],
+				            [txt.msjAgo, msj.huso[0].datos.med8],
+				            [txt.msjSep, msj.huso[0].datos.med9],
+				            [txt.msjOct, msj.huso[0].datos.med10],
+				            [txt.msjNov, msj.huso[0].datos.med11],
+				            [txt.msjDic, msj.huso[0].datos.med12]
 				        ],
 				        averagesPre = [
-				            ["Ene", msj.huso[1].datos.med1],
-				            ["Feb", msj.huso[1].datos.med2],
-				            ["Mar", msj.huso[1].datos.med3],
-				            ["Abr", msj.huso[1].datos.med4],
-				            ["May", msj.huso[1].datos.med5],
-				            ["Jun", msj.huso[1].datos.med6],
-				            ["Jul", msj.huso[1].datos.med7],
-				            ["Ago", msj.huso[1].datos.med8],
-				            ["Sep", msj.huso[1].datos.med9],
-				            ["Oct", msj.huso[1].datos.med10],
-				            ["Nov", msj.huso[1].datos.med11],
-				            ["Dic", msj.huso[1].datos.med12]
+				            [txt.msjEne, msj.huso[1].datos.med1],
+				            [txt.msjFeb, msj.huso[1].datos.med2],
+				            [txt.msjMar, msj.huso[1].datos.med3],
+				            [txt.msjAbr, msj.huso[1].datos.med4],
+				            [txt.msjMay, msj.huso[1].datos.med5],
+				            [txt.msjJun, msj.huso[1].datos.med6],
+				            [txt.msjJul, msj.huso[1].datos.med7],
+				            [txt.msjAgo, msj.huso[1].datos.med8],
+				            [txt.msjSep, msj.huso[1].datos.med9],
+				            [txt.msjOct, msj.huso[1].datos.med10],
+				            [txt.msjNov, msj.huso[1].datos.med11],
+				            [txt.msjDic, msj.huso[1].datos.med12]
 				        ];   
             	
 						chart1 = new Highcharts.Chart({
@@ -1102,12 +1102,12 @@ $( document ).ready(function() {
 						            animation: true,
 					         	},
 					         	title: {
-							   		text: 'Información mensual periodo (1980-2010) IDEAM',
+							   		text: txt.msjInfmensualperiodo + ' (1980-2010) IDEAM',
 							   		style: { "fontSize": "15px" },
 							   		align: "center"
 							 	},
 					         	subtitle: {
-							   		text: 'Estación '+msj.huso[1].datos.municipio+' '+msj.huso[1].datos.departamento +' a '+msj.huso[1].datos.d+' Kms'
+							   		text:  txt.msjEstacion + ' '+msj.huso[1].datos.municipio+' '+msj.huso[1].datos.departamento +' '+txt.msjA+' '+msj.huso[1].datos.d+' Kms'
 							 	}, 
 					        	credits: {
 					            	enabled: false
@@ -1167,7 +1167,7 @@ $( document ).ready(function() {
 									align: 'left',
 									x: 80,
 									verticalAlign: 'top',
-									y: 110,
+									y: 70,
 									floating: true,
 									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 								},
@@ -1235,7 +1235,7 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
-            	AppConfig.sk_sofy.emit('prediccion',{lat:lat, lon:lon}, function (msj){ //console.log(msj);	console.log(msj[0]);
+            	AppConfig.sk_sofy.emit('prediccion',{lat:lat, lon:lon, lenguaje: txt.Idioma}, function (msj){ //console.log(msj);	console.log(msj[0]);
             		var aniomes = [];
             		var bajo = [];
             		var normal = [];
@@ -1258,7 +1258,7 @@ $( document ).ready(function() {
 							            type: 'column'
 						         	},
 						         	title: {
-								   		text: 'Estación "' + est + '" a ' + kms + ' Kms'
+								   		text: txt.msjEstacion + ' "' + est + '" '+txt.msjA+' ' + kms + ' Kms'
 								 	},
 						        	credits: {
 						            	enabled: false
@@ -1284,22 +1284,22 @@ $( document ).ready(function() {
 							        legend: {
 							            layout: 'vertical',
 							            align: 'left',
-							            x: 120,
+							            x: 50,
 							            verticalAlign: 'top',
-							            y: 90,
+							            y: 50,
 							            floating: true,
 							            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 							        },
 								 	series: [{
-							            name: 'bajo',
+							            name: txt.msjBajo,
 							            data: bajo
 							
 							        }, {
-							            name: 'Normal',
+							            name: txt.msjNormal,
 							            data: normal
 							
 							        }, {
-							            name: 'Sobre',
+							            name: txt.msjSobre,
 							            data: sobre
 							        }]
 						      });
