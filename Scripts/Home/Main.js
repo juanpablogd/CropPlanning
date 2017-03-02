@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-	//AppConfig['imei']=23423423;
+	AppConfig['imei']=23423423;
 	AppConfig.Inicial= function(){
     	$( "#lugares" ).autocomplete({
 		      minLength: 0,
@@ -235,7 +235,7 @@ $( document ).ready(function() {
 								  '<input type="text" id="lon" class="form-control lon" />'+	//placeholder="-74.083557"	placeholder="4.622196"
 							'</div>'+
 							'<div class="form-group">'+
-								  '<button type="button" class="btn btn-success" id="btn_coordenada">Buscar</button>'+
+								  '<button type="button" class="btn btn-success" id="btn_coordenada">'+txt.msjIr+'</button>'+
 							'</div>'
 						);
 		
@@ -687,23 +687,23 @@ $( document ).ready(function() {
 		        	var id_sistema= $('#fsistema').val();
 		        	var ha_cultivadas= $('#fhas').val();
 			  		if(nombre == ""){
-			  			msj_peligro("Debe ingresar un Nombre");
+			  			msj_peligro(txt.msjNombre + txt.msjRequerido);
 			  			setTimeout(function() { $('#fnombre').focus();}, 500);
 			  			return;
 			  		}else if(pattern.test(fecha_siembra) == false){
-			  			msj_peligro("Debe ingresar una Fecha valida");
+			  			msj_peligro(txt.msjFechasiembra + txt.msjRequerido);
 			  			setTimeout(function() { $('#ffecha').focus();}, 500);
 			  			return;
 			  		}else if(id_variedad==""){
-			  			msj_peligro("Debe seleccionar una variedad");
+			  			msj_peligro(txt.msjVariedad  + txt.msjRequerido);
 			  			setTimeout(function() { $('#fvariedad').focus();}, 500);
 			  			return;
 			  		}else if(id_sistema==""){
-			  			msj_peligro("Debe seleccionar un sistema");
+			  			msj_peligro(txt.msjSistema  + txt.msjRequerido);
 			  			setTimeout(function() { $('#fsistema').focus();}, 500);
 			  			return;
 			  		}else if(ha_cultivadas==""){
-			  			msj_peligro("Debe ingresar las Hectáreas");
+			  			msj_peligro(txt.msjHectareacultivadas  + txt.msjRequerido);
 			  			setTimeout(function() { $('#fhas').focus();}, 500);
 			  			return;
 			  		};	//var imei = AppConfig.getImei();	
@@ -813,7 +813,7 @@ $( document ).ready(function() {
 									}
 								},
 								xAxis: {
-							    	categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+							    	categories: [txt.msjEne, txt.msjFeb, txt.msjMar, txt.msjAbr, txt.msjMay, txt.msjJun, txt.msjJul, txt.msjAgo, txt.msjSep, txt.msjOct, txt.msjNov, txt.msjDic]
 								},
 						        tooltip: {
             								formatter: function() {
@@ -821,9 +821,9 @@ $( document ).ready(function() {
 	                							var siembra=false;
 	                							var cosecha=false;
 	                							var IndexSel;
-	            								$.each(this.points, function(i, point) {	//console.log(point);	console.log(i);
-	            									IndexSel = point.point.index;
-	            									if(point.series.name=="Siembra"){
+	            								$.each(this.points, function(i, point) {	console.log(point);	console.log(i);
+	            									IndexSel = point.point.index;		console.log(point.series.name);
+	            									if(point.series.name==txt.msjSiembra){
 	            										if (point.y) {
 	            											siembra = true;
 	            										}
@@ -834,15 +834,15 @@ $( document ).ready(function() {
 	            									}
 	                							});		//console.log(siembra + " " + cosecha + " " + IndexSel);
 	                							if(siembra && AppConfig['siembraIni'] == IndexSel){
-													texto = '<span style="color:#8A4B08;font-weight:bold;">Inicio Siembra'+' : 20 de Marzo<span>';
+													texto = '<span style="color:#8A4B08;font-weight:bold;">'+txt.msjInicio+txt.msjSiembra+' : 20-'+txt.msjMar+'<span>';
 	                							} else if(siembra && AppConfig['siembraFin'] == IndexSel){
-													texto = '<span style="color:#8A4B08;font-weight:bold;">Finalización Siembra'+' : 04 de Mayo<span>';
+													texto = '<span style="color:#8A4B08;font-weight:bold;">'+txt.msjFin+txt.msjSiembra+' : 04-'+txt.msjMay+'<span>';
 	                							} else if(cosecha && AppConfig['cosechaIni'] == IndexSel){
-													texto = '<span style="color:#088A08;font-weight:bold;">Inicio Cosecha'+' : 20 de Agosto<span>';
+													texto = '<span style="color:#088A08;font-weight:bold;">'+txt.msjInicio+txt.msjCosecha+' : 20-'+txt.msjAgo+'<span>';
 	                							} else if(cosecha && AppConfig['cosechaFin'] == IndexSel){
-													texto = '<span style="color:#088A08;font-weight:bold;">Finalización Cosecha'+' : 04 de Julio<span>';
+													texto = '<span style="color:#088A08;font-weight:bold;">'+txt.msjFin+txt.msjCosecha+' : 04-'+txt.msjOct+'<span>';
 	                							}else{
-	                								texto = '<span style="color:red;font-weight:bold;">Fecha no favorable para Siembra y cosecha<span>';
+	                								texto = '<span style="color:red;font-weight:bold;">'+txt.msjEpocaNoFavorable+' '+txt.msjSiembra+'/'+txt.msjCosecha+'<span>';
 	                							} 
 	            								return texto;
             								},
@@ -860,14 +860,14 @@ $( document ).ready(function() {
 						        }]
 					      });
 			$text.append( '<div class="form-group">'+
-					   		'<label for="" class="label-titulo siembra">&nbsp;Época favorable para sembrar:</label><br>'+
-					   		'<label for="" class="label-texto siembra">&nbsp;Inicia: 20 de Marzo</label><br>'+
-					   		'<label for="" class="label-texto siembra">&nbsp;Finaliza: 04 de Mayo</label>'+
+					   		'<label for="" class="label-titulo siembra">&nbsp;'+txt.msjEpocaFavorable+txt.msjSiembra+':</label><br>'+
+					   		'<label for="" class="label-texto siembra">&nbsp;'+txt.msjInicio+txt.msjSiembra+' : 20-'+txt.msjMar+'</label><br>'+
+					   		'<label for="" class="label-texto siembra">&nbsp;'+txt.msjInicio+txt.msjSiembra+' : 04-'+txt.msjMay+'</label>'+
 							'</div>'+
 							'<div class="form-group">'+
-					   		'<label for="" class="label-titulo cosecha">&nbsp;Época favorable para Cosecha:</label><br>'+
-					   		'<label for="" class="label-texto cosecha">&nbsp;Inicia: 20 de Marzo</label><br>'+
-					   		'<label for="" class="label-texto cosecha">&nbsp;Finaliza: 04 de Mayo</label>'+
+					   		'<label for="" class="label-titulo cosecha">&nbsp;'+txt.msjEpocaFavorable+txt.msjCosecha+':</label><br>'+
+					   		'<label for="" class="label-texto cosecha">&nbsp;'+txt.msjFin+txt.msjCosecha+' : 20-'+txt.msjAgo+'</label><br>'+
+					   		'<label for="" class="label-texto cosecha">&nbsp;'+txt.msjFin+txt.msjCosecha+' : 04-'+txt.msjOct+'</label>'+
 							'</div>'
 						);
             }
@@ -1033,7 +1033,7 @@ $( document ).ready(function() {
 						                lineColor: Highcharts.getOptions().colors[0]
 						            }
 						        }, {
-						            name: 'Rango',
+						            name: txt.msjRango,
 						            data: rangesTem,
 						            type: 'arearange',
 						            lineWidth: 0,

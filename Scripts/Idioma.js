@@ -24,6 +24,7 @@ var txt = {
 	msjSiembra: "",
 	msjCosecha: "",
 	msjPrecipitacion: "",
+	msjRango: "",
 	msjTemperatura: "",
 	msjEpoca: "",
 	msjMapa: "",
@@ -94,6 +95,12 @@ var txt = {
 	msjDic: "",
 	msjPrimersemestre: "",
 	msjSegundosemestre: "",
+	msjEpocaFavorable: "",
+	msjEpocaNoFavorable: "",
+	msjInicio: "",
+	msjFin: "",
+	msjLocalizando: "",
+	msjRequerido: "",
 };
 
 var idiomas = {
@@ -122,6 +129,7 @@ var idiomas = {
 		"msjSiembra": "Siembra",
 		"msjCosecha": "Cosecha",
 		"msjPrecipitacion": "Precipitación",
+		"msjRango": "Rango",
 		"msjTemperatura": "Temperatura",
 		"msjEpoca": "Cultivo",
 		"msjMapa": "Mapa",
@@ -192,6 +200,12 @@ var idiomas = {
 		"msjDic": "Dic.",
 		"msjPrimersemestre": "Primer semestre",
 		"msjSegundosemestre": "Segundo semestre",
+		"msjEpocaFavorable": "Época favorable para ",
+		"msjEpocaNoFavorable": "Época No favorable para ",
+		"msjInicio": "Inicio ",
+		"msjFin": "Inicio ",
+		"msjLocalizando": "Localizando...",
+		"msjRequerido": " requerido.",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -218,6 +232,7 @@ var idiomas = {
 		"msjSiembra": "Sowing",
 		"msjCosecha": "Harvest",
 		"msjPrecipitacion": "Precipitation",
+		"msjRango": "Range",
 		"msjTemperatura": "Temperature",
 		"msjEpoca": "Season",
 		"msjMapa": "Map",
@@ -288,6 +303,12 @@ var idiomas = {
 		"msjDic": "Dec.",
 		"msjPrimersemestre": "The first Half of the year",
 		"msjSegundosemestre": "The second half of the year",
+		"msjEpocaFavorable": "Favorable moment for ",
+		"msjEpocaNoFavorable": "Inauspicious moment for ",
+		"msjInicio": "Start ",
+		"msjFin": "Finish ",
+		"msjLocalizando": "Locating...",
+		"msjRequerido": " required.",
 	}
 };
 
@@ -313,5 +334,7 @@ function SetIdioma(leng){ console.log("Cambio de idioma:" +leng);
 	$(".msjSecanoMin").html(txt.msjSecanoMin);
 	$(".msjSecanoMax").html(txt.msjSecanoMax);
 	$(".msjSinInfo").html(txt.msjSinInfo);
+	$("#localizando").html(txt.msjLocalizando);
+	
 /*	$.each( txt, function( key, value ) {console.log ( key + ": " + value );});	*/	
 };

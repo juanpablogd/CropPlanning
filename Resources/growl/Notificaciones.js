@@ -2,7 +2,7 @@
   var msj_peligro=function(msj){
         $.growl({
                 icon: 'glyphicon glyphicon-warning-sign',
-                title: ' Alerta ',
+                title: '  ',
                 message: msj                
             },
             { 
