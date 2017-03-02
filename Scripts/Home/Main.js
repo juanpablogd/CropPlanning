@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-	AppConfig['imei']=23423423;
+	//AppConfig['imei']=23423423;
 	AppConfig.Inicial= function(){
     	$( "#lugares" ).autocomplete({
 		      minLength: 0,
