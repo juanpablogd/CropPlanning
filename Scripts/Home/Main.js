@@ -555,6 +555,7 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
+				AppConfig.getImei();
 		        $("#btnAddcultivo").click(function() {
 		        	dialogRef.close();
 		        	AppConfig.addMiCultivo();
@@ -764,23 +765,45 @@ $( document ).ready(function() {
 		};
 		
 	AppConfig.getImei=function(){
-		var deviceInfo = cordova.require("cordova/plugin/DeviceInformation");
-	        deviceInfo.get(function(result) { //alert(result);
-	                       //Obtiene el Número de SIM
-	                       var res = result.split("simNo");
-	                       res = res[1].split('"');	//alert (res[2]);
-	                       serial = res[2]; //alert("SIM / Serial: "+serial);
-	                       //Obtiene el IMEI
-	                       res = result.split("deviceID");
-	                       res = res[1].split('"');
-	                       imei = res[2]; console.log("Imei: "+imei);
-		                   //Obtiene el IMEI
-		                   AppConfig['imei'] = imei;
-		                   ;
-	                       }, function(error) {
-	                       		console.log("Error: " + error);
-	                       		msj_peligro("Habilite los permisos en su aplicación");
-	                       });
+		
+		var permissions = cordova.plugins.permissions;
+		permissions.hasPermission(permissions.READ_PHONE_STATE, checkPermissionCallback, null);
+		
+		function checkPermissionCallback(status) {
+		  if(!status.hasPermission) {
+			var errorCallback = function() {
+			  console.warn('No tiene permisos de Leer el IMEI!');
+			}
+
+			permissions.requestPermission(
+			  permissions.READ_PHONE_STATE,
+			  function(status) {
+				if(!status.hasPermission) errorCallback();
+			  },
+			  errorCallback);
+		  }else{
+			var deviceInfo = cordova.require("cordova/plugin/DeviceInformation");
+				deviceInfo.get(function(result) { //alert(result);
+							   //Obtiene el Número de SIM
+							   var res = result.split("simNo");
+							   res = res[1].split('"');	//alert (res[2]);
+							   serial = res[2]; //alert("SIM / Serial: "+serial);
+							   //Obtiene el IMEI
+							   res = result.split("deviceID");
+							   res = res[1].split('"');
+							   imei = res[2]; console.log("Imei: "+imei);
+							   //Obtiene el IMEI
+							   AppConfig['imei'] = imei;
+							   ;
+							   }, function(error) {
+									console.log("Error: " + error);
+									msj_peligro("Habilite los permisos en su aplicación");
+							   });
+		  }
+		  
+		}
+		
+
 	};
 	AppConfig.opcEpocaCultivo=function(){
 		var chart1;

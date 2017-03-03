@@ -1,6 +1,22 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
 module.exports = [
     {
+        "id": "cordova-plugin-android-permissions.Permissions",
+        "file": "plugins/cordova-plugin-android-permissions/www/permissions.js",
+        "pluginId": "cordova-plugin-android-permissions",
+        "clobbers": [
+            "cordova.plugins.permissions"
+        ]
+    },
+    {
+        "id": "com.vliesaputra.deviceinformation.DeviceInformation",
+        "file": "plugins/com.vliesaputra.deviceinformation/www/deviceinformation.js",
+        "pluginId": "com.vliesaputra.deviceinformation",
+        "clobbers": [
+            "cordova.plugins.deviceInformation"
+        ]
+    },
+    {
         "id": "cordova-plugin-device.device",
         "file": "plugins/cordova-plugin-device/www/device.js",
         "pluginId": "cordova-plugin-device",
@@ -73,14 +89,6 @@ module.exports = [
         ]
     },
     {
-        "id": "com.vliesaputra.deviceinformation.DeviceInformation",
-        "file": "plugins/com.vliesaputra.deviceinformation/www/deviceinformation.js",
-        "pluginId": "com.vliesaputra.deviceinformation",
-        "clobbers": [
-            "cordova.plugins.deviceInformation"
-        ]
-    },
-    {
         "id": "cl.rmd.cordova.dialoggps.DialogGPS",
         "file": "plugins/cl.rmd.cordova.dialoggps/www/DialogGPS.js",
         "pluginId": "cl.rmd.cordova.dialoggps",
@@ -92,16 +100,17 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-whitelist": "1.3.0",
-    "cordova-plugin-console": "1.0.4",
-    "cordova-plugin-device": "1.1.3",
-    "cordova-plugin-dialogs": "1.3.0",
-    "cordova-plugin-compat": "1.1.0",
-    "cordova-plugin-geolocation": "2.4.0",
-    "cordova-plugin-inappbrowser": "1.5.0",
-    "cordova-plugin-network-information": "1.3.0",
-    "cordova-plugin-splashscreen": "4.0.0",
+    "cordova-plugin-whitelist": "1.3.1",
+    "cordova-plugin-android-permissions": "0.10.0",
     "com.vliesaputra.deviceinformation": "1.0.1",
+    "cordova-plugin-console": "1.0.5",
+    "cordova-plugin-device": "1.1.4",
+    "cordova-plugin-dialogs": "1.3.1",
+    "cordova-plugin-compat": "1.1.0",
+    "cordova-plugin-geolocation": "2.4.1",
+    "cordova-plugin-inappbrowser": "1.6.1",
+    "cordova-plugin-network-information": "1.3.1",
+    "cordova-plugin-splashscreen": "4.0.1",
     "cl.rmd.cordova.dialoggps": "0.0.2"
 };
 // BOTTOM OF METADATA
