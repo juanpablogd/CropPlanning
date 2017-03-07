@@ -355,14 +355,15 @@ $( document ).ready(function() {
 	
 	$("#btn_opcProduccion").click(function(){
 		var $text = $('<div></div>');
-			$text.append( '<div class="form-group">'+
+			$text.append( 
+/*						'<div class="form-group">'+
 					   		'<i class="fa fa-th-list"></i><label for="">&nbsp;'+txt.msjProduccion+'</label>'+
 					   		'<div class="radio">'+
 							  '<label><input type="radio" name="optProd" value="cultivo">'+txt.tit_epoca_cultivo+'</label>'+
 							'</div>'+
-						'</div>'+
+						'</div>'+	*/
 						'<div class="form-group">'+
-							'<label><input type="checkbox" id="opMapa" value="opMapa">&nbsp;'+txt.msjMapa+'</label>'+
+							'<label><input type="checkbox" id="opMapa" value="opMapa">&nbsp;'+txt.msjMapa+' - '+txt.msjProduccion+'</label>'+
 					   		'<div class="radio" id="radmapRiego">'+
 							  '<label><input type="radio" name="optTipomapa" value="riego_t">'+txt.msjRiegoSuper+'</label>'+
 							'</div>'+
@@ -544,6 +545,7 @@ $( document ).ready(function() {
 						        '<th>'+txt.msjNombre+'</th>'+
 						        '<th>'+txt.msjDetalle+'</th>'+
 						        '<th>'+txt.msjIr+'</th>'+
+						        '<th>Temp.</th>'+
 						        '<th>'+txt.msjEliminar+'</th>'+
 						      '</tr>'+
 						    '</thead>'+
@@ -568,6 +570,7 @@ $( document ).ready(function() {
         						'<td>'+value.nombre+'</td>'+
         						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
+                				'<td class="btn_grafica" lat="'+value.latitud+'" lon="'+value.longitud+'" d="'+value.id+'" f="'+value.fecha_siembra+'" align="right"><spam class="glyphicon glyphicon-object-align-bottom"></spam></td>'+
                 				'<td class="btn_eliminar" align="right" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
 					});
@@ -595,6 +598,15 @@ $( document ).ready(function() {
     	
 					});
 					
+					$(".btn_grafica").click(function(){	console.log("Click btn_grafica");
+						var lat = $(this).attr('lat');
+						var lon = $(this).attr('lon');
+						var fecha = $(this).attr('f');
+						AppMap.ActualizaPunto(lat,lon);
+    					AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));	
+    					AppConfig.opcDecadal(fecha);
+					});
+					
 					$(".btn_eliminar").click(function(){	console.log("Click btn_eliminar");
 						AppConfig['tmp_nombre'] = $(this).attr('n');
 						AppConfig['tmp_id'] = $(this).attr('d');
@@ -615,7 +627,7 @@ $( document ).ready(function() {
 							  '<label for="fnombre">'+txt.msjNombre+'</label><input type="text" class="form-control" id="fnombre">'+
 							'</div>'+
 							'<label for="ffecha">'+txt.msjFechasiembra+'</label>'+
-							'<input data-provide="datepicker" id="ffecha" class="form-control" >'+
+							'<input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" data-date-language="es" data-date-autoclose="true" data-date-clearBtn="true"  id="ffecha" class="form-control" >'+
 							'<div class="form-group">'+
 							  '<label for="fvariedad">'+txt.msjVariedad+'</label><select class="form-control" id="fvariedad">'+
 							  '<option value="">--Seleccione--</option>'+
@@ -654,12 +666,7 @@ $( document ).ready(function() {
 					AppConfig.listaMiCultivo();
 		        });
 		        console.log("Poner Fecha");
-		        $('#ffecha').datepicker({
-				    clearBtn: true,
-				    language: "es",
-				    calendarWeeks: true,
-				    autoclose: true
-				});
+		        $('.datepicker').datepicker();
 				$.each( AppConfig['variedad'], function( key, value ) {	//console.log( key + ": " + value.id );
 					$("#fvariedad").append("<option value='"+value.id+"'>"+value.nombre+"</option>");
 				});
@@ -723,6 +730,9 @@ $( document ).ready(function() {
             }
         });
 	};
+	AppConfig.decadal=function(fecha,dialogRef){
+
+		};
 	AppConfig.eliminaCultivo=function(){
 			BootstrapDialog.show({
 				title: txt.msjEliminar,
@@ -765,15 +775,18 @@ $( document ).ready(function() {
 		};
 		
 	AppConfig.getImei=function(){
-		
-		var permissions = cordova.plugins.permissions;
-		permissions.hasPermission(permissions.READ_PHONE_STATE, checkPermissionCallback, null);
-		
+		try {
+			var permissions = cordova.plugins.permissions;
+			permissions.hasPermission(permissions.READ_PHONE_STATE, checkPermissionCallback, null);
+		}
+		catch(err) {
+		    console.log(err.message);
+		}
 		function checkPermissionCallback(status) {
 		  if(!status.hasPermission) {
 			var errorCallback = function() {
 			  console.warn('No tiene permisos de Leer el IMEI!');
-			}
+			};
 
 			permissions.requestPermission(
 			  permissions.READ_PHONE_STATE,
@@ -1235,6 +1248,125 @@ $( document ).ready(function() {
             	AppConfig.Temperatura(AppMap.lat,AppMap.lon);
             }
         });		
+	};
+	AppConfig.opcDecadal=function(fecha){	//var lat = pos.coords.latitude;var lon = pos.coords.longitude;	AppMap.lat,AppMap.lon
+    	AppConfig.sk_sofy.emit('decadal',{lat:AppMap.lat, lon:AppMap.lon,fecha:fecha, lenguaje: txt.Idioma}, function (msj){	console.log(msj);
+			if($.isNumeric(msj)){
+				msj_peligro(txt.msjSinInfo);
+				return false;
+			}
+			var chart1;
+			var $text = $('<div id="container_decadal" style="max-height: 510px;"></div>');
+	        BootstrapDialog.show({
+	        	title: txt.msjDecadal,
+	        	type: BootstrapDialog.TYPE_SUCCESS,
+	            message: $text,
+	            onshown: function(dialogRef){
+	            	chart1 = new Highcharts.Chart({
+								chart: {
+						            renderTo: 'container_decadal',
+						            zoomType: 'xy',
+						            animation: true,
+					         	},
+					         	title: {
+							   		text: txt.msjEstacion+' '+msj.est,
+							   		style: { "fontSize": "15px" },
+							   		align: "center"
+							 	},
+					         	subtitle: {
+							   		text: txt.msjDistancia+' '+msj.dis+' Kms'
+							 	}, 
+					        	credits: {
+					            	enabled: false
+					        	},
+					        	yAxis: [{ // Primary yAxis
+										labels: {
+											format: '{value}°C',
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "9px"
+											},
+											padding:0
+										},
+										title: {
+											text: txt.msjTemperatura,
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "11px" 
+											},
+											padding:0
+										},
+										opposite: true
+									}
+								],
+								xAxis: {
+						            categories: msj.cat
+						        },
+						        tooltip: {
+						            crosshairs: true,
+						            shared: true,
+						            //valueSuffix: '°C'
+						        },
+						        legend: {
+									layout: 'vertical',
+									align: 'left',
+									x: 80,
+									verticalAlign: 'top',
+									y: 65,
+									floating: true,
+									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+								},
+					            plotOptions: {
+					                arearange: {
+					                    fillColor: {
+					                        linearGradient: {
+					                            x1: 0,
+					                            y1: 0,
+					                            x2: 0,
+					                            y2: 0.3
+					                        },
+					                        stops: [
+					                            [0, '#FF0000'],
+					                            [1, Highcharts.getOptions().colors[0]]
+					                        ]
+					                    },
+
+					                    lineWidth: 1,
+					                    states: {
+					                        hover: {
+					                            lineWidth: 1
+					                        }
+					                    },
+					                    threshold: null
+					                }
+					            },
+							 	series: [{
+							        type: 'column',
+							        name: txt.msjMax,
+							        data: msj.max
+							    }, {
+							        type: 'column',
+							        name: txt.msjMin,
+							        data: msj.min
+							    }, {
+							        type: 'spline',
+							        name: txt.msjPromedio,
+							        data: msj.prom,
+							        marker: {
+							            lineWidth: 2,
+							            lineColor: Highcharts.getOptions().colors[3],
+							            fillColor: 'white'
+							        }
+							    }]
+					      });
+	            }
+	        });
+						
+    	 });
+	
+	
+		
+		
 	};
 	AppConfig.opcHumeSola=function(){
 		var chart1;

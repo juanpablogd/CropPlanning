@@ -31,6 +31,7 @@ var txt = {
 	msjProduccion: "",
 	msjMax: "",
 	msjMin: "",
+	msjPromedio: "",
 	msjRiegoSuper: "",
 	msjRiegoProd: "",
 	msjRiegoRend: "",
@@ -101,6 +102,7 @@ var txt = {
 	msjFin: "",
 	msjLocalizando: "",
 	msjRequerido: "",
+	msjDecadal: "",
 };
 
 var idiomas = {
@@ -136,6 +138,7 @@ var idiomas = {
 		"msjProduccion": "Producción",
 		"msjMax": "Máximo",
 		"msjMin": "Mínimo",
+		"msjPromedio":"Promedio",
 		"msjRiegoSuper": "Riego Superficie",
 		"msjRiegoProd": "Riego Producción",
 		"msjRiegoRend": "Riego Rendimiento",
@@ -206,6 +209,7 @@ var idiomas = {
 		"msjFin": "Inicio ",
 		"msjLocalizando": "Localizando...",
 		"msjRequerido": " requerido.",
+		"msjDecadal":"Decenal",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -239,6 +243,7 @@ var idiomas = {
 		"msjProduccion": "Production",
 		"msjMax": "Maximum",
 		"msjMin": "Minimum",
+		"msjPromedio":"Average",
 		"msjRiegoSuper": "Irrigation Surface",
 		"msjRiegoProd": "Irrigation Production",
 		"msjRiegoRend": "Irrigation Performance",
@@ -309,6 +314,7 @@ var idiomas = {
 		"msjFin": "Finish ",
 		"msjLocalizando": "Locating...",
 		"msjRequerido": " required.",
+		"msjDecadal":"Decadal",
 	}
 };
 
