@@ -103,6 +103,7 @@ var txt = {
 	msjLocalizando: "",
 	msjRequerido: "",
 	msjDecadal: "",
+	msjRendimiento: "",
 };
 
 var idiomas = {
@@ -210,6 +211,7 @@ var idiomas = {
 		"msjLocalizando": "Localizando...",
 		"msjRequerido": " requerido.",
 		"msjDecadal":"Decenal",
+		"msjRendimiento": "Rendimiento",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -315,6 +317,7 @@ var idiomas = {
 		"msjLocalizando": "Locating...",
 		"msjRequerido": " required.",
 		"msjDecadal":"Decadal",
+		"msjRendimiento": "Performance",
 	}
 };
 

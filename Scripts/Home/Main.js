@@ -477,6 +477,18 @@ $( document ).ready(function() {
 		}else{
 			txtGrafica = "texto_vegetativa.png";
 		}
+		var formulario = '';
+		if (fase == txt.msjSinInfo){
+			formulario ='<label for="ffechac">'+txt.msjCosecha+'</label>'+
+							'<input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" data-date-language="es" data-date-autoclose="true" data-date-clearBtn="true"  id="ffechac" class="form-control" >'+
+							'<div class="form-group">'+
+							  '<label for="frend">'+txt.msjRendimiento+'</label><input type="text" class="form-control decimal" id="frend">'+
+							'</div>'+
+							'<div class="form-group">'+
+							  '<button type="button" class="btn btn-success btn-block"  id="btnActualizaCultivo">'+txt.msjGuardar+'</button>'+
+							'</div>';
+		}
+		
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
 							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
@@ -510,7 +522,8 @@ $( document ).ready(function() {
 						    		'<td>'+txt.msjFase+'</td>'+
 						    		'<td>'+fase+'</td>'+
 						    	'</tr>'+
-						    '</tbody>'
+						    '</tbody>'+
+							formulario	
 						);
 		
         BootstrapDialog.show({
@@ -518,6 +531,43 @@ $( document ).ready(function() {
         	type: BootstrapDialog.TYPE_SUCCESS,
             message: $text,
             onshown: function(dialogRef){
+			    $(".decimal").keydown(function (e) {
+			        // Allow: backspace, delete, tab, escape, enter and .
+			        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+			             // Allow: Ctrl+A, Command+A
+			            (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
+			             // Allow: home, end, left, right, down, up
+			            (e.keyCode >= 35 && e.keyCode <= 40)) {
+			                 // let it happen, don't do anything
+			                 return;
+			        }
+			        // Ensure that it is a number and stop the keypress
+			        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+			            e.preventDefault();
+			        }
+			    });
+		        $("#btnActualizaCultivo").click(function() {
+		        	var fecha_cosecha= $('#ffechac').val();		var pattern =/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
+		        	var rendimiento= $('#frend').val();
+			  		if(pattern.test(fecha_cosecha) == false){
+			  			msj_peligro(txt.msjCosecha + txt.msjRequerido);
+			  			setTimeout(function() { $('#ffechac').focus();}, 500);
+			  			return;
+			  		}else if(rendimiento==""){
+			  			msj_peligro(txt.msjRendimiento  + txt.msjRequerido);
+			  			setTimeout(function() { $('#frend').focus();}, 500);
+			  			return;
+			  		};	console.log("FORMULARIO OK!!!!!!!!!!!!!");
+			  		AppConfig.sk_sofy.emit('updateCultivo',{id:AppConfig['tmp_id_cultivo'],fecha_cosecha:fecha_cosecha,rendimiento:rendimiento}, function (msj){	console.log(msj);
+					 		if($.isNumeric(msj)){
+				 				dialogRef.close();
+								AppConfig.listaMiCultivo();
+					 		}else{
+					 			msj_peligro("No se pudo Guardar el registro");
+					 		}
+					});
+		        });
+				
 		        $("#btnListacultivo").click(function() {
 		        	dialogRef.close();
 					AppConfig.listaMiCultivo();
@@ -595,7 +645,6 @@ $( document ).ready(function() {
 						var lon = $(this).attr('lon');	
 						AppMap.ActualizaPunto(lat,lon);
     					AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
-    	
 					});
 					
 					$(".btn_grafica").click(function(){	console.log("Click btn_grafica");
@@ -646,7 +695,6 @@ $( document ).ready(function() {
 							  '<button type="button" class="btn btn-success btn-block"  id="btnGuardarCultivo">'+txt.msjGuardar+'</button>'+
 							'</div>'
 						);
-		
         BootstrapDialog.show({
         	title: txt.msjAddcultivo,
         	type: BootstrapDialog.TYPE_SUCCESS,
