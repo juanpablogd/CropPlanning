@@ -472,34 +472,36 @@ $( document ).ready(function() {
 	AppConfig.detalleMiCultivo=function(){
 		var fase = (AppConfig['tmp_fase']=="null") ? txt.msjSinInfo : AppConfig['tmp_fase'];
 		var txtGrafica = "";
-		if (fase.toUpperCase() == "FASE REPRODUCTIVA"){
-			txtGrafica = "texto_reproductiva.png";
-		}else{
-			txtGrafica = "texto_vegetativa.png";
-		}
+		var htmlGrafica = "";
 		var formulario = '';
-		if (fase == txt.msjSinInfo){
-			formulario ='<label for="ffechac">'+txt.msjCosecha+'</label>'+
-							'<input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" data-date-language="es" data-date-autoclose="true" data-date-clearBtn="true"  id="ffechac" class="form-control" >'+
-							'<div class="form-group">'+
-							  '<label for="frend">'+txt.msjRendimiento+'</label><input type="text" class="form-control decimal" id="frend">'+
-							'</div>'+
-							'<div class="form-group">'+
-							  '<button type="button" class="btn btn-success btn-block"  id="btnActualizaCultivo">'+txt.msjGuardar+'</button>'+
-							'</div>';
+		if (fase.toUpperCase().trim() == "FASE VEGETATIVA"){
+			txtGrafica = "texto_vegetativa.png";
+		}else{
+			txtGrafica = "texto_reproductiva.png";
 		}
-		
+		if (fase.toUpperCase().trim() != "FASE DE COSECHA" && fase != txt.msjSinInfo){
+			var htmlGrafica =	'<tr>'+
+									'<th colspan="2"><img src="../../Images/Home/fases_arroz.jpg" style="width:96%";></th>'+
+								'</tr>'+
+								'<tr>'+
+									'<th colspan="2"><img src="../../Images/Home/'+txtGrafica+'" style="width:96%";></th>'+
+								'</tr>';			
+		}else if (fase.toUpperCase().trim() == "FASE DE COSECHA"){
+			formulario ='<label for="ffechac">'+txt.msjCosecha+'</label>'+
+				'<input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" data-date-language="es" data-date-autoclose="true" data-date-clearBtn="true"  id="ffechac" class="form-control" >'+
+				'<div class="form-group">'+
+				  '<label for="frend">'+txt.msjRendimiento+'</label><input type="text" class="form-control decimal" id="frend">'+
+				'</div>'+
+				'<div class="form-group">'+
+				  '<button type="button" class="btn btn-success btn-block"  id="btnActualizaCultivo">'+txt.msjGuardar+'</button>'+
+				'</div>';
+		}
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
-							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
+							  '<button type="button" class="btn btn-sm btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
                           '</div>'+
                           '<table class="table" style="font-size:12px"><thead>'+
-						      '<tr>'+
-						        '<th colspan="2"><img src="../../Images/Home/fases_arroz.jpg" style="width:96%";></th>'+
-						      '</tr>'+
-						      '<tr>'+
-						        '<th colspan="2"><img src="../../Images/Home/'+txtGrafica+'" style="width:96%";></th>'+
-						      '</tr>'+
+							htmlGrafica+
 						    '</thead>'+
 						    '<tbody id="detalleCultivo">'+
 						    	'<tr>'+
@@ -617,12 +619,21 @@ $( document ).ready(function() {
 					console.log(msj.datos);
 					$.each( msj.datos, function( key, value ) {	//console.log( key + ": " + value.id );
 						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
-        						'<td>'+value.nombre+'</td>'+
+        						'<td>'+value.nombre+'<span class="badge" style="background-color:red" id="rc'+value.id+'"></span></td>'+
         						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
                 				'<td class="btn_grafica" lat="'+value.latitud+'" lon="'+value.longitud+'" d="'+value.id+'" f="'+value.fecha_siembra+'" align="right"><spam class="glyphicon glyphicon-object-align-bottom"></spam></td>'+
                 				'<td class="btn_eliminar" align="right" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
+						AppConfig.sk_sofy.emit('getRecomendaciones',{id:value.id,lat:value.latitud,lon:value.longitud}, function (msj) {
+							//console.log(msj);
+							//console.log(msj.datos.length);
+							if(msj.datos.length>0){
+								$("#f"+msj.id).css("color", "red");
+								$("#rc"+msj.id).html(msj.datos.length);
+							}
+
+						});
 					});
 					
 					$(".btn_detalle").click(function(){	console.log("Click btn_detalle");
@@ -670,7 +681,7 @@ $( document ).ready(function() {
 	AppConfig.addMiCultivo=function(){
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
-							  '<button type="button" class="btn btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
+							  '<button type="button" class="btn btn-sm btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
 							'</div>'+
 							'<div class="form-group">'+
 							  '<label for="fnombre">'+txt.msjNombre+'</label><input type="text" class="form-control" id="fnombre">'+
