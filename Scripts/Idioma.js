@@ -65,6 +65,7 @@ var txt = {
 	msjIr:"",
 	msjEliminar:"",
 	msjFechasiembra:"",
+	msjFechacosecha:"",
 	msjVariedad:"",
 	msjSistema:"",
 	msjHectareacultivadas:"",
@@ -104,6 +105,11 @@ var txt = {
 	msjRequerido: "",
 	msjDecadal: "",
 	msjRendimiento: "",
+	msjUndBrilloSol:"",
+	tit_decadal: "",
+	msjAcumulada:"",
+	msjBultos:"",
+	msjHistorico:"",
 };
 
 var idiomas = {
@@ -173,6 +179,7 @@ var idiomas = {
 		"msjIr":"Ir",
 		"msjEliminar":"Eliminar",
 		"msjFechasiembra":"Fecha Siembra",
+		"msjFechacosecha":"Fecha Cosecha",
 		"msjVariedad":"Variedad",
 		"msjSistema":"Sistema",
 		"msjHectareacultivadas":"Hectáreas cultivadas",
@@ -212,6 +219,11 @@ var idiomas = {
 		"msjRequerido": " requerido.",
 		"msjDecadal":"Decenal",
 		"msjRendimiento": "Rendimiento",
+		"msjUndBrilloSol": " Hrs Prom.",
+		"tit_decadal": "Acumulados o promedios de 10 días",
+		"msjAcumulada": " Acum. ",
+		"msjBultos": "Bultos",
+		"msjHistorico": " Historico",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -279,6 +291,7 @@ var idiomas = {
 		"msjIr":"Go",
 		"msjEliminar":"Delete",
 		"msjFechasiembra":"Sowing date",
+		"msjFechacosecha":"Harvest date",
 		"msjVariedad":"Variety",
 		"msjSistema":"System",
 		"msjHectareacultivadas":"hectares cultivated",
@@ -318,6 +331,11 @@ var idiomas = {
 		"msjRequerido": " required.",
 		"msjDecadal":"Decadal",
 		"msjRendimiento": "Performance",
+		"msjUndBrilloSol": " Hrs Avg.",
+		"tit_decadal": "Accumulated or average of 10 days",
+		"msjAcumulada": " Accum. ",
+		"msjBultos": "packages",
+		"msjHistorico": " Old records",
 	}
 };
 

@@ -474,6 +474,7 @@ $( document ).ready(function() {
 		var txtGrafica = "";
 		var htmlGrafica = "";
 		var formulario = '';
+		var txtCosecha = '';
 		if (fase.toUpperCase().trim() == "FASE VEGETATIVA"){
 			txtGrafica = "texto_vegetativa.png";
 		}else{
@@ -487,18 +488,33 @@ $( document ).ready(function() {
 									'<th colspan="2"><img src="../../Images/Home/'+txtGrafica+'" style="width:96%";></th>'+
 								'</tr>';			
 		}else if (fase.toUpperCase().trim() == "FASE DE COSECHA"){
-			formulario ='<label for="ffechac">'+txt.msjCosecha+'</label>'+
+			formulario ='<label for="ffechac">'+txt.msjFechacosecha+'</label>'+
 				'<input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" data-date-language="es" data-date-autoclose="true" data-date-clearBtn="true"  id="ffechac" class="form-control" >'+
 				'<div class="form-group">'+
-				  '<label for="frend">'+txt.msjRendimiento+'</label><input type="text" class="form-control decimal" id="frend">'+
+				  '<label for="frend">'+txt.msjRendimiento+' ('+txt.msjBultos+')'+'</label><input type="text" class="form-control decimal" id="frend">'+
 				'</div>'+
 				'<div class="form-group">'+
 				  '<button type="button" class="btn btn-success btn-block"  id="btnActualizaCultivo">'+txt.msjGuardar+'</button>'+
 				'</div>';
 		}
+		if (AppConfig['tmp_fechaCosecha'] != "null"){
+			txtCosecha = '<tr>'+
+				    		'<td>'+txt.msjFechacosecha+'</td>'+
+				    		'<td>'+AppConfig['tmp_fechaCosecha']+'</td>'+
+				    	'</tr>';
+		}
+		if (AppConfig['tmp_Ren'] != "null"){
+			txtCosecha = txtCosecha+
+						'<tr>'+
+				    		'<td>'+txt.msjRendimiento+'</td>'+
+				    		'<td>'+AppConfig['tmp_Ren']+' Kg.</td>'+
+				    	'</tr>';
+		}
+
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
-							  '<button type="button" class="btn btn-sm btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
+							  '<button type="button" class="btn btn-sm btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>&nbsp;&nbsp;'+
+							  '<button type="button" class="btn btn-sm btn-success" id="btnHistorico"><spam class="glyphicon glyphicon-list-alt"></spam>&nbsp;'+txt.msjHistorico+'</button>'+
                           '</div>'+
                           '<table class="table" style="font-size:12px"><thead>'+
 							htmlGrafica+
@@ -524,6 +540,7 @@ $( document ).ready(function() {
 						    		'<td>'+txt.msjFase+'</td>'+
 						    		'<td>'+fase+'</td>'+
 						    	'</tr>'+
+						    	txtCosecha+
 						    '</tbody>'+
 							formulario	
 						);
@@ -574,11 +591,15 @@ $( document ).ready(function() {
 		        	dialogRef.close();
 					AppConfig.listaMiCultivo();
 		        });
+		        $("#btnHistorico").click(function() {
+		        	dialogRef.close();
+		        	AppConfig.historicoMiCultivo();
+		        });
 				AppConfig.sk_sofy.emit('getRecomendaciones',{id:AppConfig['tmp_id_cultivo'],lat:AppConfig['tmp_lat'],lon:AppConfig['tmp_lon']}, function (msj) {
 					console.log(msj);
 					console.log(msj.datos.length);
 					for(r=0;r<msj.datos.length;r++){
-						$("#detalleCultivo").append('<tr>'+
+						$("#detalleCultivo").append('<tr style="color:red">'+
 						    		'<td><b>'+txt.msjRecomendacion+': </b></td>'+
 						    		'<td><b>'+msj.datos[r].recomendacion+'</b></td>'+
 						    	'</tr>');
@@ -590,7 +611,8 @@ $( document ).ready(function() {
 	AppConfig.listaMiCultivo=function(){
 		var $text = $('<div></div>');
 			$text.append( '<div class="form-group">'+
-							  '<button type="button" class="btn btn-success" id="btnAddcultivo"><spam class="glyphicon glyphicon-plus"></spam>&nbsp;'+txt.msjAddcultivo+'</button>'+
+							  '<button type="button" class="btn btn-success" id="btnAddcultivo"><spam class="glyphicon glyphicon-plus"></spam>&nbsp;'+txt.msjAddcultivo+'</button>&nbsp;&nbsp;'+
+							  '<button type="button" class="btn btn-success" id="btnHistorico"><spam class="glyphicon glyphicon-list-alt"></spam>&nbsp;'+txt.msjHistorico+'</button>'+
                           '</div>'+
                           '<table class="table"><thead>'+
 						      '<tr>'+
@@ -614,13 +636,17 @@ $( document ).ready(function() {
 		        	dialogRef.close();
 		        	AppConfig.addMiCultivo();
 		        });
+		        $("#btnHistorico").click(function() {
+		        	dialogRef.close();
+		        	AppConfig.historicoMiCultivo();
+		        });
 		        //var imei = AppConfig.getImei();
-				AppConfig.sk_sofy.emit('getMiscultivos',{imei:AppConfig['imei']}, function (msj) {
+				AppConfig.sk_sofy.emit('getMiscultivos',{imei:AppConfig['imei'],estado:"A"}, function (msj) {
 					console.log(msj.datos);
 					$.each( msj.datos, function( key, value ) {	//console.log( key + ": " + value.id );
 						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
         						'<td>'+value.nombre+'<span class="badge" style="background-color:red" id="rc'+value.id+'"></span></td>'+
-        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
+        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" fc="'+value.fecha_cosecha+'" r="'+value.rendimiento+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
                 				'<td class="btn_grafica" lat="'+value.latitud+'" lon="'+value.longitud+'" d="'+value.id+'" f="'+value.fecha_siembra+'" align="right"><spam class="glyphicon glyphicon-object-align-bottom"></spam></td>'+
                 				'<td class="btn_eliminar" align="right" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
@@ -642,6 +668,102 @@ $( document ).ready(function() {
 						AppConfig['tmp_sistema'] = $(this).attr('s');
 						AppConfig['tmp_has'] = $(this).attr('h');
 						AppConfig['tmp_fecha'] = $(this).attr('f');
+						AppConfig['tmp_fechaCosecha'] = $(this).attr('fc');
+						AppConfig['tmp_Ren'] = $(this).attr('r');
+						AppConfig['tmp_fase'] = $(this).attr('nf');
+						AppConfig['tmp_lat'] = $(this).attr('lat');
+						AppConfig['tmp_lon'] = $(this).attr('lon');
+						AppConfig['tmp_id_cultivo'] = $(this).attr('d');
+						
+			        	dialogRef.close();
+			        	AppConfig.detalleMiCultivo();
+					});
+
+					$(".btn_ir").click(function(){	console.log("Click btn_ir");
+						var lat = $(this).attr('lat');
+						var lon = $(this).attr('lon');	
+						AppMap.ActualizaPunto(lat,lon);
+    					AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
+					});
+					
+					$(".btn_grafica").click(function(){	console.log("Click btn_grafica");
+						var lat = $(this).attr('lat');
+						var lon = $(this).attr('lon');
+						var fecha = $(this).attr('f');
+						AppMap.ActualizaPunto(lat,lon);
+    					AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));	
+    					AppConfig.opcDecadal(fecha);
+					});
+					
+					$(".btn_eliminar").click(function(){	console.log("Click btn_eliminar");
+						AppConfig['tmp_nombre'] = $(this).attr('n');
+						AppConfig['tmp_id'] = $(this).attr('d');
+						AppConfig.eliminaCultivo();
+						dialogRef.close();
+					});
+
+			  	});
+            }
+        });
+	};
+	AppConfig.historicoMiCultivo=function(){
+		var $text = $('<div></div>');
+			$text.append( '<div class="form-group">'+
+							  '<button type="button" class="btn btn-sm btn-success" id="btnAddcultivo"><spam class="glyphicon glyphicon-plus"></spam>&nbsp;'+txt.msjAddcultivo+'</button>&nbsp;&nbsp;'+
+							  '<button type="button" class="btn btn-sm btn-success" id="btnListacultivo"><spam class="glyphicon glyphicon-th-list"></spam>&nbsp;'+txt.msjMicultivo+'</button>'+
+                          '</div>'+
+                          '<table class="table"><thead>'+
+						      '<tr>'+
+						        '<th>'+txt.msjNombre+'</th>'+
+						        '<th>'+txt.msjDetalle+'</th>'+
+						        '<th>'+txt.msjIr+'</th>'+
+						      '</tr>'+
+						    '</thead>'+
+						    '<tbody id="listaCultivos"></tbody>'
+						);
+		
+        BootstrapDialog.show({
+        	title: txt.msjMicultivo,
+        	type: BootstrapDialog.TYPE_SUCCESS,
+            message: $text,
+            onshown: function(dialogRef){
+				AppConfig.getImei();
+		        $("#btnAddcultivo").click(function() {
+		        	dialogRef.close();
+		        	AppConfig.addMiCultivo();
+		        });
+		        $("#btnListacultivo").click(function() {
+		        	dialogRef.close();
+					AppConfig.listaMiCultivo();
+		        });
+		        //var imei = AppConfig.getImei();
+				AppConfig.sk_sofy.emit('getMiscultivos',{imei:AppConfig['imei'],estado:"C"}, function (msj) {
+					console.log(msj.datos);
+					$.each( msj.datos, function( key, value ) {	//console.log( key + ": " + value.id );
+						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
+        						'<td>'+value.nombre+'<span class="badge" style="background-color:red" id="rc'+value.id+'"></span></td>'+
+        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" fc="'+value.fecha_cosecha+'" r="'+value.rendimiento+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
+        						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
+							'</tr>');
+						AppConfig.sk_sofy.emit('getRecomendaciones',{id:value.id,lat:value.latitud,lon:value.longitud}, function (msj) {
+							//console.log(msj);
+							//console.log(msj.datos.length);
+							if(msj.datos.length>0){
+								$("#f"+msj.id).css("color", "red");
+								$("#rc"+msj.id).html(msj.datos.length);
+							}
+
+						});
+					});
+					
+					$(".btn_detalle").click(function(){	console.log("Click btn_detalle");
+						AppConfig['tmp_nombre'] = $(this).attr('n');
+						AppConfig['tmp_variedad'] = $(this).attr('v');
+						AppConfig['tmp_sistema'] = $(this).attr('s');
+						AppConfig['tmp_has'] = $(this).attr('h');
+						AppConfig['tmp_fecha'] = $(this).attr('f');
+						AppConfig['tmp_fechaCosecha'] = $(this).attr('fc');
+						AppConfig['tmp_Ren'] = $(this).attr('r');
 						AppConfig['tmp_fase'] = $(this).attr('nf');
 						AppConfig['tmp_lat'] = $(this).attr('lat');
 						AppConfig['tmp_lon'] = $(this).attr('lon');
@@ -974,19 +1096,33 @@ $( document ).ready(function() {
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
     	AppConfig.sk_sofy.emit('temperatura',{lat:lat, lon:lon}, function (msj){	console.log(msj);
-			var rangesTem = [
-				            [txt.msjEne, msj.tepe[0].datos.min1, msj.tepe[0].datos.max1],
-				            [txt.msjFeb, msj.tepe[0].datos.min2, msj.tepe[0].datos.max2],
-				            [txt.msjMar, msj.tepe[0].datos.min3, msj.tepe[0].datos.max3],
-				            [txt.msjAbr, msj.tepe[0].datos.min4, msj.tepe[0].datos.max4],
-				            [txt.msjMay, msj.tepe[0].datos.min5, msj.tepe[0].datos.max5],
-				            [txt.msjJun, msj.tepe[0].datos.min6, msj.tepe[0].datos.max6],
-				            [txt.msjJul, msj.tepe[0].datos.min7, msj.tepe[0].datos.max7],
-				            [txt.msjAgo, msj.tepe[0].datos.min8, msj.tepe[0].datos.max8],
-				            [txt.msjSep, msj.tepe[0].datos.min9, msj.tepe[0].datos.max9],
-				            [txt.msjOct, msj.tepe[0].datos.min10, msj.tepe[0].datos.max10],
-				            [txt.msjNov, msj.tepe[0].datos.min11, msj.tepe[0].datos.max11],
-				            [txt.msjDic, msj.tepe[0].datos.min12, msj.tepe[0].datos.max12]
+			var rangesTemMin = [
+				            [txt.msjEne, msj.tepe[0].datos.min1],
+				            [txt.msjFeb, msj.tepe[0].datos.min2],
+				            [txt.msjMar, msj.tepe[0].datos.min3],
+				            [txt.msjAbr, msj.tepe[0].datos.min4],
+				            [txt.msjMay, msj.tepe[0].datos.min5],
+				            [txt.msjJun, msj.tepe[0].datos.min6],
+				            [txt.msjJul, msj.tepe[0].datos.min7],
+				            [txt.msjAgo, msj.tepe[0].datos.min8],
+				            [txt.msjSep, msj.tepe[0].datos.min9],
+				            [txt.msjOct, msj.tepe[0].datos.min10],
+				            [txt.msjNov, msj.tepe[0].datos.min11],
+				            [txt.msjDic, msj.tepe[0].datos.min12]
+				        ],
+				        rangesTemMax = [
+				            [txt.msjEne,msj.tepe[0].datos.max1],
+				            [txt.msjFeb,msj.tepe[0].datos.max2],
+				            [txt.msjMar,msj.tepe[0].datos.max3],
+				            [txt.msjAbr,msj.tepe[0].datos.max4],
+				            [txt.msjMay,msj.tepe[0].datos.max5],
+				            [txt.msjJun,msj.tepe[0].datos.max6],
+				            [txt.msjJul,msj.tepe[0].datos.max7],
+				            [txt.msjAgo,msj.tepe[0].datos.max8],
+				            [txt.msjSep,msj.tepe[0].datos.max9],
+				            [txt.msjOct,msj.tepe[0].datos.max10],
+				            [txt.msjNov,msj.tepe[0].datos.max11],
+				            [txt.msjDic,msj.tepe[0].datos.max12]
 				        ],
 				        averagesTem = [
 				            [txt.msjEne, msj.tepe[0].datos.med1],
@@ -1093,63 +1229,43 @@ $( document ).ready(function() {
 									floating: true,
 									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 								},
-					            plotOptions: {
-					                arearange: {
-					                    fillColor: {
-					                        linearGradient: {
-					                            x1: 0,
-					                            y1: 0,
-					                            x2: 0,
-					                            y2: 0.3
-					                        },
-					                        stops: [
-					                            [0, '#FF0000'],
-					                            [1, Highcharts.getOptions().colors[0]]
-					                        ]
-					                    },
-
-					                    lineWidth: 1,
-					                    states: {
-					                        hover: {
-					                            lineWidth: 1
-					                        }
-					                    },
-					                    threshold: null
-					                }
-					            },
 							 	series: [{
-						            name: txt.msjTemperatura,
-						            data: averagesTem,
+						            name: txt.msjTemperatura+' - '+txt.msjMin ,
+						            data: rangesTemMin,
 						            zIndex: 1,
+									yAxis: 0
+						            ,color: '#0489B1'
+						        },{
+						            name: txt.msjTemperatura+' - '+txt.msjMax,
+						            data: rangesTemMax,
+						            zIndex: 2,
+									yAxis: 0
+						            ,color: '#04B431'
+						        },{
+						            name: txt.msjTemperatura+' - '+txt.msjPromedio,
+						            data: averagesTem,
+						            zIndex: 3,
 									yAxis: 0,
 						            marker: {
-						                fillColor: 'white',
 						                lineWidth: 2,
-						                lineColor: Highcharts.getOptions().colors[0]
+						                lineColor: '#848484'
 						            }
+						            ,color: '#848484'
 						        }, {
-						            name: txt.msjRango,
-						            data: rangesTem,
-						            type: 'arearange',
-						            lineWidth: 0,
-						            linkedTo: ':previous',
-						            color: Highcharts.getOptions().colors[0],
-						            fillOpacity: 0.3,
-						            zIndex: 0
-						        },{
 						            name: txt.msjPrecipitacion,
 						            data: averagesPre,
 						            tooltip: {
 						                valueSuffix: ' mm'
 						            },
-						            zIndex: 1,
+						            zIndex: 4,
 									yAxis: 1,
 									type: 'spline',
 						            marker: {
 						                fillColor: 'white',
 						                lineWidth: 2,
-						                lineColor: Highcharts.getOptions().colors[0]
+						                lineColor: '#0404B4'
 						            }
+						            ,color: '#0404B4'
 						        }
 								]
 					      });
@@ -1236,7 +1352,7 @@ $( document ).ready(function() {
 											padding:0
 										},
 										labels: {
-											format: '{value} Cal/cm²',
+											format: '{value} '+txt.msjUndBrilloSol,
 											style: {
 												color: Highcharts.getOptions().colors[1],
 												fontSize : "9px"
@@ -1280,7 +1396,7 @@ $( document ).ready(function() {
 						            name: txt.msjclimogramaBrillosolar,
 						            data: averagesPre,
 						            tooltip: {
-						                valueSuffix: ' Cal/cm²'
+						                valueSuffix: txt.msjUndBrilloSol
 						            },
 						            zIndex: 1,
 									yAxis: 1,
@@ -1321,20 +1437,21 @@ $( document ).ready(function() {
 	        	type: BootstrapDialog.TYPE_SUCCESS,
 	            message: $text,
 	            onshown: function(dialogRef){
-	            	chart1 = new Highcharts.Chart({
+
+						chart1 = new Highcharts.Chart({
 								chart: {
 						            renderTo: 'container_decadal',
 						            zoomType: 'xy',
 						            animation: true,
 					         	},
 					         	title: {
-							   		text: txt.msjEstacion+' '+msj.est,
+							   		text: txt.msjEstacion+' '+msj.est+': '+msj.dis+' Kms',
 							   		style: { "fontSize": "15px" },
 							   		align: "center"
 							 	},
 					         	subtitle: {
-							   		text: txt.msjDistancia+' '+msj.dis+' Kms'
-							 	}, 
+							   		text: txt.tit_decadal
+							 	},
 					        	credits: {
 					            	enabled: false
 					        	},
@@ -1356,76 +1473,94 @@ $( document ).ready(function() {
 											padding:0
 										},
 										opposite: true
+									},{ // Secondary yAxis
+										gridLineWidth: 0,
+										title: {
+											text: txt.msjPrecipitacion,
+											style: {
+												color: Highcharts.getOptions().colors[1],
+												fontSize : "11px"
+											},
+											padding:0
+										},
+										labels: {
+											format: '{value} mm',
+											style: {
+												color: Highcharts.getOptions().colors[1],
+												fontSize : "9px"
+											},
+											padding:0
+										}
 									}
 								],
 								xAxis: {
-						            categories: msj.cat
+						            tickInterval: 1,
+						            labels: {
+						                enabled: true,
+						                formatter: function() { return averagesTem[this.value][0];},
+						            }
 						        },
 						        tooltip: {
 						            crosshairs: true,
 						            shared: true,
-						            //valueSuffix: '°C'
+						            valueSuffix: '°C'
 						        },
 						        legend: {
 									layout: 'vertical',
 									align: 'left',
-									x: 80,
+									x: 75,
 									verticalAlign: 'top',
-									y: 65,
+									y: 55,
 									floating: true,
 									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 								},
-					            plotOptions: {
-					                arearange: {
-					                    fillColor: {
-					                        linearGradient: {
-					                            x1: 0,
-					                            y1: 0,
-					                            x2: 0,
-					                            y2: 0.3
-					                        },
-					                        stops: [
-					                            [0, '#FF0000'],
-					                            [1, Highcharts.getOptions().colors[0]]
-					                        ]
-					                    },
-
-					                    lineWidth: 1,
-					                    states: {
-					                        hover: {
-					                            lineWidth: 1
-					                        }
-					                    },
-					                    threshold: null
-					                }
-					            },
+								xAxis: {
+						            categories: msj.cat
+						        },
 							 	series: [{
-							        type: 'column',
-							        name: txt.msjMax,
-							        data: msj.max
-							    }, {
-							        type: 'column',
-							        name: txt.msjMin,
-							        data: msj.min
-							    }, {
-							        type: 'spline',
-							        name: txt.msjPromedio,
-							        data: msj.prom,
-							        marker: {
-							            lineWidth: 2,
-							            lineColor: Highcharts.getOptions().colors[3],
-							            fillColor: 'white'
-							        }
-							    }]
+						            name: 'Temp. - '+txt.msjMin ,
+						            data: msj.min,
+						            zIndex: 1,
+									yAxis: 0
+						            ,color: '#0489B1'
+						        },{
+						            name: 'Temp. - '+txt.msjMax,
+						            data: msj.max,
+						            zIndex: 2,
+									yAxis: 0
+						            ,color: '#04B431'
+						        },{
+						            name: 'Temp. - '+txt.msjPromedio,
+						            data: msj.prom,
+						            zIndex: 3,
+									yAxis: 0,
+						            marker: {
+						                lineWidth: 2,
+						                lineColor: '#848484'
+						            }
+						            ,color: '#848484'
+						        }, {
+						            name: txt.msjPrecipitacion + '(' + txt.msjAcumulada+')',
+						            data: msj.prec,
+						            tooltip: {
+						                valueSuffix: ' mm'
+						            },
+						            zIndex: 4,
+									yAxis: 1,
+									type: 'spline',
+						            marker: {
+						                fillColor: 'white',
+						                lineWidth: 2,
+						                lineColor: '#0404B4'
+						            }
+						            ,color: '#0404B4'
+						        }
+								]
 					      });
 	            }
 	        });
 						
     	 });
-	
-	
-		
-		
 	};
 	AppConfig.opcHumeSola=function(){
 		var chart1;
