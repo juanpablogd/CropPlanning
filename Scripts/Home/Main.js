@@ -487,11 +487,11 @@ $( document ).ready(function() {
 								'<tr>'+
 									'<th colspan="2"><img src="../../Images/Home/'+txtGrafica+'" style="width:96%";></th>'+
 								'</tr>';			
-		}else if (fase.toUpperCase().trim() == "FASE DE COSECHA"){
+		}else if (fase.toUpperCase().trim() == "FASE DE COSECHA" && AppConfig['tmp_Ren'] == "null"){
 			formulario ='<label for="ffechac">'+txt.msjFechacosecha+'</label>'+
 				'<input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" data-date-language="es" data-date-autoclose="true" data-date-clearBtn="true"  id="ffechac" class="form-control" >'+
 				'<div class="form-group">'+
-				  '<label for="frend">'+txt.msjRendimiento+' ('+txt.msjBultos+')'+'</label><input type="text" class="form-control decimal" id="frend">'+
+				  '<label for="frend">'+txt.msjRendimiento+' ('+txt.msjBultos+')'+'</label><input type="number" class="form-control decimal" id="frend">'+
 				'</div>'+
 				'<div class="form-group">'+
 				  '<button type="button" class="btn btn-success btn-block"  id="btnActualizaCultivo">'+txt.msjGuardar+'</button>'+
