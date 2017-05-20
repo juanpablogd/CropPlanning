@@ -110,6 +110,8 @@ var txt = {
 	msjAcumulada:"",
 	msjBultos:"",
 	msjHistorico:"",
+	msjProbabilidad:"",
+	msjSol:"",
 };
 
 var idiomas = {
@@ -224,6 +226,8 @@ var idiomas = {
 		"msjAcumulada": " Acum. ",
 		"msjBultos": "Bultos",
 		"msjHistorico": " Historico",
+		"msjProbabilidad":"Probabilidad",
+		"msjSol":"Sol",
 	},
 	"EN":{
 		"tit_terminos": "Terms and Conditions",
@@ -336,6 +340,8 @@ var idiomas = {
 		"msjAcumulada": " Accum. ",
 		"msjBultos": "packages",
 		"msjHistorico": " Old records",
+		"msjProbabilidad":"probability",
+		"msjSol":"Sun",
 	}
 };
 

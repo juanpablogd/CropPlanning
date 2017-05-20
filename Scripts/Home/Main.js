@@ -508,7 +508,13 @@ $( document ).ready(function() {
 						'<tr>'+
 				    		'<td>'+txt.msjRendimiento+'</td>'+
 				    		'<td>'+AppConfig['tmp_Ren']+' Kg.</td>'+
-				    	'</tr>';
+				    	'</tr>'+
+						'<tr>'+
+							'<td>'+txt.msjRendimiento+' /<br>'+txt.msjHectareacultivadas+'</td>'+
+				    		
+				    		'<td>'+Math.round((AppConfig['tmp_Ren']/AppConfig['tmp_has']) * 100) / 100+' Kg/Ha.</td>'+
+				    	'</tr>'
+				    	;
 		}
 
 		var $text = $('<div></div>');
@@ -568,6 +574,7 @@ $( document ).ready(function() {
 		        $("#btnActualizaCultivo").click(function() {
 		        	var fecha_cosecha= $('#ffechac').val();		var pattern =/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
 		        	var rendimiento= $('#frend').val();
+
 			  		if(pattern.test(fecha_cosecha) == false){
 			  			msj_peligro(txt.msjCosecha + txt.msjRequerido);
 			  			setTimeout(function() { $('#ffechac').focus();}, 500);
@@ -576,8 +583,21 @@ $( document ).ready(function() {
 			  			msj_peligro(txt.msjRendimiento  + txt.msjRequerido);
 			  			setTimeout(function() { $('#frend').focus();}, 500);
 			  			return;
-			  		};	console.log("FORMULARIO OK!!!!!!!!!!!!!");
-			  		AppConfig.sk_sofy.emit('updateCultivo',{id:AppConfig['tmp_id_cultivo'],fecha_cosecha:fecha_cosecha,rendimiento:rendimiento}, function (msj){	console.log(msj);
+			  		};	console.log("FORMULARIO OK!!!!!!!!!!!!!" + AppConfig['tmp_fecha'] + " " + AppConfig['tmp_fechaCosecha']);	
+			  		var fSiem = moment(AppConfig['tmp_fecha'],'DD/MM/YYYY');
+			  		var fCos = moment(fecha_cosecha,'DD/MM/YYYY');
+
+			  		console.log("F Siembra: "+ moment(fSiem).format('YYYY.MM.DD'));
+			  		console.log("F Cosecha: "+ moment(fCos).format('YYYY.MM.DD'));
+			  		console.log("F Registro: "+ moment(AppConfig['tmp_fechaRegistro']).format('YYYY.MM.DD'));
+			  		console.log(AppConfig['tmp_has']);
+					console.log(AppConfig['tmp_lat']);
+					console.log(AppConfig['tmp_lon']);
+					console.log(rendimiento);
+					console.log(AppConfig['tmp_variedad']);
+					console.log(AppConfig['tmp_sistema']);
+
+			  		AppConfig.sk_sofy.emit('updateCultivo',{id:AppConfig['tmp_id_cultivo'],fecha_cosecha:fecha_cosecha,rendimiento:rendimiento,fecha_siembra:moment(fSiem).format('YYYY.MM.DD'),fecha_reporte:moment(AppConfig['tmp_fechaRegistro']).format('YYYY.MM.DD'),ha_cultivadas:AppConfig['tmp_has'],latitud:AppConfig['tmp_lat'],longitud:AppConfig['tmp_lon'],rendimiento:rendimiento,semilla:AppConfig['tmp_variedad'], sistema:AppConfig['tmp_sistema']}, function (msj){	console.log(msj);
 					 		if($.isNumeric(msj)){
 				 				dialogRef.close();
 								AppConfig.listaMiCultivo();
@@ -620,6 +640,7 @@ $( document ).ready(function() {
 						        '<th>'+txt.msjDetalle+'</th>'+
 						        '<th>'+txt.msjIr+'</th>'+
 						        '<th>Temp.</th>'+
+						        '<th>'+txt.msjSol+'</th>'+
 						        '<th>'+txt.msjEliminar+'</th>'+
 						      '</tr>'+
 						    '</thead>'+
@@ -643,12 +664,13 @@ $( document ).ready(function() {
 		        //var imei = AppConfig.getImei();
 				AppConfig.sk_sofy.emit('getMiscultivos',{imei:AppConfig['imei'],estado:"A"}, function (msj) {
 					console.log(msj.datos);
-					$.each( msj.datos, function( key, value ) {	//console.log( key + ": " + value.id );
+					$.each( msj.datos, function( key, value ) {	console.log( key + ": " + value.id );
 						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
         						'<td>'+value.nombre+'<span class="badge" style="background-color:red" id="rc'+value.id+'"></span></td>'+
-        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" fc="'+value.fecha_cosecha+'" r="'+value.rendimiento+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
+        						'<td class="btn_detalle" d="'+value.id+'" n="'+value.nombre+'" v="'+value.variedad+'" s="'+value.sistema+'" h="'+value.ha_cultivadas+'" f="'+value.fecha_siembra+'" fc="'+value.fecha_cosecha+'" fr="'+value.fecha_reporte+'" r="'+value.rendimiento+'" nf="'+value.nombre_fase+'" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-tasks"></spam></td>'+
         						'<td class="btn_ir" lat="'+value.latitud+'" lon="'+value.longitud+'"><spam class="glyphicon glyphicon-map-marker"></spam></td>'+
                 				'<td class="btn_grafica" lat="'+value.latitud+'" lon="'+value.longitud+'" d="'+value.id+'" f="'+value.fecha_siembra+'" align="right"><spam class="glyphicon glyphicon-object-align-bottom"></spam></td>'+
+                				'<td class="btn_graficaSol" lat="'+value.latitud+'" lon="'+value.longitud+'" d="'+value.id+'" f="'+value.fecha_siembra+'" align="right"><spam class="glyphicon glyphicon-asterisk"></spam></td>'+
                 				'<td class="btn_eliminar" align="right" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
 						AppConfig.sk_sofy.emit('getRecomendaciones',{id:value.id,lat:value.latitud,lon:value.longitud}, function (msj) {
@@ -669,6 +691,7 @@ $( document ).ready(function() {
 						AppConfig['tmp_has'] = $(this).attr('h');
 						AppConfig['tmp_fecha'] = $(this).attr('f');
 						AppConfig['tmp_fechaCosecha'] = $(this).attr('fc');
+						AppConfig['tmp_fechaRegistro'] = $(this).attr('fr');
 						AppConfig['tmp_Ren'] = $(this).attr('r');
 						AppConfig['tmp_fase'] = $(this).attr('nf');
 						AppConfig['tmp_lat'] = $(this).attr('lat');
@@ -693,6 +716,15 @@ $( document ).ready(function() {
 						AppMap.ActualizaPunto(lat,lon);
     					AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));	
     					AppConfig.opcDecadal(fecha);
+					});
+
+					$(".btn_graficaSol").click(function(){	console.log("Click btn_graficaSol");
+						var lat = $(this).attr('lat');
+						var lon = $(this).attr('lon');
+						var fecha = $(this).attr('f');
+						AppMap.ActualizaPunto(lat,lon);
+    					AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));	
+    					AppConfig.opcDecadalSol(fecha);
 					});
 					
 					$(".btn_eliminar").click(function(){	console.log("Click btn_eliminar");
@@ -1493,13 +1525,6 @@ $( document ).ready(function() {
 										}
 									}
 								],
-								xAxis: {
-						            tickInterval: 1,
-						            labels: {
-						                enabled: true,
-						                formatter: function() { return averagesTem[this.value][0];},
-						            }
-						        },
 						        tooltip: {
 						            crosshairs: true,
 						            shared: true,
@@ -1515,7 +1540,13 @@ $( document ).ready(function() {
 									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 								},
 								xAxis: {
-						            categories: msj.cat
+						            categories: msj.cat,
+									labels: {
+						                enabled: true,
+						                style: {
+								                    fontSize:'8px'
+								                }
+						            }
 						        },
 							 	series: [{
 						            name: 'Temp. - '+txt.msjMin ,
@@ -1562,6 +1593,94 @@ $( document ).ready(function() {
 						
     	 });
 	};
+	AppConfig.opcDecadalSol=function(fecha){	//var lat = pos.coords.latitude;var lon = pos.coords.longitude;	AppMap.lat,AppMap.lon
+    	AppConfig.sk_sofy.emit('decadalsol',{lat:AppMap.lat, lon:AppMap.lon,fecha:fecha, lenguaje: txt.Idioma}, function (msj){	console.log(msj);
+			if($.isNumeric(msj)){
+				msj_peligro(txt.msjSinInfo);
+				return false;
+			}
+			var chart1;
+			var $text = $('<div id="container_decadalSol" style="max-height: 510px;"></div>');
+	        BootstrapDialog.show({
+	        	title: txt.msjDecadal + ' - ' + txt.msjclimogramaBrillosolar,
+	        	type: BootstrapDialog.TYPE_SUCCESS,
+	            message: $text,
+	            onshown: function(dialogRef){
+
+						chart1 = new Highcharts.Chart({
+								chart: {
+						            renderTo: 'container_decadalSol',
+						            type: 'column',
+						            animation: true,
+					         	},
+					         	title: {
+							   		text: txt.msjEstacion+' '+msj.est+': '+msj.dis+' Kms',
+							   		style: { "fontSize": "15px" },
+							   		align: "center"
+							 	},
+					         	subtitle: {
+							   		text: txt.tit_decadal
+							 	},
+					        	credits: {
+					            	enabled: false
+					        	},
+					        	yAxis: [{ // Primary yAxis
+										labels: {
+											format: '{value} Cal/cm²',
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "9px"
+											},
+											padding:0
+										},
+										title: {
+											text: txt.msjclimogramaBrillosolar,
+											style: {
+												color: Highcharts.getOptions().colors[0],
+												fontSize : "11px" 
+											},
+											padding:0
+										},
+										opposite: true
+									}
+								],
+						        tooltip: {
+						            crosshairs: true,
+						            shared: true,
+						            valueSuffix: ' Cal/cm²'
+						        },
+						        legend: {
+									layout: 'vertical',
+									align: 'left',
+									x: 75,
+									verticalAlign: 'top',
+									y: 75,
+									floating: true,
+									backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+								},
+								xAxis: {
+						            categories: msj.cat,
+									labels: {
+						                enabled: true,
+						                style: {
+								                    fontSize:'8px'
+								                }
+						            }
+						        },
+							 	series: [{
+						            name: txt.msjclimogramaBrillosolar,
+						            data: msj.radsol,
+						            zIndex: 1,
+									yAxis: 0
+						            ,color: '#0489B1'
+						        }
+								]
+					      });
+	            }
+	        });
+						
+    	 });
+	};
 	AppConfig.opcHumeSola=function(){
 		var chart1;
 		var $text = $('<div id="container_HumeSola" style="max-height: 510px;"></div>');
@@ -1591,7 +1710,7 @@ $( document ).ready(function() {
             		var sobre = [];
             		var est,kms;
             		for(j=0;j<msj[0].length; j++){	//console.log(msj[0][j]);
-            			aniomes.push(msj[0][j].anio + '-' + msj[0][j].mes);
+            			aniomes.push(msj[0][j].anio + '-' + msj[0][j].mes + ' <br> Tipo: '+ msj[0][j].tipo);
             			bajo.push(parseFloat(msj[0][j].bajo));
             			normal.push(parseFloat(msj[0][j].normal));
             			sobre.push(parseFloat(msj[0][j].sobre));
@@ -1615,7 +1734,7 @@ $( document ).ready(function() {
 						        	yAxis: {
 							            min: 0,
 							            title: {
-							                text: txt.msjPrecipitacion + ' (mm)'
+							                text: txt.msjProbabilidad + ' ' +  txt.msjPrecipitacion + ' (mm)'
 							            }
 							        },
 									xAxis: {
@@ -1635,7 +1754,7 @@ $( document ).ready(function() {
 							            align: 'left',
 							            x: 50,
 							            verticalAlign: 'top',
-							            y: 50,
+							            y: 60,
 							            floating: true,
 							            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
 							        },
