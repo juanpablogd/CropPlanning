@@ -506,11 +506,11 @@ $( document ).ready(function() {
 		if (AppConfig['tmp_Ren'] != "null"){
 			txtCosecha = txtCosecha+
 						'<tr>'+
-				    		'<td>'+txt.msjRendimiento+'</td>'+
+				    		'<td>'+txt.msjProduccion+'</td>'+
 				    		'<td>'+AppConfig['tmp_Ren']+' Kg.</td>'+
 				    	'</tr>'+
 						'<tr>'+
-							'<td>'+txt.msjRendimiento+' /<br>'+txt.msjHectareacultivadas+'</td>'+
+							'<td>'+txt.msjRendimiento+' /<br>'+txt.msjHectarea+'</td>'+
 				    		
 				    		'<td>'+Math.round((AppConfig['tmp_Ren']/AppConfig['tmp_has']) * 100) / 100+' Kg/Ha.</td>'+
 				    	'</tr>'
@@ -674,13 +674,13 @@ $( document ).ready(function() {
                 				'<td class="btn_eliminar" align="right" n="'+value.nombre+'" d="'+value.id+'"><spam class="glyphicon glyphicon-erase"></spam></td>'+
 							'</tr>');
 						AppConfig.sk_sofy.emit('getRecomendaciones',{id:value.id,lat:value.latitud,lon:value.longitud}, function (msj) {
-							//console.log(msj);
-							//console.log(msj.datos.length);
-							if(msj.datos.length>0){
-								$("#f"+msj.id).css("color", "red");
-								$("#rc"+msj.id).html(msj.datos.length);
+							//console.log(msj);	console.log(typeof msj.datos);
+							if(typeof msj.datos !== 'undefined'){
+								if(msj.datos.length>0){
+									$("#f"+msj.id).css("color", "red");
+									$("#rc"+msj.id).html(msj.datos.length);
+								}
 							}
-
 						});
 					});
 					
@@ -780,11 +780,12 @@ $( document ).ready(function() {
 						AppConfig.sk_sofy.emit('getRecomendaciones',{id:value.id,lat:value.latitud,lon:value.longitud}, function (msj) {
 							//console.log(msj);
 							//console.log(msj.datos.length);
-							if(msj.datos.length>0){
-								$("#f"+msj.id).css("color", "red");
-								$("#rc"+msj.id).html(msj.datos.length);
+							if(typeof msj.datos !== 'undefined'){
+								if(msj.datos.length>0){
+									$("#f"+msj.id).css("color", "red");
+									$("#rc"+msj.id).html(msj.datos.length);
+								}
 							}
-
 						});
 					});
 					
@@ -1710,7 +1711,7 @@ $( document ).ready(function() {
             		var sobre = [];
             		var est,kms;
             		for(j=0;j<msj[0].length; j++){	//console.log(msj[0][j]);
-            			aniomes.push(msj[0][j].anio + '-' + msj[0][j].mes + ' <br> Tipo: '+ msj[0][j].tipo);
+            			aniomes.push(msj[0][j].anio + '-' + msj[0][j].mes + ' <br> ' + txt.msjTrimestre + ': '+ msj[0][j].tipo);
             			bajo.push(parseFloat(msj[0][j].bajo));
             			normal.push(parseFloat(msj[0][j].normal));
             			sobre.push(parseFloat(msj[0][j].sobre));
@@ -1734,7 +1735,7 @@ $( document ).ready(function() {
 						        	yAxis: {
 							            min: 0,
 							            title: {
-							                text: txt.msjProbabilidad + ' ' +  txt.msjPrecipitacion + ' (mm)'
+							                text: txt.msjProbabilidad + ' ' +  txt.msjAlteracionprecipitacion + ' (%)'
 							            }
 							        },
 									xAxis: {
