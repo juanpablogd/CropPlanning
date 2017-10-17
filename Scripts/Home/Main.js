@@ -1009,23 +1009,17 @@ $( document ).ready(function() {
 			  },
 			  errorCallback);
 		  }else{
-			var deviceInfo = cordova.require("cordova/plugin/DeviceInformation");
-				deviceInfo.get(function(result) { //alert(result);
-							   //Obtiene el Número de SIM
-							   var res = result.split("simNo");
-							   res = res[1].split('"');	//alert (res[2]);
-							   serial = res[2]; //alert("SIM / Serial: "+serial);
-							   //Obtiene el IMEI
-							   res = result.split("deviceID");
-							   res = res[1].split('"');
-							   imei = res[2]; console.log("Imei: "+imei);
-							   //Obtiene el IMEI
-							   AppConfig['imei'] = imei;
-							   ;
-							   }, function(error) {
-									console.log("Error: " + error);
-									msj_peligro("Habilite los permisos en su aplicación");
-							   });
+		  		function successCallbackImei(result) {
+				  	console.log(JSON.stringify(result));	//console.log(result.deviceId);
+				  	//Obtiene el IMEI
+				  	AppConfig['imei'] = result.deviceId
+				  	console.log(AppConfig['imei']);
+				}
+		  		function errorCallbackImei(result) {
+		  			msj_peligro("Habilite los permisos en su aplicación");
+					console.log(JSON.stringify(result));
+				}
+		  		window.plugins.sim.getSimInfo(successCallbackImei, errorCallbackImei);
 		  }
 		  
 		}
