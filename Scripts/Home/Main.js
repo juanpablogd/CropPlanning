@@ -205,16 +205,21 @@ $( document ).ready(function() {
 	AppConfig.sinUbicacion=function(){
 		$("#localizando").hide();
 		msj_peligro(txt.msjNogps);
-		cordova.dialogGPS(txt.dialogGPSMensaje,//message
-                    txt.dialogGPSDescripcion,//description
-                    function(buttonIndex){//callback
-                      switch(buttonIndex) {
-                        case 0: break;//cancel
-                        case 1: break;//neutro option
-                        case 2: break;//user go to configuration
-                      }},
-                      txt.dialogGPSTitulo,//title
-                      [txt.msjNo,"",txt.msjSi]);//buttons
+
+		cordova.plugins.locationAccuracy.canRequest(function(canRequest){
+		    if(canRequest){
+		        cordova.plugins.locationAccuracy.request(function (success){
+		            console.log("Precisión solicitada con éxito: "+success.message);
+		        }, function (error){
+		           console.error("Falló al solicitar la Presición: error code="+error.code+"; error message="+error.message);
+		           if(error.code !== cordova.plugins.locationAccuracy.ERROR_USER_DISAGREED){
+		               if(window.confirm("Error al establecer automáticamente el modo de ubicación en 'Alta precisión'. ¿Desea cambiar a la página Configuración de ubicación y hacer esto manualmente?")){
+		                   cordova.plugins.diagnostic.switchToLocationSettings();
+		               }
+		           }
+		        }, cordova.plugins.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);
+		    }
+		});
 	};
 
 	$("#btn_marker").click(function(){
@@ -662,8 +667,7 @@ $( document ).ready(function() {
 		        	AppConfig.historicoMiCultivo();
 		        });
 		        //var imei = AppConfig.getImei();
-				AppConfig.sk_sofy.emit('getMiscultivos',{imei:AppConfig['imei'],estado:"A"}, function (msj) {
-					console.log(msj.datos);
+				AppConfig.sk_sofy.emit('getMiscultivos',{imei:AppConfig['imei'],estado:"A"}, function (msj) {	console.log(JSON.stringify(msj.datos));
 					$.each( msj.datos, function( key, value ) {	console.log( key + ": " + value.id );
 						$("#listaCultivos").append('<tr id="f'+value.id+'">'+
         						'<td>'+value.nombre+'<span class="badge" style="background-color:red" id="rc'+value.id+'"></span></td>'+
@@ -1122,7 +1126,7 @@ $( document ).ready(function() {
 		//var lat = pos.coords.latitude;var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
-    	AppConfig.sk_sofy.emit('temperatura',{lat:lat, lon:lon}, function (msj){	console.log(msj);
+    	AppConfig.sk_sofy.emit('temperatura',{lat:lat, lon:lon}, function (msj){	console.log(JSON.stringify(msj));
 			var rangesTemMin = [
 				            [txt.msjEne, msj.tepe[0].datos.min1],
 				            [txt.msjFeb, msj.tepe[0].datos.min2],
@@ -1303,7 +1307,7 @@ $( document ).ready(function() {
 		//var lat = pos.coords.latitude;var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
-    	AppConfig.sk_sofy.emit('HumedadSolar',{lat:lat, lon:lon}, function (msj){	console.log(msj);
+    	AppConfig.sk_sofy.emit('HumedadSolar',{lat:lat, lon:lon}, function (msj){	console.log(JSON.stringify(msj));
 			var averagesHum = [
 				            [txt.msjEne, msj.huso[0].datos.med1],
 				            [txt.msjFeb, msj.huso[0].datos.med2],

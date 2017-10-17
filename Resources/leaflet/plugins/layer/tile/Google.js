@@ -25,11 +25,12 @@ L.Google = L.Layer.extend({
 	// Possible types: SATELLITE, ROADMAP, HYBRID, TERRAIN
 	initialize: function (type, options) {
 		L.Util.setOptions(this, options);
+		if (typeof google !== 'undefined'){
+			this._ready = google.maps.Map !== undefined;
+			if (!this._ready) L.Google.asyncWait.push(this);
 
-		this._ready = google.maps.Map !== undefined;
-		if (!this._ready) L.Google.asyncWait.push(this);
-
-		this._type = type || 'SATELLITE';
+			this._type = type || 'SATELLITE';
+		}
 	},
 
 	onAdd: function (map, insertAtTheBottom) {
