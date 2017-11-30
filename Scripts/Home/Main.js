@@ -135,8 +135,7 @@ $( document ).ready(function() {
 		//var lat = pos.coords.latitude;var lon = pos.coords.longitude;
 	    AppMap.ActualizaPunto(lat,lon);
     	AppMap.SetExtend((lat-AppMap.escalaExtend),(numeral(lat)+AppMap.escalaExtend),(numeral(lon)+AppMap.escalaExtend),(lon-AppMap.escalaExtend));
-		AppConfig.sk_sofy.emit('clima',{lat:lat, lon:lon, lenguaje: txt.Idioma}, function (msj) {
-	  		//console.log(msj);
+		AppConfig.sk_sofy.emit('clima',{lat:lat, lon:lon, lenguaje: txt.Idioma}, function (msj) {	//console.log(msj);
 	  		if(msj=="0"){
 	  			msj_peligro(txt.msjSinestacion);
 	  		}else{
@@ -1743,7 +1742,7 @@ $( document ).ready(function() {
 							        tooltip: {
 							            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
 							            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-							                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+							                '<td style="padding:0"><b>{point.y:.1f} %</b></td></tr>',
 							            footerFormat: '</table>',
 							            shared: true,
 							            useHTML: true
